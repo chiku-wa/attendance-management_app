@@ -1,24 +1,20 @@
-# README
+# DB情報
+DBはPostgreSQLを前提としています。
+以下の環境を準備してください。
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## データベース名
+環境ごとにデータベースを作成してください。
 
-Things you may want to cover:
+| 環境 | DB名 |
+|---|---|
+| production | kintai |
+| development | kintai_development |
+| test | kintai_test |
 
-* Ruby version
+## ユーザ名、パスワード
+以下の環境変数を用意してください。
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+| 項目名 | 環境変数名 |
+|---|---|
+| ユーザ名 | DATABASE_USERNAME |
+| パスワード | DATABASE_PASSWORD |
