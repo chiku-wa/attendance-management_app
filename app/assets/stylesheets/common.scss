@@ -1,2 +1,19 @@
+//
+// 全画面共通のCSSデザインを定義する。
+//
 @import "bootstrap-sprockets";
 @import "bootstrap";
+
+/* ================= */
+/* メニューバーのデザイン */
+// ロゴ
+#logo {
+  float: left;
+  margin-right: 10px;
+  font-size: 1.7em;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  padding-top: 9px;
+  font-weight: bold;
+}
