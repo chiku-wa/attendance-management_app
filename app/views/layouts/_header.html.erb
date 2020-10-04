@@ -1,0 +1,21 @@
+<%# 画面上部に固定し、色を反転させる%>
+<header class="navbar navbar-fixed-top navbar-inverse">
+  <div class="container">
+    <div class="row">
+      <%# システム名などを表示するロゴ部 %>
+      <div class="col-lg-3">
+        <%= link_to("勤怠管理システム", main_index_path, id: "logo")%>
+      </div>
+
+      <%# ログイン画面へのリンクなどを表示するコンテンツ部 %>
+      <div class=" col-lg-9">
+        <nav>
+          <ul class="nav navbar-nav navbar-right">
+            <li><%= link_to "ログイン", '#' %></li>
+          </ul>
+        </nav>
+      </div>
+
+    </div>
+  </div>
+</header>

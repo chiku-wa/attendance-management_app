@@ -1,15 +1,40 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>AttendanceManagementApp</title>
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
-  </head>
+<head>
+  <title>AttendanceManagementApp</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-  <body>
-    <%= yield %>
-  </body>
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/r29/html5.min.js">
+    </script>
+  <![endif]-->
+</head>
+
+<body>
+  <div class="container">
+    <%# 固定部分：画面上部のシステム名、ログインボタン表示部 %>
+    <%= render ("layouts/header") %>
+
+    <%# 固定部分：サイドバー %>
+
+    <%# 動的部分：メインコンテンツ(出退勤入力フォームなど) %>
+    <div class="row">
+      <%# サイドメニュー部 %>
+      <div class="col-lg-2">
+        <%= render("layouts/sidemenu") %>
+      </div>
+
+      <%# メインコンテンツ部 %>
+      <div class="col-lg-10">
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+</body>
+
 </html>

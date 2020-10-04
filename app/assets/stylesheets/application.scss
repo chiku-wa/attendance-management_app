@@ -13,3 +13,19 @@
  *= require_tree .
  *= require_self
  */
+// =====
+// Bootstrapを使用するために必要な宣言
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+// =====
+// リッチなアイコンを利用するために必要な宣言
+// アイコンとタグは以下で検索すること。
+// https://fontawesome.com/icons?d=gallery
+//
+// 記述は随時Rails用に書き換える必要あり。
+// [例]
+// サイトの記法：<i class="fas fa-sign-out-alt"></i>
+// RailsのERBでの記法：<%= icon('fas', 'sign-out-alt') %>
+@import "font-awesome-sprockets";
+@import "font-awesome";
