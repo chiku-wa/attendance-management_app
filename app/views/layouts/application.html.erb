@@ -16,18 +16,24 @@
 </head>
 
 <body>
-  <header class="navbar navbar-fixed-top navbar-inverse">
-    <div class="container">
-      <%= link_to "勤怠管理システム", '#', id: "logo" %>
-      <nav>
-        <ul class="nav navbar-nav navbar-right">
-          <li><%= link_to "ログイン", '#' %></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
   <div class="container">
-    <%= yield %>
+    <%# 固定部分：画面上部のシステム名、ログインボタン表示部 %>
+    <%= render ("layouts/header") %>
+
+    <%# 固定部分：サイドバー %>
+
+    <%# 動的部分：メインコンテンツ(出退勤入力フォームなど) %>
+    <div class="row">
+      <%# サイドメニュー部 %>
+      <div class="col-lg-2">
+        <%= render("layouts/sidemenu") %>
+      </div>
+
+      <%# メインコンテンツ部 %>
+      <div class="col-lg-10">
+        <%= yield %>
+      </div>
+    </div>
   </div>
 </body>
 
