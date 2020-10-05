@@ -3,34 +3,64 @@
 
 <head>
   <title>AttendanceManagementApp</title>
+
+  <%# クロスサイトスクリプティング防止のためのタグ %>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
+  <%# CSS、JavaScriptの読み込み %>
   <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
   <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
 
+  <%# IE9でも、HTML5を認識させるための設定 %>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/r29/html5.min.js">
     </script>
   <![endif]-->
+
+  <%# モバイル端末からのアクセス時に、文字が小さくならないようにするための設定 %>
+  <meta name="viewport" content="width=device-width, initial-scal">
 </head>
 
 <body>
-  <div class="container">
-    <%# 固定部分：画面上部のシステム名、ログインボタン表示部 %>
-    <%= render ("layouts/header") %>
+  <div class=" container">
+    <%# ================================================================= %>
+    <%# ===== 固定部分：ヘッダ %>
+    <%# 画面上部に固定し、色を反転させる%>
+    <header class="navbar navbar-fixed-top navbar-inverse">
+      <div class="container">
+        <div class="row">
+          <%# システム名などを表示するロゴ部分 %>
+          <div class="col-lg-3 col-sm12">
+            <%= link_to("勤怠管理システム", main_index_path, id: "logo")%>
+          </div>
 
-    <%# 固定部分：サイドバー %>
+          <%# ログイン画面へのリンクなどを表示するコンテンツ部 %>
+          <div class=" col-lg-9  col-sm12">
+            <nav>
+              <ul class="nav navbar-nav navbar-right">
+                <li><%= link_to "ログイン", '#' %></li>
+              </ul>
+            </nav>
+          </div>
 
+        </div>
+      </div>
+    </header>
+
+
+    <%# ================================================================= %>
+    <%# ===== 固定部分：サイドバー %>
     <%# 動的部分：メインコンテンツ(出退勤入力フォームなど) %>
     <div class="row">
       <%# サイドメニュー部 %>
-      <div class="col-lg-2">
+      <div class="col-lg-2  col-sm12">
         <%= render("layouts/sidemenu") %>
       </div>
 
-      <%# メインコンテンツ部 %>
-      <div class="col-lg-10">
+      <%# ================================================================= %>
+      <%# ===== メインコンテンツ部 %>
+      <div class="col-lg-10 col-sm12">
         <%= yield %>
       </div>
     </div>
