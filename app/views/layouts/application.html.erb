@@ -39,11 +39,19 @@
           <div class=" col-lg-9  col-sm12">
             <nav>
               <ul class="nav navbar-nav navbar-right">
-                <li><%= link_to "ログイン", '#' %></li>
+                <li>
+                  <%= link_to("#", :method => :delete) do  %>
+                  <%= icon('fas', 'sign-in-alt') %></i> ログイン
+                  <% end %>
+                </li>
+                <li>
+                  <%= link_to("#", :method => :delete) do  %>
+                  <%= icon('fas', 'sign-out-alt') %></i> ログアウト
+                  <% end %>
+                </li>
               </ul>
             </nav>
           </div>
-
         </div>
       </div>
     </header>
