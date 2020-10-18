@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>AttendanceManagementApp</title>
+  <title>ポチっと勤怠</title>
 
   <%# クロスサイトスクリプティング防止のためのタグ %>
   <%= csrf_meta_tags %>
@@ -18,8 +18,8 @@
     </script>
   <![endif]-->
 
-  <%# モバイル端末からのアクセス時に、文字が小さくならないようにするための設定 %>
-  <meta name="viewport" content="width=device-width, initial-scal">
+  <%# モバイル端末からのアクセス時に適切に画面表示するための設定 %>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
 
 <body>
@@ -36,11 +36,11 @@
     <%# ===== メインコンテンツ部分 %>
     <div class="row">
       <%# ----- サイドバー部分 %>
-      <div class="col-2 bg-success">
+      <div class="col-lg-2 col-sm-12">
         <%= render("layouts/sidemenu") %>
       </div>
       <%# ----- メインコンテンツ部部分 %>
-      <div class="col-10 bg-primary">
+      <div class="col-lg-10 col-sm-12">
         <%= yield %>
         <% render("layouts/footer")  %>
       </div>
