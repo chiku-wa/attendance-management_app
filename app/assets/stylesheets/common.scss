@@ -52,9 +52,8 @@ header {
   display: none;
 }
 
-.nav {
+.nav-list {
   li {
-    display: inline-block;
     margin: 0 10px;
   }
 }
@@ -63,6 +62,12 @@ header {
 @media screen and (min-width: $pc_min_pixel) {
   .header {
     padding: 10px 10px;
+  }
+
+  .nav-list {
+    li {
+      display: inline-block; // PC表示時はliを横並びにする。
+    }
   }
 }
 
@@ -96,7 +101,8 @@ header {
     z-index: 10;
     background-color: rgba(0, 0, 0, 0.7);
 
-    .nav {
+    .nav-list {
+      display: inline-block; // モバイルアクセス時は、ハンバーガーメニュー上のliを縦並びにする
       height: 100%;
       position: relative;
       overflow-x: hidden;
@@ -108,7 +114,7 @@ header {
 
       a {
         color: #fff;
-        font-size: 28px;
+        font-size: 18px;
       }
     }
   }
@@ -117,11 +123,11 @@ header {
   .nav-button span {
     display: inline-block;
     transition: all 0.4s;
-    // box-sizing: border-box;
+    box-sizing: border-box;
   }
 
   // ----- ハンバーガーメニューの設定
-  // メニューの領域の設定
+  // メニューの領域の設定(三本線が存在する領域)
   .nav-button {
     z-index: 20;
     position: relative;
