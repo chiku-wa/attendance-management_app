@@ -40,10 +40,17 @@ header {
 
 /* ------------------------------------------- */
 //  PCアクセス時は横並びに、モバイルアクセス時はハンバーガーメニューを表示するための設定
+//
+// [前提とするタグ領域]
+// .nav-menu      : メニュー全体を覆う領域
+//  ├ .nav-button : ハンバーガーメニューの三本線用領域(モバイルアクセス用)
+//  └. nav-wrap   : メニュー項目が存在する領域
+//    └.nav-list  : メニュー項目(ul,li)が存在する領域
+//
 // 【対応するJavaScript】menu.js
 
 // --- PC、モバイル共通のCSS
-.header {
+.nav-menu {
   display: flex;
   justify-content: space-between;
 }
@@ -60,7 +67,7 @@ header {
 
 // ----- PCアクセス時に適用するCSS
 @media screen and (min-width: $pc_min_pixel) {
-  .header {
+  .nav-menu {
     padding: 10px 10px;
   }
 
@@ -84,7 +91,7 @@ header {
 
 // ----- モバイルアクセス時に適用するCSS
 @media screen and (max-width: $mobile_max_pixel) {
-  .header {
+  .nav-menu {
     padding: 20px;
   }
 
