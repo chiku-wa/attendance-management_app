@@ -23,40 +23,56 @@
 </head>
 
 <body>
+  <div class=" container">
+    <%# ================================================================= %>
+    <%# ===== 固定部分：ヘッダ %>
+    <%# 画面上部に固定し、色を反転させる%>
+    <header class="navbar navbar-fixed-top navbar-inverse">
+      <div class="container">
+        <div class="row">
+          <%# システム名などを表示するロゴ部分 %>
+          <div class="col-lg-3 col-sm12">
+            <%= link_to("勤怠管理システム", main_index_path, id: "logo")%>
+          </div>
 
-  <%# ================================================================= %>
-  <%# ===== ヘッダ部分 %>
-  <%# ===== ※fixed-topを用いるとcontainer,row,colが機能しないため、あえて定義しない %>
-  <%= render("layouts/header") %>
+          <%# ログイン画面へのリンクなどを表示するコンテンツ部 %>
+          <div class=" col-lg-9  col-sm12">
+            <nav>
+              <ul class="nav navbar-nav navbar-right">
+                <li>
+                  <%= link_to("#", :method => :delete) do  %>
+                  <%= icon('fas', 'sign-in-alt') %></i> ログイン
+                  <% end %>
+                </li>
+                <li>
+                  <%= link_to("#", :method => :delete) do  %>
+                  <%= icon('fas', 'sign-out-alt') %></i> ログアウト
+                  <% end %>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </header>
 
-  <%# 幅は目一杯使う %>
-  <div class="container-fluid">
 
     <%# ================================================================= %>
-    <%# ===== メインコンテンツ部分 %>
+    <%# ===== 固定部分：サイドバー %>
+    <%# 動的部分：メインコンテンツ(出退勤入力フォームなど) %>
     <div class="row">
-      <%# ----- サイドバー部分 %>
-      <div class="col-2 bg-success">
+      <%# サイドメニュー部 %>
+      <div class="col-lg-2  col-sm12">
         <%= render("layouts/sidemenu") %>
       </div>
-      <%# ----- メインコンテンツ部部分 %>
-      <div class="col-10 bg-primary">
+
+      <%# ================================================================= %>
+      <%# ===== メインコンテンツ部 %>
+      <div class="col-lg-10 col-sm12">
         <%= yield %>
-        <% render("layouts/footer")  %>
-      </div>
-    </div>
-
-    <hr>
-
-    <%# ================================================================= %>
-    <%# ===== フッター部分 %>
-    <div class="row">
-      <div class="col-12">
-        <%= render("layouts/footer")  %>
       </div>
     </div>
   </div>
-
 </body>
 
 </html>

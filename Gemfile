@@ -17,7 +17,7 @@ gem "jbuilder", "~> 2.7"
 gem "pg"
 
 # 画面デザイン用
-gem "bootstrap", "~> 4.5", ">= 4.5.2"
+gem "bootstrap-sass", "~> 3.4"
 gem "bootsnap", ">= 1.4.2", require: false
 gem "font-awesome-sass"
 

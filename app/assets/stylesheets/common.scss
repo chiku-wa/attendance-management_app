@@ -5,17 +5,21 @@
 /* ================= */
 /* 共通のデザイン */
 body {
-  // メインコンテンツが、fixed-topで固定したヘッダに被らないないようにするための設定
-  // ヘッダ領域のサイズとほぼ同等の余白を設定すること
-  padding-top: 4rem;
+  // メインコンテンツが画面上部のヘッダに埋もれないようにするための位置調整
+  padding-top: 60px;
 }
 
 
 /* ================= */
-/* ヘッダ部分のデザイン */
+/* ヘッダメニューのデザイン */
 // ロゴ
 #logo {
-  font-size: 1.2em;
+  float: left;
+  margin-right: 10px;
+  font-size: 1.7em;
   color: #fff;
+  text-transform: uppercase;
+  letter-spacing: -1px;
   padding-top: 9px;
+  font-weight: bold;
 }
