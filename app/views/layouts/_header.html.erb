@@ -1,43 +1,16 @@
-<%# メニューバーの挙動を制御するためのJavaScript%>
-<%= javascript_pack_tag 'menu' %>
-
-<%# 画面上部に固定する%>
-<header class="fixed-top">
-  <nav class="nav bg-dark pt-1 pb-1">
-
-    <div class="col-lg-12 col-sm-4 bg-primary">
-      <%# -------------------------- %>
-      <%# ----- システム名を表示部分 %>
-      <div class="logo">
+  <%# 画面上部に固定する%>
+  <header class="fixed-top">
+    <nav class="nav bg-dark pt-3 pb-3">
+      <div class="col-6">
+        <%# システム名などを表示するロゴ部分 %>
         <%= link_to("ポチっと勤怠", main_index_path, id: "logo")%>
       </div>
-    </div>
 
-    <div class="col-lg-12 col-sm-8 bg-success">
-      <%# -------------------------- %>
-      <%# ----- メニュー表示部 %>
-      <div class="header">
-        <%# モバイルアクセス時に表示するハンバーガーメニュー %>
-        <div class="nav-button" href="#">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <%# メニューバー(モバイル、PC共通) %>
-        <nav class="nav-wrap">
-          <ul class="nav">
-            <li>
-              <a href="#">項目1</a>
-            </li>
-            <li>
-              <a href="#">項目2</a>
-            </li>
-            <li>
-              <a href="#">項目3</a>
-            </li>
-          </ul>
-        </nav>
+      <%# ログイン・ログアウト画面のリンクなどを表示するコンテンツ部 %>
+      <div class="col-6">
+        <%= link_to("#", :method => :get) do  %>
+        <%= icon('fas', 'sign-in-alt') %></i> ログイン
+        <% end %>
       </div>
-    </div>
-  </nav>
-</header>
+    </nav>
+  </header>
