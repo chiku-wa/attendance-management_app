@@ -107,6 +107,7 @@ header {
     display: none;
     z-index: 10;
     background-color: rgba(0, 0, 0, 0.7);
+    width: 100%; // 画面全体を覆うようにメニューを表示する
 
     .nav-list {
       display: inline-block; // モバイルアクセス時は、ハンバーガーメニュー上のliを縦並びにする
