@@ -22,25 +22,16 @@ PCアクセス時は「.nav-wrap」適用し、モバイルアクセス時は「
 ※前者はaタグにしか反応しないイベントであり、ページがリロードされてJavaScriptが正常に動作しなくなる。
 よってdivでもイベントを取得できる後者を用いる。
 %>
-
 $(document).ready(function () {
-
-$('.nav-button').click(function () {
-
-if ($(this).hasClass('active')) {
-
-<%# １．メニューを閉じる %>
-$(this).removeClass('active');
-$('.nav-wrap').addClass('close').removeClass('open');
-
-} else {
-
-<%# ２．メニューを開く %>
-$(this).addClass('active');
-$('.nav-wrap').addClass('open').removeClass('close');
-
-}
-
-});
-
+  $('.nav-button').click(function () {
+    if ($(this).hasClass('active')) {
+      <%# １．メニューを閉じる %>
+      $(this).removeClass('active');
+      $('.nav-wrap').addClass('close').removeClass('open');
+    } else {
+      <%# ２．メニューを開く %>
+      $(this).addClass('active');
+      $('.nav-wrap').addClass('open').removeClass('close');
+    }
+  });
 });
