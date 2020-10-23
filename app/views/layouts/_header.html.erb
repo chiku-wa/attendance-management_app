@@ -5,37 +5,44 @@
 <header class="fixed-top">
   <nav class="nav bg-dark pt-1 pb-1">
 
-    <div class="col-12 bg-primary">
-      <%# -------------------------- %>
-      <%# ----- システム名を表示部分 %>
-      <div class="logo">
-        <%= link_to("ポチっと勤怠", main_index_path, id: "logo")%>
+    <div class="col-12">
+
+      <%# ロゴとメニュー画面を横並びにする %>
+      <div class="d-flex felx-row justify-content-between">
+
+        <%# -------------------------- %>
+        <%# ----- システム名を表示部分 %>
+        <div class="logo p-2">
+          <%= link_to("ポチっと勤怠", main_index_path, id: "logo")%>
+        </div>
+
+        <%# -------------------------- %>
+        <%# ----- メニュー表示部 %>
+        <div class="nav-menu p-2">
+          <%# モバイルアクセス時に表示するハンバーガーメニュー %>
+          <div class="nav-button" href="#">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <%# メニューバー(モバイル、PC共通) %>
+          <div class="nav-wrap">
+            <ul class="nav-list">
+              <li>
+                <a href="#">項目1</a>
+              </li>
+              <li>
+                <a href="#">項目2</a>
+              </li>
+              <li>
+                <a href="#">項目3</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
       </div>
 
-      <%# -------------------------- %>
-      <%# ----- メニュー表示部 %>
-      <div class="nav-menu">
-        <%# モバイルアクセス時に表示するハンバーガーメニュー %>
-        <div class="nav-button" href="#">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <%# メニューバー(モバイル、PC共通) %>
-        <nav class="nav-wrap">
-          <ul class="nav-list">
-            <li>
-              <a href="#">項目1</a>
-            </li>
-            <li>
-              <a href="#">項目2</a>
-            </li>
-            <li>
-              <a href="#">項目3</a>
-            </li>
-          </ul>
-        </nav>
-      </div>
     </div>
   </nav>
 </header>
