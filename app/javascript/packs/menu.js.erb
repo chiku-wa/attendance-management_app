@@ -23,33 +23,24 @@ PCアクセス時は「.nav-wrap」適用し、モバイルアクセス時は「
 よってdivでもイベントを取得できる後者を用いる。
 %>
 
-<%# ★デバッグ用★ %>
-<%# TODO: 修正が終わったら消す。 %>
 $(document).ready(function () {
-  // ２．メニューを開く
-  $(this).addClass('active');
-  $('.nav-wrap').addClass('open').removeClass('close');
+
+$('.nav-button').click(function () {
+
+if ($(this).hasClass('active')) {
+
+<%# １．メニューを閉じる %>
+$(this).removeClass('active');
+$('.nav-wrap').addClass('close').removeClass('open');
+
+} else {
+
+<%# ２．メニューを開く %>
+$(this).addClass('active');
+$('.nav-wrap').addClass('open').removeClass('close');
+
+}
+
 });
-
-
-$(document).ready(function () {
-
-  $('.nav-button').click(function () {
-
-    if ($(this).hasClass('active')) {
-
-      <%# １．メニューを閉じる %>
-      $(this).removeClass('active');
-      $('.nav-wrap').addClass('close').removeClass('open');
-
-    } else {
-
-      <%# ２．メニューを開く %>
-      $(this).addClass('active');
-      $('.nav-wrap').addClass('open').removeClass('close');
-
-    }
-
-  });
 
 });
