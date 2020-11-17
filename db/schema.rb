@@ -10,12 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_09_233346) do
+ActiveRecord::Schema.define(version: 2020_11_10_231832) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "departments", force: :cascade do |t|
+    t.string "department_code", limit: 10, null: false
     t.string "department_name", limit: 200, null: false
     t.string "department_kana_name", limit: 400, null: false
     t.datetime "establishment_date", null: false
@@ -32,5 +33,4 @@ ActiveRecord::Schema.define(version: 2020_11_09_233346) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
-
 end
