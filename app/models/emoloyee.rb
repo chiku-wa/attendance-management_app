@@ -1,0 +1,2 @@
+class Emoloyee < ApplicationRecord
+end
