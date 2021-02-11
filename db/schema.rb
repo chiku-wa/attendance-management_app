@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_17_232612) do
+ActiveRecord::Schema.define(version: 2021_02_11_010133) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "department_trees", force: :cascade do |t|
+    t.integer "parent_department_id", null: false
+    t.integer "child_department_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "departments", force: :cascade do |t|
     t.string "department_name", limit: 200, null: false
@@ -34,4 +41,6 @@ ActiveRecord::Schema.define(version: 2020_11_17_232612) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "department_trees", "departments", column: "child_department_id", name: "fk_child_department_id"
+  add_foreign_key "department_trees", "departments", column: "parent_department_id", name: "fk_parent_department_id"
 end

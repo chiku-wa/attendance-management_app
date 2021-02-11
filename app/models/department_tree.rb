@@ -1,0 +1,2 @@
+class DepartmentTree < ApplicationRecord
+end
