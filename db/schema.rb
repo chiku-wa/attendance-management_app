@@ -10,17 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_11_014610) do
+ActiveRecord::Schema.define(version: 2021_02_12_231234) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "department_trees", force: :cascade do |t|
-    t.bigint "parent_department_id", null: false
-    t.bigint "child_department_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
 
   create_table "departments", force: :cascade do |t|
     t.string "department_name", limit: 200, null: false
@@ -41,6 +34,13 @@ ActiveRecord::Schema.define(version: 2021_02_11_014610) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  add_foreign_key "department_trees", "departments", column: "child_department_id", name: "fk_child_department_id"
-  add_foreign_key "department_trees", "departments", column: "parent_department_id", name: "fk_parent_department_id"
+  create_table "hierarchy_departments", force: :cascade do |t|
+    t.bigint "parent_department_id", null: false
+    t.bigint "child_department_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  add_foreign_key "hierarchy_departments", "departments", column: "child_department_id", name: "fk_child_department_id"
+  add_foreign_key "hierarchy_departments", "departments", column: "parent_department_id", name: "fk_parent_department_id"
 end
