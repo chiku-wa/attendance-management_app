@@ -1,0 +1,2 @@
+class WorkTable < ApplicationRecord
+end
