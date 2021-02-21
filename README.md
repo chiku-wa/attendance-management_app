@@ -34,3 +34,7 @@ PostgreSQLでデータベース、ユーザを作成できたら、以下のコ�
 ```
 
 ```
+
+# 設計情報
+DB設計書はGoogleスプレッドシート上で作成しています。詳しくは下記をご覧ください。
+https://docs.google.com/spreadsheets/d/16DTE2wg3ElNfrV1qs4X9JZwdrkx3qFS1tYo4NKYuVgE/edit?usp=sharing
