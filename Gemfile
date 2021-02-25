@@ -27,10 +27,16 @@ group :development do
   gem "listen", "~> 3.2"
   gem "spring"
   gem "spring-watcher-listen", "~> 2.0.0"
+
+  # RSpecのテスト実行時間を早くするためのgem
+  gem "spring-commands-rspec", "~> 1.0"
 end
 
 group :development, :test do
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
+
+  # RSPecテスト用
+  gem "rspec-rails", "~> 4.0"
 
   # 環境変数で動的に設定値を扱うためのgem(DB接続情報等)
   gem "dotenv-rails"
