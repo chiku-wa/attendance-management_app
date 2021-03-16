@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_15_234704) do
+ActiveRecord::Schema.define(version: 2021_03_16_232202) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,8 @@ ActiveRecord::Schema.define(version: 2021_03_15_234704) do
     t.bigint "employee_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "affiliation_type_id"
+    t.index ["affiliation_type_id"], name: "index_employee_departments_on_affiliation_type_id"
   end
 
   create_table "employees", force: :cascade do |t|
@@ -47,15 +49,14 @@ ActiveRecord::Schema.define(version: 2021_03_15_234704) do
     t.integer "age", limit: 2, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "employment_status_id"
-    t.bigint "affiliation_type_id"
-    t.index ["affiliation_type_id"], name: "index_employees_on_affiliation_type_id"
+    t.bigint "employment_status_id", null: false
     t.index ["employee_code"], name: "index_employees_on_employee_code", unique: true
     t.index ["employment_status_id"], name: "index_employees_on_employment_status_id"
   end
 
   create_table "employment_statuses", force: :cascade do |t|
     t.string "status_name", limit: 100, null: false
+    t.string "status_code", limit: 5, null: false
   end
 
   create_table "hierarchy_departments", force: :cascade do |t|
@@ -94,9 +95,9 @@ ActiveRecord::Schema.define(version: 2021_03_15_234704) do
     t.boolean "closed", null: false
   end
 
+  add_foreign_key "employee_departments", "affiliation_types", name: "fk_affiliation_type_id"
   add_foreign_key "employee_departments", "departments", name: "fk_department_id"
   add_foreign_key "employee_departments", "employees", name: "fk_emplouee_id"
-  add_foreign_key "employees", "affiliation_types", name: "fk_affiliation_type_id"
   add_foreign_key "employees", "employment_statuses", name: "fk_employment_statuses_id"
   add_foreign_key "hierarchy_departments", "departments", column: "child_department_id", name: "fk_child_department_id"
   add_foreign_key "hierarchy_departments", "departments", column: "parent_department_id", name: "fk_parent_department_id"
