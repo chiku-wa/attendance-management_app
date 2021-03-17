@@ -4,10 +4,11 @@ RSpec.describe "社員モデルのテスト", type: :model do
   before do
     # ----- テストデータを登録
     # 就業状況
-    employee_duty = EmploymentStatus.new(
-      status_name: "本務",
+    employment_status_work = EmploymentStatus.new(
+      status_code: "00001",
+      status_name: "在職",
     )
-    employee_duty.save
+    employment_status_work.save
 
     # 社員(本務)
     @employee_duty = Employee.new(
@@ -15,7 +16,7 @@ RSpec.describe "社員モデルのテスト", type: :model do
       employee_name: "山田　太郎",
       employee_name_kana: "ヤマダ　タロウ",
       age: 30,
-      employment_status: employee_duty,
+      employment_status: employment_status_work,
     )
     @employee_duty.save
   end
