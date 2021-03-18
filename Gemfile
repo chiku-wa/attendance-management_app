@@ -40,6 +40,9 @@ group :development, :test do
 
   # 環境変数で動的に設定値を扱うためのgem(DB接続情報等)
   gem "dotenv-rails"
+
+  # テストデータ作成用
+  gem "factory_bot_rails", "~> 6.1"
 end
 
 group :test do
