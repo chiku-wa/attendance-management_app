@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_16_232202) do
+ActiveRecord::Schema.define(version: 2021_03_23_230713) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -97,8 +97,8 @@ ActiveRecord::Schema.define(version: 2021_03_16_232202) do
 
   add_foreign_key "employee_departments", "affiliation_types", name: "fk_affiliation_type_id"
   add_foreign_key "employee_departments", "departments", name: "fk_department_id"
-  add_foreign_key "employee_departments", "employees", name: "fk_emplouee_id"
-  add_foreign_key "employees", "employment_statuses", name: "fk_employment_statuses_id"
+  add_foreign_key "employee_departments", "employees", name: "fk_employee_id"
+  add_foreign_key "employees", "employment_statuses", name: "fk_employment_status_id"
   add_foreign_key "hierarchy_departments", "departments", column: "child_department_id", name: "fk_child_department_id"
   add_foreign_key "hierarchy_departments", "departments", column: "parent_department_id", name: "fk_parent_department_id"
 end
