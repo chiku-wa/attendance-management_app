@@ -1,0 +1,9 @@
+ja:
+ activerecord:
+   attributes:
+     employee:
+       employee_code: 社員コード
+       employee_name: 社員名
+       employee_name_kana: 社員名(フリガナ)
+       age: 年齢
+       employment_status: 就業状況
