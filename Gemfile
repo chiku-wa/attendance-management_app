@@ -13,6 +13,9 @@ gem "webpacker", "~> 4.0"
 gem "turbolinks", "~> 5"
 gem "jbuilder", "~> 2.7"
 
+# 日本語化用
+gem "rails-i18n", "~> 6.0"
+
 # DB関連
 gem "pg"
 
