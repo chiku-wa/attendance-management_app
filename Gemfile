@@ -12,9 +12,16 @@ gem "sass-rails", ">= 6"
 gem "webpacker", "~> 4.0"
 gem "turbolinks", "~> 5"
 gem "jbuilder", "~> 2.7"
+gem "faker", "~> 1.6", ">= 1.6.3"
+
+# 日本人の氏名テストデータ登録用
+gem "gimei", "~> 0.5.1"
 
 # 日本語化用
 gem "rails-i18n", "~> 6.0"
+
+# テストデータなど、大量データをバルクインサートするためのgem
+gem "activerecord-import", "~> 1.0", ">= 1.0.8"
 
 # DB関連
 gem "pg"

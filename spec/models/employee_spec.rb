@@ -85,4 +85,30 @@ RSpec.describe "社員モデルのテスト", type: :model do
       )
     end
   end
+
+  context "その他のテスト" do
+    it "姓(last name)と名(first name)の間の空白が半角に変換されること" do
+      # 全角の名前の場合
+      @employee_work.employee_name = "山田　太郎"
+      @employee_work.employee_name_kana = "ヤマダ　タロウ"
+      @employee_work.save
+      expect(@employee_work.employee_name).to eq "山田 太郎"
+      expect(@employee_work.employee_name_kana).to eq "ヤマダ タロウ"
+
+      # 半角の名前の場合
+      @employee_work.employee_name = "Kory　Green"
+      @employee_work.employee_name_kana = "コリー　グリーン"
+      @employee_work.save
+      expect(@employee_work.employee_name).to eq "Kory Green"
+      expect(@employee_work.employee_name_kana).to eq "コリー グリーン"
+    end
+
+    it "文字列先頭・末尾の空白は取り除かれること" do
+      @employee_work.employee_name = "　鈴木 次郎 "
+      @employee_work.employee_name_kana = " スズキ ジロウ　"
+      @employee_work.save
+      expect(@employee_work.employee_name).to eq "鈴木 次郎"
+      expect(@employee_work.employee_name_kana).to eq "スズキ ジロウ"
+    end
+  end
 end
