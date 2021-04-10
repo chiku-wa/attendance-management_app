@@ -81,3 +81,6 @@ yarn-debug.log*
 
 # Macで生成されるシステムファイルは除外する
 .DS_Store
+
+# VS Codeの設定ファイルは除外する
+settings.json
