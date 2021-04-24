@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_13_232911) do
+ActiveRecord::Schema.define(version: 2021_04_15_231758) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 2021_04_13_232911) do
     t.string "affiliation_type_name", limit: 10, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["affiliation_type_name"], name: "index_affiliation_types_on_affiliation_type_name", unique: true
+    t.index ["affiliation_type_name"], name: "unique_affiliation_types_on_affiliation_type_name", unique: true
   end
 
   create_table "departments", force: :cascade do |t|
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 2021_04_13_232911) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "department_code", limit: 12, null: false
-    t.index ["department_code"], name: "index_departments_on_department_code", unique: true
+    t.index ["department_code", "establishment_date", "abolished_date"], name: "unique_departments_on_department_code_establishment_abolished", unique: true
   end
 
   create_table "employee_departments", force: :cascade do |t|
@@ -39,7 +39,6 @@ ActiveRecord::Schema.define(version: 2021_04_13_232911) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "affiliation_type_id"
-    t.index ["affiliation_type_id"], name: "index_employee_departments_on_affiliation_type_id"
   end
 
   create_table "employees", force: :cascade do |t|
@@ -50,13 +49,14 @@ ActiveRecord::Schema.define(version: 2021_04_13_232911) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "employment_status_id", null: false
-    t.index ["employee_code"], name: "index_employees_on_employee_code", unique: true
-    t.index ["employment_status_id"], name: "index_employees_on_employment_status_id"
+    t.index ["employee_code"], name: "unique_employees_on_employee_code", unique: true
   end
 
   create_table "employment_statuses", force: :cascade do |t|
     t.string "status_name", limit: 100, null: false
     t.string "status_code", limit: 5, null: false
+    t.index ["status_code"], name: "unique_employment_statuses_on_status_code", unique: true
+    t.index ["status_name"], name: "unique_employment_statuses_on_status_name", unique: true
   end
 
   create_table "hierarchy_departments", force: :cascade do |t|
@@ -74,8 +74,7 @@ ActiveRecord::Schema.define(version: 2021_04_13_232911) do
     t.datetime "end_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["project_code"], name: "index_projects_on_project_code", unique: true
-    t.index ["project_name"], name: "index_projects_on_project_name", unique: true
+    t.index ["project_code"], name: "unique_projects_on_project_code", unique: true
   end
 
   create_table "ranks", force: :cascade do |t|
