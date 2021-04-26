@@ -22,19 +22,32 @@ RSpec.describe "社員モデルのテスト", type: :model do
   context "バリデーションのテスト" do
     # ---------------------
     # --- 社員コードのテスト
-    it "氏名がスペース、空文字のみの場合はバリデーションエラーとなること" do
+    it "社員コードがスペース、空文字のみの場合はバリデーションエラーとなること" do
       valid_presence(
         model: @employee_work,
         attribute: :employee_code,
       )
     end
 
-    it "氏名が規定の最大文字数(全角、半角区別なし)を超えている場合はバリデーションエラーとなること" do
+    it "社員コードが規定の最大文字数(全角、半角区別なし)を超えている場合はバリデーションエラーとなること" do
       valid_maximum_num_of_char(
         model: @employee_work,
         attribute: :employee_code,
         valid_number_of_characters: 6,
       )
+    end
+
+    it "社員コードに重複した値が登録された場合はエラーとなること" do
+      # 大文字小文字が区別されず、一意制約が機能することをテストするため、アルファベット込みの社員コードを明示する
+      @employee_work.employee_code = "A00001"
+      @employee_work.save
+
+      # 社員データを複製し、社員コードを小文字に変換して保存してもバリデーションエラーが発生することを確認する
+      duplicate_emoloyee = @employee_work.deep_dup
+      duplicate_emoloyee.employee_code.downcase!
+
+      duplicate_emoloyee.save
+      expect(duplicate_emoloyee).not_to be_valid
     end
 
     # --- 社員名のテスト

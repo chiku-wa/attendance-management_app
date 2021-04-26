@@ -14,6 +14,8 @@ class Employee < ApplicationRecord
     {
       presence: true,
       length: { maximum: 6 },
+      # 社員コードは大文字小文字を区別せず一意とすること
+      uniqueness: { case_sensitive: false },
     }
   )
 
@@ -62,9 +64,9 @@ def formatting_name
     "employee_name_kana",
   ].each do |attribute|
     # 前後の空白除去
-    self.send(attribute).gsub!(/^[[:space:]]|[[:space:]]$/, "")
+    self.send(attribute)&.gsub!(/^[[:space:]]|[[:space:]]$/, "")
 
     # 全角スペースを半角スペースに置換
-    self.send(attribute).gsub!(/　/, " ")
+    self.send(attribute)&.gsub!(/　/, " ")
   end
 end

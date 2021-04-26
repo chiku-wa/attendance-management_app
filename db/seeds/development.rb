@@ -28,7 +28,7 @@ employees = []
   gimei = Gimei.name
 
   employees << Employee.new(
-    employee_code: "A#{format("%04d", i)}",
+    employee_code: "A#{format("%05d", i)}",
     employee_name: gimei.kanji,
     employee_name_kana: gimei.katakana,
     age: rand(1..100),
