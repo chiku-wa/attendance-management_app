@@ -38,16 +38,12 @@ RSpec.describe "社員モデルのテスト", type: :model do
     end
 
     it "社員コードに重複した値が登録された場合はエラーとなること" do
-      # 大文字小文字が区別されず、一意制約が機能することをテストするため、アルファベット込みの社員コードを明示する
-      @employee_work.employee_code = "A00001"
-      @employee_work.save
-
-      # 社員データを複製し、社員コードを小文字に変換して保存してもバリデーションエラーが発生することを確認する
-      duplicate_emoloyee = @employee_work.deep_dup
-      duplicate_emoloyee.employee_code.downcase!
-
-      duplicate_emoloyee.save
-      expect(duplicate_emoloyee).not_to be_valid
+      valid_unique(
+        model: @employee_work,
+        attribute: :employee_code,
+        value: "A0001",
+        is_case_sensitive: false,
+      )
     end
 
     # --- 社員名のテスト
