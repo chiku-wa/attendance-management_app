@@ -69,7 +69,7 @@ module ModelHelper
   #
   def valid_unique(model:, attribute:, value:, is_case_sensitive:)
     # アルファベットが存在しないテストケースではcase_sensitiveは意味を成さないため、注記を出力する
-    if (value =~ /[a-zA-z]/) == nil
+    if (value =~ /[a-zA-Z]/) == nil
       puts <<~MSG
              アルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
              テストデータにアルファベットを含めるか、大文字小文字を区別しない場合は、is_case_sensitiveをfalseにしてください。
