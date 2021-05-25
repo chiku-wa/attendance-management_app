@@ -7,7 +7,15 @@ module ModelHelper
   #
 
   # -----------------------------------------------------
+  # # 概要
   # 引数として渡したモデルインスタンスと、プロパティ名をもとに、空文字かどうかのバリデーションチェックを行う
+  #
+  # # 引数
+  # * model
+  # テスト対象のモデルインスタンスを指定する
+  # ---
+  # * attribute
+  # テスト対象のカラム名を指定する
   #
   def valid_presence(model:, attribute:)
     # --- 半角スペース
@@ -33,7 +41,15 @@ module ModelHelper
   end
 
   # -----------------------------------------------------
+  # # 概要
   # 引数として渡したモデルインスタンスと、プロパティ名をもとに、最大文字数のバリデーションチェックを行う
+  #
+  # # 引数
+  # * model                       テスト対象のモデルインスタンスを指定する
+  # ---
+  # * attribute                   テスト対象のカラム名を指定する
+  # ---
+  # * valid_number_of_characters  テスト対象のカラムで許容されているカラムサイズ(文字数)
   #
   def valid_maximum_num_of_char(model:, attribute:, valid_number_of_characters:)
     # --- 半角文字のテスト
@@ -64,18 +80,24 @@ module ModelHelper
   end
 
   # -----------------------------------------------------
-  # 引数として渡したモデルインスタンスと、プロパティ名をもとに、一意制約のバリデーションチェックを行う
-  # 【注意】is_case_sensitiveには、モデルクラスで指定しているis_sensitiveと同じ真偽値を指定すること
+  # # 概要
+  # 引数として渡したモデルインスタンスと、プロパティ名をもとに、一意制約(単一ユニーク)のバリデーションチェックを行う
+  #
+  # # 引数
+  # * model
+  # テスト対象のモデルインスタンスを指定する
+  # ---
+  # * attribute
+  # テスト対象のカラム名を指定する
+  # ---
+  # * value
+  # テスト対象のカラムに設定する値を指定する
+  # ---
+  # * is_case_sensitive
+  # 大文字小文字を区別するかどうか
+  # ※モデルクラスで指定しているis_sensitiveと同じ真偽値を指定すること
   #
   def valid_unique(model:, attribute:, value:, is_case_sensitive:)
-    # アルファベットが存在しないテストケースではcase_sensitiveは意味を成さないため、注記を出力する
-    if (value =~ /[a-zA-Z]/) == nil
-      puts <<~MSG
-             アルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
-             テストデータにアルファベットを含めるか、大文字小文字を区別しない場合は、is_case_sensitiveをfalseにしてください。
-           MSG
-    end
-
     # ----- 引数のテストデータをそのまま登録してバリデーションテスト
     model[attribute] = value
     model.save
@@ -90,6 +112,15 @@ module ModelHelper
     }.to raise_error(ActiveRecord::RecordNotUnique)
 
     # ----- 大文字・小文字変換に変換してバリデーションテスト(case_sensitiveのテスト)
+    # アルファベットが存在しないテストケースではcase_sensitiveは意味を成さないため、注記を出力して終了する
+    if (value =~ /[a-zA-Z]/) == nil
+      puts <<~MSG
+             アルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
+             テストデータにアルファベットを含めるか、大文字小文字を区別しない場合は、is_case_sensitiveをfalseにしてください。
+           MSG
+      return
+    end
+
     # テスト登録したデータを削除する
     model.destroy
 
