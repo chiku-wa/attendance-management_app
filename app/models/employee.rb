@@ -14,7 +14,7 @@ class Employee < ApplicationRecord
     {
       presence: true,
       length: { maximum: 6 },
-      # 社員コードは大文字小文字を区別せず一意とする
+      # 大文字小文字を区別せず一意とする
       uniqueness: { case_sensitive: false },
     }
   )
