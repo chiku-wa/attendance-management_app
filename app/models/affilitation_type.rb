@@ -1,0 +1,2 @@
+class AffilitationType < ApplicationRecord
+end

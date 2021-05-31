@@ -10,16 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_24_013707) do
+ActiveRecord::Schema.define(version: 2021_05_30_232420) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "affiliation_types", comment: "所属種別", force: :cascade do |t|
-    t.string "affiliation_type_name", limit: 10, null: false, comment: "所属種別名"
+  create_table "affilitation_types", comment: "所属種別", force: :cascade do |t|
+    t.string "affilitation_type_name", limit: 10, null: false, comment: "所属種別名"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["affiliation_type_name"], name: "unique_affiliation_types_on_affiliation_type_name", unique: true
+    t.index ["affilitation_type_name"], name: "unique_affilitation_types_on_affilitation_type_name", unique: true
   end
 
   create_table "departments", comment: "部署テーブル", force: :cascade do |t|
@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 2021_04_24_013707) do
     t.bigint "employee_id", null: false, comment: "社員ID"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "affiliation_type_id", comment: "所属種別ID"
+    t.bigint "affilitation_type_id", comment: "所属種別ID"
     t.datetime "start_date", precision: 6, null: false, comment: "着任日"
     t.datetime "end_date", precision: 6, null: false, comment: "離任日"
   end
@@ -98,7 +98,7 @@ ActiveRecord::Schema.define(version: 2021_04_24_013707) do
     t.boolean "closed", null: false, comment: "締めフラグ"
   end
 
-  add_foreign_key "employee_departments", "affiliation_types", name: "fk_affiliation_type_id"
+  add_foreign_key "employee_departments", "affilitation_types", name: "fk_affilitation_type_id"
   add_foreign_key "employee_departments", "departments", name: "fk_department_id"
   add_foreign_key "employee_departments", "employees", name: "fk_employee_id"
   add_foreign_key "employees", "employment_statuses", name: "fk_employment_status_id"
