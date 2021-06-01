@@ -3,13 +3,8 @@ require "rails_helper"
 RSpec.describe "社員モデルのテスト", type: :model do
   before do
     # ----- テストデータを登録
-    # 就業状況(在職)
-    employment_status_work = FactoryBot.build(:employment_status_work)
-    employment_status_work.save
-
     # 社員
     @employee_work = FactoryBot.build(:employee)
-    @employee_work.employment_status = employment_status_work
     @employee_work.save
   end
 
