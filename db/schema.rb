@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_30_232420) do
+ActiveRecord::Schema.define(version: 2021_06_02_230557) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 2021_05_30_232420) do
     t.bigint "employee_id", null: false, comment: "社員ID"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "affilitation_type_id", comment: "所属種別ID"
+    t.bigint "affilitation_type_id", null: false, comment: "所属種別ID"
     t.datetime "start_date", precision: 6, null: false, comment: "着任日"
     t.datetime "end_date", precision: 6, null: false, comment: "離任日"
   end
