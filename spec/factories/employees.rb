@@ -7,7 +7,6 @@ FactoryBot.define do
     employee_name_kana { "ヤマダ　タロウ" }
     age { 30 }
 
-    # 外部キー情報
     association(:employment_status, factory: :employment_status_work)
   end
 end

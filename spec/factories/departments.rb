@@ -5,9 +5,17 @@
 establishment_date = DateTime.new(2021, 4, 1, 0, 0, 0)
 abolished_date = DateTime.new(9999, 12, 31, 23, 59, 59)
 
+# -----
+# 以下の組織構造を持つ部署のテストデータ
+#
+# A事業部　A01000000000
+# ┣営業部　A01B01000000
+# ┃┗第一営業部　A01B01C01000
+# ┃　┗営業一課　　A01B01C01001
+#
 FactoryBot.define do
   # A事業部
-  factory :department_level1, class: Department do
+  factory :department_A, class: Department do
     department_code { "A01000000000" }
     department_name { "A事業部" }
     department_kana_name { "エージギョウブ" }
@@ -16,7 +24,7 @@ FactoryBot.define do
   end
 
   # 営業部
-  factory :department_level2_1, class: Department do
+  factory :department_A_sales, class: Department do
     department_code { "A01B01000000" }
     department_name { "営業部" }
     department_kana_name { "エイギョウブ" }
@@ -25,7 +33,7 @@ FactoryBot.define do
   end
 
   # 第一営業部
-  factory :department_level3_1, class: Department do
+  factory :department_A_sales_department, class: Department do
     department_code { "A01B01C01000" }
     department_name { "第一営業部" }
     department_kana_name { "ダイイチエイギョウブ" }
@@ -34,7 +42,7 @@ FactoryBot.define do
   end
 
   # 営業一課
-  factory :department_level4_1, class: Department do
+  factory :department_A_sales_department_division, class: Department do
     department_code { "A01B01C01001" }
     department_name { "営業一課" }
     department_kana_name { "エイギョウイッカ" }
