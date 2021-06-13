@@ -18,18 +18,24 @@ module ModelHelper
   # テスト対象のカラム名を指定する
   #
   def valid_presence(model:, attribute:)
-    # --- 半角スペース
-    model[attribute] = " "
-    expect(model).not_to be_valid
+    # ===== String型の場合のみ、空文字・スペースのテストを実行する
+    #       ※TrueClass or FalseClassだと、文字列を代入した時点でtrueが格納されるため、
+    #        バリデーションを通過してしまう。
+    if model[attribute].class == String
+      # --- 半角スペース
+      model[attribute] = " "
+      expect(model).not_to be_valid
 
-    # --- 全角スペース
-    model[attribute] = "　"
-    expect(model).not_to be_valid
+      # --- 全角スペース
+      model[attribute] = "　"
+      expect(model).not_to be_valid
 
-    # --- 空文字
-    model[attribute] = ""
-    expect(model).not_to be_valid
+      # --- 空文字
+      model[attribute] = ""
+      expect(model).not_to be_valid
+    end
 
+    # ===== nilのテストはすべてのデータ型に対して実施する
     # --- nil
     # nilの場合のみ、DBの制約違反テストを行う(スペースや空文字は登録できてしまうため)
     model[attribute] = nil

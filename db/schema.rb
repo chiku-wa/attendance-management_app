@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_02_230557) do
+ActiveRecord::Schema.define(version: 2021_06_08_232127) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,7 +71,7 @@ ActiveRecord::Schema.define(version: 2021_06_02_230557) do
   end
 
   create_table "projects", comment: "プロジェクト", force: :cascade do |t|
-    t.string "project_code", limit: 110, null: false, comment: "プロジェクトコード"
+    t.string "project_code", limit: 7, null: false, comment: "プロジェクトコード"
     t.string "project_name", limit: 300, null: false, comment: "プロジェクト名"
     t.boolean "enabled", null: false, comment: "有効フラグ"
     t.datetime "start_date", comment: "プロジェクト開始日"
