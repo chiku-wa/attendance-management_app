@@ -59,7 +59,7 @@ RSpec.describe "プロジェクトモデルのテスト", type: :model do
 
     # ---------------------
     # --- 有効フラグのテスト
-    it "有効フラグがスペース、空文字のみの場合はバリデーションエラーとなること" do
+    it "有効フラグがnilの場合はバリデーションエラーとなること" do
       valid_presence(
         model: @project,
         attribute: :enabled,

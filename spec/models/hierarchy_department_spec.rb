@@ -74,7 +74,7 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
   context "バリデーションのテスト" do
     # ---------------------
     # --- 親部署のテスト
-    it "親部署がスペース、空文字のみの場合はバリデーションエラーとなること" do
+    it "親部署がnilの場合はバリデーションエラーとなること" do
       valid_presence(
         model: @hierarchy_department_level1and2,
         attribute: :parent_department_id,
@@ -83,7 +83,7 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
 
     # ---------------------
     # --- 子部署のテスト
-    it "子部署がスペース、空文字のみの場合はバリデーションエラーとなること" do
+    it "子部署がnilの場合はバリデーションエラーとなること" do
       valid_presence(
         model: @hierarchy_department_level1and2,
         attribute: :child_department_id,

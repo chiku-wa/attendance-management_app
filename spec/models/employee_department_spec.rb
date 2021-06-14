@@ -16,7 +16,7 @@ RSpec.describe "社員-部署のテスト", type: :model do
   context "バリデーションのテスト" do
     # ---------------------
     # --- 社員のテスト
-    it "社員がスペース、空文字のみの場合はバリデーションエラーとなること" do
+    it "社員がnilの場合はバリデーションエラーとなること" do
       valid_presence(
         model: @employee_department_regular,
         attribute: :employee_id,
@@ -25,7 +25,7 @@ RSpec.describe "社員-部署のテスト", type: :model do
 
     # ---------------------
     # --- 部署のテスト
-    it "部署がスペース、空文字のみの場合はバリデーションエラーとなること" do
+    it "部署がnilの場合はバリデーションエラーとなること" do
       valid_presence(
         model: @employee_department_regular,
         attribute: :department_id,
@@ -34,7 +34,7 @@ RSpec.describe "社員-部署のテスト", type: :model do
 
     # ---------------------
     # --- 所属種別のテスト
-    it "所属種別がスペース、空文字のみの場合はバリデーションエラーとなること" do
+    it "所属種別がnilの場合はバリデーションエラーとなること" do
       valid_presence(
         model: @employee_department_regular,
         attribute: :affilitation_type_id,
@@ -43,7 +43,7 @@ RSpec.describe "社員-部署のテスト", type: :model do
 
     # ---------------------
     # --- 着任日のテスト
-    it "着任日がスペース、空文字のみの場合はバリデーションエラーとなること" do
+    it "着任日がnilの場合はバリデーションエラーとなること" do
       valid_presence(
         model: @employee_department_regular,
         attribute: :start_date,
@@ -52,7 +52,7 @@ RSpec.describe "社員-部署のテスト", type: :model do
 
     # ---------------------
     # --- 離任日のテスト
-    it "離任日がスペース、空文字のみの場合はバリデーションエラーとなること" do
+    it "離任日がnilの場合はバリデーションエラーとなること" do
       valid_presence(
         model: @employee_department_regular,
         attribute: :end_date,

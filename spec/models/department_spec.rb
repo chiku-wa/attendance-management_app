@@ -33,7 +33,7 @@ RSpec.describe "部署モデルのテスト", type: :model do
 
     # ---------------------
     # --- 設立日のテスト
-    it "設立日がスペース、空文字のみの場合はバリデーションエラーとなること" do
+    it "設立日がnilの場合はバリデーションエラーとなること" do
       valid_presence(
         model: @department_A,
         attribute: :establishment_date,
@@ -42,7 +42,7 @@ RSpec.describe "部署モデルのテスト", type: :model do
 
     # ---------------------
     # --- 廃止日のテスト
-    it "廃止日がスペース、空文字のみの場合はバリデーションエラーとなること" do
+    it "廃止日がnilの場合はバリデーションエラーとなること" do
       valid_presence(
         model: @department_A,
         attribute: :abolished_date,
