@@ -6,6 +6,16 @@ class EmploymentStatus < ApplicationRecord
   )
 
   # === バリデーション
+  # 就業状況コード
+  validates(
+    :status_code,
+    {
+      presence: true,
+      uniqueness: { case_sensitive: false }, # 大文字と小文字は区別しない
+      length: { maximum: 5 },
+    }
+  )
+
   # 就業状況
   validates(
     :status_name,
