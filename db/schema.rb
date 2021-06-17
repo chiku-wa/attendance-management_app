@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_08_232127) do
+ActiveRecord::Schema.define(version: 2021_06_15_232943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -96,6 +96,14 @@ ActiveRecord::Schema.define(version: 2021_06_08_232127) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "closed", null: false, comment: "締めフラグ"
+    t.bigint "employee_id"
+    t.bigint "project_id"
+    t.bigint "employment_status_id"
+    t.bigint "rank_id"
+    t.index ["employee_id"], name: "index_work_tables_on_employee_id"
+    t.index ["employment_status_id"], name: "index_work_tables_on_employment_status_id"
+    t.index ["project_id"], name: "index_work_tables_on_project_id"
+    t.index ["rank_id"], name: "index_work_tables_on_rank_id"
   end
 
   add_foreign_key "employee_departments", "affilitation_types", name: "fk_affilitation_type_id"
@@ -104,4 +112,8 @@ ActiveRecord::Schema.define(version: 2021_06_08_232127) do
   add_foreign_key "employees", "employment_statuses", name: "fk_employment_status_id"
   add_foreign_key "hierarchy_departments", "departments", column: "child_department_id", name: "fk_child_department_id"
   add_foreign_key "hierarchy_departments", "departments", column: "parent_department_id", name: "fk_parent_department_id"
+  add_foreign_key "work_tables", "work_tables", column: "employee_id", name: "fk_employee_id"
+  add_foreign_key "work_tables", "work_tables", column: "employment_status_id", name: "fk_employment_status_id"
+  add_foreign_key "work_tables", "work_tables", column: "project_id", name: "fk_project_id"
+  add_foreign_key "work_tables", "work_tables", column: "rank_id", name: "fk_rank_id"
 end
