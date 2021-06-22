@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_15_232943) do
+ActiveRecord::Schema.define(version: 2021_06_20_232730) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,17 +89,18 @@ ActiveRecord::Schema.define(version: 2021_06_15_232943) do
   end
 
   create_table "work_tables", comment: "勤務表", force: :cascade do |t|
-    t.string "employee_code", limit: 6, null: false, comment: "就業状況コード"
+    t.string "employee_code", limit: 6, null: false, comment: "社員コード"
     t.datetime "working_date", null: false, comment: "勤務日"
-    t.string "project_code", limit: 110, null: false, comment: "プロジェクトコード"
+    t.string "project_code", limit: 7, null: false, comment: "プロジェクトコード"
     t.string "rank_code", limit: 2, null: false, comment: "ランクコード"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "closed", null: false, comment: "締めフラグ"
-    t.bigint "employee_id"
-    t.bigint "project_id"
-    t.bigint "employment_status_id"
-    t.bigint "rank_id"
+    t.bigint "employee_id", null: false, comment: "社員ID"
+    t.bigint "project_id", null: false, comment: "プロジェクトID"
+    t.bigint "employment_status_id", null: false, comment: "就業状況ID"
+    t.bigint "rank_id", null: false, comment: "ランクID"
+    t.string "employment_status_code", limit: 5, null: false, comment: "就業状況コード"
     t.index ["employee_id"], name: "index_work_tables_on_employee_id"
     t.index ["employment_status_id"], name: "index_work_tables_on_employment_status_id"
     t.index ["project_id"], name: "index_work_tables_on_project_id"
