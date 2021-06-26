@@ -72,6 +72,7 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
     # ---------------------
     # --- 親部署のテスト
     it "親部署がnilの場合はバリデーションエラーとなること" do
+      hierarchy_department_level1and2.save
       valid_presence(
         model: hierarchy_department_level1and2,
         attribute: :parent_department,
@@ -81,10 +82,13 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
     # ---------------------
     # --- 子部署のテスト
     it "子部署がnilの場合はバリデーションエラーとなること" do
+      hierarchy_department_level1and2.save
       valid_presence(
         model: hierarchy_department_level1and2,
         attribute: :child_department,
       )
     end
+
+    # TODO:部署階層の一覧を出力するメソッドを実装したらテストを追記すること
   end
 end

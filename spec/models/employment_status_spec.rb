@@ -5,6 +5,10 @@ RSpec.describe "就業状況モデルのテスト", type: :model do
   # 就業状況(在職)
   let(:employment_status_work) { FactoryBot.build(:employment_status_work) }
 
+  before do
+    employment_status_work.save
+  end
+
   context "テストデータの事前確認用テスト" do
     it "前提となるテストデータがバリデーションを通過すること" do
       expect(employment_status_work).to be_valid

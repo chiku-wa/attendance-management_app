@@ -4,6 +4,10 @@ RSpec.describe "部署モデルのテスト", type: :model do
   # ----- テストデータを登録
   let(:department_A) { FactoryBot.build(:department_A) }
 
+  before do
+    department_A.save
+  end
+
   context "テストデータの事前確認用テスト" do
     it "前提となるテストデータがバリデーションを通過すること" do
       expect(department_A).to be_valid

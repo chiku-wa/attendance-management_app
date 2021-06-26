@@ -4,6 +4,10 @@ RSpec.describe Rank, type: :model do
   # ----- テストデータを登録
   let(:rank_A) { FactoryBot.build(:rank_A) }
 
+  before do
+    rank_A.save
+  end
+
   context "テストデータの事前確認用テスト" do
     it "前提となるテストデータがバリデーションを通過すること" do
       expect(rank_A).to be_valid
