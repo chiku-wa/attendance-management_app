@@ -1,15 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "社員-部署のテスト", type: :model do
-  before do
-    # ----- テストデータを登録
-    @employee_department_regular = FactoryBot.build(:employee_department_regular)
-    @employee_department_regular.save
-  end
+  # ----- テストデータを登録
+  let(:employee_department_regular) { FactoryBot.build(:employee_department_regular) }
 
   context "テストデータの事前確認用テスト" do
     it "前提となるテストデータがバリデーションを通過すること" do
-      expect(@employee_department_regular).to be_valid
+      expect(employee_department_regular).to be_valid
     end
   end
 
@@ -18,8 +15,8 @@ RSpec.describe "社員-部署のテスト", type: :model do
     # --- 社員のテスト
     it "社員がnilの場合はバリデーションエラーとなること" do
       valid_presence(
-        model: @employee_department_regular,
-        attribute: :employee_id,
+        model: employee_department_regular,
+        attribute: :employee,
       )
     end
 
@@ -27,8 +24,8 @@ RSpec.describe "社員-部署のテスト", type: :model do
     # --- 部署のテスト
     it "部署がnilの場合はバリデーションエラーとなること" do
       valid_presence(
-        model: @employee_department_regular,
-        attribute: :department_id,
+        model: employee_department_regular,
+        attribute: :department,
       )
     end
 
@@ -36,8 +33,8 @@ RSpec.describe "社員-部署のテスト", type: :model do
     # --- 所属種別のテスト
     it "所属種別がnilの場合はバリデーションエラーとなること" do
       valid_presence(
-        model: @employee_department_regular,
-        attribute: :affilitation_type_id,
+        model: employee_department_regular,
+        attribute: :affilitation_type,
       )
     end
 
@@ -45,7 +42,7 @@ RSpec.describe "社員-部署のテスト", type: :model do
     # --- 着任日のテスト
     it "着任日がnilの場合はバリデーションエラーとなること" do
       valid_presence(
-        model: @employee_department_regular,
+        model: employee_department_regular,
         attribute: :start_date,
       )
     end
@@ -54,7 +51,7 @@ RSpec.describe "社員-部署のテスト", type: :model do
     # --- 離任日のテスト
     it "離任日がnilの場合はバリデーションエラーとなること" do
       valid_presence(
-        model: @employee_department_regular,
+        model: employee_department_regular,
         attribute: :end_date,
       )
     end

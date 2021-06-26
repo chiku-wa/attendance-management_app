@@ -23,22 +23,22 @@ module ModelHelper
     #        バリデーションを通過してしまう。
     if model[attribute].class == String
       # --- 半角スペース
-      model[attribute] = " "
+      model.send("#{attribute}=", " ")
       expect(model).not_to be_valid
 
       # --- 全角スペース
-      model[attribute] = "　"
+      model.send("#{attribute}=", "　")
       expect(model).not_to be_valid
 
       # --- 空文字
-      model[attribute] = ""
+      model.send("#{attribute}=", "")
       expect(model).not_to be_valid
     end
 
     # ===== nilのテストはすべてのデータ型に対して実施する
     # --- nil
     # nilの場合のみ、DBの制約違反テストを行う(スペースや空文字は登録できてしまうため)
-    model[attribute] = nil
+    model.send("#{attribute}=", nil)
     expect(model).not_to be_valid
 
     expect {
@@ -60,10 +60,16 @@ module ModelHelper
   def valid_maximum_num_of_char(model:, attribute:, valid_number_of_characters:)
     # --- 半角文字のテスト
     # Modelクラスのバリデーションエラーテスト
-    model[attribute] = "a" * valid_number_of_characters
+    model.send(
+      "#{attribute}=",
+      "a" * valid_number_of_characters,
+    )
     expect(model).to be_valid
 
-    model[attribute] = "a" * (valid_number_of_characters + 1)
+    model.send(
+      "#{attribute}=",
+      "a" * (valid_number_of_characters + 1),
+    )
     expect(model).not_to be_valid
 
     # DBの制約違反テスト
@@ -73,10 +79,16 @@ module ModelHelper
 
     # --- 全角文字のテスト
     # Modelクラスのバリデーションエラーテスト
-    model[attribute] = "あ" * valid_number_of_characters
+    model.send(
+      "#{attribute}=",
+      "あ" * valid_number_of_characters,
+    )
     expect(model).to be_valid
 
-    model[attribute] = "あ" * (valid_number_of_characters + 1)
+    model.send(
+      "#{attribute}=",
+      "あ" * (valid_number_of_characters + 1),
+    )
     expect(model).not_to be_valid
 
     # DBの制約違反テスト
@@ -105,7 +117,10 @@ module ModelHelper
   #
   def valid_unique(model:, attribute:, value:, is_case_sensitive:)
     # ----- 引数のテストデータをそのまま二重登録してバリデーションテスト
-    model[attribute] = value
+    model.send(
+      "#{attribute}=",
+      value,
+    )
     model.save
 
     # Modelクラスのバリデーションエラーテスト
@@ -132,12 +147,18 @@ module ModelHelper
 
     # 大文字で登録
     model_upper = model.dup
-    model_upper[attribute] = model_upper[attribute].upcase
+    model_upper.send(
+      "#{attribute}=",
+      model_upper[attribute].upcase,
+    )
     model_upper.save
 
     # 小文字に変換した値でインスタンスを作成
     model_lower = model.dup
-    model_lower[attribute] = model_lower[attribute].downcase
+    model_lower.send(
+      "#{attribute}=",
+      model_lower[attribute].downcase,
+    )
 
     if is_case_sensitive
       # 大文字小文字を区別して「いる」場合、変換するとバリデーションエラーに「ならない」こと
@@ -189,7 +210,7 @@ module ModelHelper
   def valid_uniques(model:, attribute_and_value_hash:, is_case_sensitive:)
     # モデルインスタンスの属性値と、attribute_and_value_hashの属性値が同じものが含まれている場合は、テストをエラーにして終了させる。
     attribute_and_value_hash.each do |attribute, value|
-      if model[attribute] == value
+      if model.send(attribute) == value
         puts <<~MSG
                第1引数(model)と、第2引数(attribute_and_value_hash)に含める属性値には異なる値を指定してください。"
                 属性値が同じ値:
@@ -205,7 +226,10 @@ module ModelHelper
 
     # ----- 引数のテストデータをそのまま二重登録してバリデーションテスト
     attribute_and_value_hash.each do |attribute, value|
-      model[attribute] = value
+      model.send(
+        "#{attribute}=",
+        value,
+      )
     end
     model.save
 
@@ -228,7 +252,10 @@ module ModelHelper
       model = model_org.dup
 
       # 1件目を登録
-      model[attribute] = value
+      model.send(
+        "#{attribute}=",
+        value,
+      )
       model.save
 
       # Modelクラスのバリデーションエラーテスト
@@ -261,12 +288,18 @@ module ModelHelper
 
           # 大文字で登録
           model_upper = model.dup
-          model_upper[attribute] = model_upper[attribute].upcase
+          model_upper.send(
+            "#{attribute}=",
+            model_upper[attribute].upcase,
+          )
           model_upper.save
 
           # 小文字に変換した値でインスタンスを作成
           model_lower = model.dup
-          model_lower[attribute] = model_lower[attribute].downcase
+          model_lower.send(
+            "#{attribute}=",
+            model_lower[attribute].downcase,
+          )
 
           if is_case_sensitive
             # 大文字小文字を区別して「いる」場合、変換するとバリデーションエラーに「ならない」こと
@@ -284,6 +317,5 @@ module ModelHelper
         end
       end
     end
-    # TODO
   end
 end
