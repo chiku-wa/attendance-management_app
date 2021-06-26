@@ -5,10 +5,6 @@ RSpec.describe "所属種別のテスト", type: :model do
   # 所属種別(本務)
   let(:affilitation_type_regular) { FactoryBot.build(:affiltiation_type_regular) }
 
-  before do
-    affilitation_type_regular.save
-  end
-
   context "テストデータの事前確認用テスト" do
     it "前提となるテストデータがバリデーションを通過すること" do
       expect(affilitation_type_regular).to be_valid

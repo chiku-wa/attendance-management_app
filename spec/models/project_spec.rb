@@ -4,10 +4,6 @@ RSpec.describe "プロジェクトモデルのテスト", type: :model do
   # ----- テストデータを登録
   let(:project) { FactoryBot.build(:project) }
 
-  before do
-    project.save
-  end
-
   context "テストデータの事前確認用テスト" do
     it "前提となるテストデータがバリデーションを通過すること" do
       expect(project).to be_valid

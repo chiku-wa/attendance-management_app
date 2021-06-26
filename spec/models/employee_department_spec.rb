@@ -5,6 +5,7 @@ RSpec.describe "社員-部署のテスト", type: :model do
   let(:employee_department_regular) { FactoryBot.build(:employee_department_regular) }
 
   before do
+    # 外部キーのデータをsaveする(子テーブルのテストが正常に実行できないため)
     employee_department_regular.save
   end
 
