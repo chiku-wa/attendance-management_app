@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_20_232730) do
+ActiveRecord::Schema.define(version: 2021_06_26_224623) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -100,7 +100,7 @@ ActiveRecord::Schema.define(version: 2021_06_20_232730) do
     t.bigint "project_id", null: false, comment: "プロジェクトID"
     t.bigint "employment_status_id", null: false, comment: "就業状況ID"
     t.bigint "rank_id", null: false, comment: "ランクID"
-    t.string "employment_status_code", limit: 5, null: false, comment: "就業状況コード"
+    t.string "status_code", limit: 5, null: false, comment: "就業状況コード"
     t.index ["employee_id"], name: "index_work_tables_on_employee_id"
     t.index ["employment_status_id"], name: "index_work_tables_on_employment_status_id"
     t.index ["project_id"], name: "index_work_tables_on_project_id"

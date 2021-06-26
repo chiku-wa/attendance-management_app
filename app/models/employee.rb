@@ -9,15 +9,7 @@ class Employee < ApplicationRecord
 
   # === バリデーション
   # 社員コード
-  validates(
-    :employee_code,
-    {
-      presence: true,
-      length: { maximum: 6 },
-      # 大文字小文字を区別せず一意とする
-      uniqueness: { case_sensitive: false },
-    }
-  )
+  include EmployeeCodeValidators
 
   # 社員名
   validates(

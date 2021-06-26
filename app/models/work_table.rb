@@ -5,4 +5,17 @@ class WorkTable < ApplicationRecord
   belongs_to :project
   belongs_to :employment_status
   belongs_to :rank
+
+  # === バリデーション
+  # 社員コード
+  include EmployeeCodeValidators
+
+  # プロジェクトコード
+  include ProjectCodeValidators
+
+  # 就業状況コード
+  include EmploymentStatusCodeValidators
+
+  # ランクコード
+  include RankCodeValidators
 end

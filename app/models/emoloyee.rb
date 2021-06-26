@@ -1,2 +1,0 @@
-class Emoloyee < ApplicationRecord
-end
