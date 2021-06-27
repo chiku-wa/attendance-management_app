@@ -59,6 +59,12 @@ group :development, :test do
 end
 
 group :test do
+  # テストファイル保存時に自動的にRSpecテストを実行するためのgem
+  # ※テスト結果をMacの通知に表示するためのgemも導入する
+  gem "guard", "~> 2.17"
+  gem "guard-rspec"
+  gem "terminal-notifier-guard", "~> 1.7"
+
   # 統合テスト用
   gem "capybara", ">= 2.15"
   gem "selenium-webdriver"
