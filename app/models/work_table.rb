@@ -10,6 +10,14 @@ class WorkTable < ApplicationRecord
   # 社員コード
   include EmployeeCodeValidators
 
+  # 勤務日
+  validates(
+    :working_date,
+    {
+      presence: true,
+    }
+  )
+
   # プロジェクトコード
   include ProjectCodeValidators
 
@@ -18,4 +26,12 @@ class WorkTable < ApplicationRecord
 
   # ランクコード
   include RankCodeValidators
+
+  # 勤務日
+  validates(
+    :closed,
+    {
+      inclusion: { in: [true, false] },
+    }
+  )
 end
