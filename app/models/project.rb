@@ -1,4 +1,6 @@
 class Project < ApplicationRecord
+  # === 従属関係
+  has_many :work_tables
 
   # === バリデーション
   # プロジェクトコード

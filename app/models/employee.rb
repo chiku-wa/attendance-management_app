@@ -1,6 +1,12 @@
 class Employee < ApplicationRecord
 
   # === 従属関係
+  # 社員-部署
+  has_many :employee_departments
+
+  # 勤務表
+  has_many :work_tables
+
   # 就業状況
   belongs_to :employment_status
 

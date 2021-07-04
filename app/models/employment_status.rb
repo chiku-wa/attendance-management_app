@@ -1,9 +1,7 @@
 class EmploymentStatus < ApplicationRecord
   # === 従属関係
   # 社員
-  has_many(
-    :employees,
-  )
+  has_many :employees
 
   # === バリデーション
   # 就業状況コード

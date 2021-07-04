@@ -3,6 +3,7 @@ class Department < ApplicationRecord
   # === 従属関係
   # 部署階層
   has_many :hierarchy_departments
+
   # 社員-部署
   has_many :employee_departments
 
