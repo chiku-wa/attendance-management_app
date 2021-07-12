@@ -1,3 +1,19 @@
+# ===== 部署登録
+#
+department_A = FactoryBot.build(:department_A)
+department_A_sales = FactoryBot.build(:department_A_sales)
+department_A_sales_department = FactoryBot.build(:department_A_sales_department)
+department_A_sales_department_division = FactoryBot.build(:department_A_sales_department_division)
+
+departments = [
+  department_A,
+  department_A_sales,
+  department_A_sales_department,
+  department_A_sales_department_division,
+]
+
+Department.import!(departments)
+
 # ===== 就業状況登録
 #
 employment_status_work = EmploymentStatus.create!(
