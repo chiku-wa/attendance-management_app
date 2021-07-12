@@ -1,5 +1,7 @@
 # プロジェクトのテストデータ登録用FactoryBot
 FactoryBot.define do
+  # =======================================================
+  # テスト用
   factory :project, class: Project do
     project_code { "AB00001" }
     project_name { "プロジェクトA" }

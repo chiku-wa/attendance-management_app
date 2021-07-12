@@ -1,7 +1,9 @@
 # 社員-部署情報のテストデータ登録用FactoryBot
 FactoryBot.define do
-  # --- 本務と兼務を持つ社員
-  # 本務情報
+  # =======================================================
+  # テスト用
+
+  # 本務と兼務を持つ社員
   factory :employee_department_regular, class: EmployeeDepartment do
     association(:employee, factory: :employee)
     association(:department, factory: :department_A)

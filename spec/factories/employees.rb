@@ -1,5 +1,7 @@
 # 社員情報のテストデータ登録用FactoryBot
 FactoryBot.define do
+  # =======================================================
+  # テスト用
   # 汎用社員情報
   factory :employee, class: Employee do
     employee_code { "A00001" }
