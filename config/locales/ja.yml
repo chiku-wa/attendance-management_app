@@ -23,7 +23,7 @@ ja:
         abolished_date: 廃止日
         department_name: 部署名
         department_kana_name: 部署名(カナ)
-      hierarchy_department:
+      department_hierarchy:
         parent_department: 親部署
         child_department: 子親部署
       employee_department:
