@@ -6,7 +6,7 @@ ruby "2.6.6"
 gem "rails", "~> 6.0.3", ">= 6.0.3.3"
 
 # ===== 各環境で共通のgem
-# Railsの基本gem
+# --- Railsの基本gem
 gem "puma", "~> 4.1"
 gem "sass-rails", ">= 6"
 gem "webpacker", "~> 4.0"
@@ -14,22 +14,24 @@ gem "turbolinks", "~> 5"
 gem "jbuilder", "~> 2.7"
 gem "faker", "~> 1.6", ">= 1.6.3"
 
+# --- DB関連
+# PostgreSQL
+gem "pg"
+
+# --- 画面デザイン用
+gem "bootstrap", "~> 4.5", ">= 4.5.2"
+gem "bootsnap", ">= 1.4.2", require: false
+gem "font-awesome-sass"
+
+# --- その他
+# テストデータなど、大量データをバルクインサートするためのgem
+gem "activerecord-import", "~> 1.0", ">= 1.0.8"
+
 # 日本人の氏名テストデータ登録用
 gem "gimei", "~> 0.5.1"
 
 # 日本語化用
 gem "rails-i18n", "~> 6.0"
-
-# テストデータなど、大量データをバルクインサートするためのgem
-gem "activerecord-import", "~> 1.0", ">= 1.0.8"
-
-# DB関連
-gem "pg"
-
-# 画面デザイン用
-gem "bootstrap", "~> 4.5", ">= 4.5.2"
-gem "bootsnap", ">= 1.4.2", require: false
-gem "font-awesome-sass"
 
 # ===== 各種環境用のgem
 group :development do
