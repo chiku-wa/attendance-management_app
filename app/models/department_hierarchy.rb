@@ -11,4 +11,16 @@ class DepartmentHierarchy < ApplicationRecord
     :child_department,
     { class_name: Department.name, foreign_key: "child_department_id" }
   )
+
+  # --- 複数の属性に対するバリデーション
+  # 親部署、子部署の複合ユニーク
+  validates(
+    :parent_department,
+    uniqueness: {
+      scope: [
+        :parent_department,
+        :child_department,
+      ],
+    },
+  )
 end
