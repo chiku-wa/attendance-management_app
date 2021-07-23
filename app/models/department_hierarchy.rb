@@ -1,4 +1,4 @@
-class HierarchyDepartment < ApplicationRecord
+class DepartmentHierarchy < ApplicationRecord
   # === 従属関係
   # 親部署
   belongs_to(

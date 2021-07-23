@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_26_224623) do
+ActiveRecord::Schema.define(version: 2021_07_23_021203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,13 @@ ActiveRecord::Schema.define(version: 2021_06_26_224623) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["affilitation_type_name"], name: "unique_affilitation_types_on_affilitation_type_name", unique: true
+  end
+
+  create_table "department_hierarchies", comment: "部署階層", force: :cascade do |t|
+    t.bigint "parent_department_id", null: false, comment: "親部署ID"
+    t.bigint "child_department_id", null: false, comment: "子親部署ID"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "departments", comment: "部署テーブル", force: :cascade do |t|
@@ -63,13 +70,6 @@ ActiveRecord::Schema.define(version: 2021_06_26_224623) do
     t.index ["status_name"], name: "unique_employment_statuses_on_status_name", unique: true
   end
 
-  create_table "hierarchy_departments", comment: "部署階層", force: :cascade do |t|
-    t.bigint "parent_department_id", null: false, comment: "親部署ID"
-    t.bigint "child_department_id", null: false, comment: "子親部署ID"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "projects", comment: "プロジェクト", force: :cascade do |t|
     t.string "project_code", limit: 7, null: false, comment: "プロジェクトコード"
     t.string "project_name", limit: 300, null: false, comment: "プロジェクト名"
@@ -107,12 +107,12 @@ ActiveRecord::Schema.define(version: 2021_06_26_224623) do
     t.index ["rank_id"], name: "index_work_tables_on_rank_id"
   end
 
+  add_foreign_key "department_hierarchies", "departments", column: "child_department_id", name: "fk_child_department_id"
+  add_foreign_key "department_hierarchies", "departments", column: "parent_department_id", name: "fk_parent_department_id"
   add_foreign_key "employee_departments", "affilitation_types", name: "fk_affilitation_type_id"
   add_foreign_key "employee_departments", "departments", name: "fk_department_id"
   add_foreign_key "employee_departments", "employees", name: "fk_employee_id"
   add_foreign_key "employees", "employment_statuses", name: "fk_employment_status_id"
-  add_foreign_key "hierarchy_departments", "departments", column: "child_department_id", name: "fk_child_department_id"
-  add_foreign_key "hierarchy_departments", "departments", column: "parent_department_id", name: "fk_parent_department_id"
   add_foreign_key "work_tables", "work_tables", column: "employee_id", name: "fk_employee_id"
   add_foreign_key "work_tables", "work_tables", column: "employment_status_id", name: "fk_employment_status_id"
   add_foreign_key "work_tables", "work_tables", column: "project_id", name: "fk_project_id"
