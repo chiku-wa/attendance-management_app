@@ -135,11 +135,10 @@ module ModelHelper
     # ----- 大文字・小文字変換に変換してバリデーションテスト(case_sensitiveのテスト)
     # アルファベットが存在しないテストケースではcase_sensitiveは意味を成さないため、注記を出力して終了する
     if (value =~ /[a-zA-Z]/) == nil
-      puts <<~MSG
-             #{attribute}(値：#{value})はアルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
+      raise <<~MSG
+                      #{attribute}(値：#{value})はアルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
              テストデータにアルファベットを含めるか、大文字小文字を区別しない場合は、is_case_sensitiveをfalseにしてください。
-           MSG
-      return
+            MSG
     end
 
     # テスト登録したデータを削除する
@@ -178,6 +177,7 @@ module ModelHelper
   # -----------------------------------------------------
   # # 概要
   # 引数として渡したモデルインスタンスと、属性名をもとに、一意制約(複合ユニーク)のバリデーションチェックを行う。
+  # **前提として、引数のモデルインスタンス、属性名の組み合わせの情報は未保存の状態とする。**
   # なお、前提としてテスト対象データの属性には単一ユニークが付与されていないこととする。
   # ※単一ユニークが存在する場合は、本メソッドではバリデーションエラーとして検出する。
   #
@@ -211,13 +211,12 @@ module ModelHelper
     # モデルインスタンスの属性値と、attribute_and_value_hashの属性値が同じものが含まれている場合は、テストをエラーにして終了させる。
     attribute_and_value_hash.each do |attribute, value|
       if model.send(attribute) == value
-        puts <<~MSG
-               第1引数(model)と、第2引数(attribute_and_value_hash)に含める属性値には異なる値を指定してください。"
-                属性値が同じ値:
-                model -> #{model[attribute]}
-                attribute_and_value_hash -> #{value}
-             MSG
-        return
+        raise <<~MSG
+                第1引数(model)と、第2引数(attribute_and_value_hash)に含める属性値には異なる値を指定してください。"
+                 属性値が同じ値:
+                 model -> #{model[attribute]}
+                 attribute_and_value_hash -> #{value}
+              MSG
       end
     end
 
@@ -225,6 +224,7 @@ module ModelHelper
     model_org = model.dup
 
     # ----- 引数のテストデータをそのまま二重登録してバリデーションテスト
+    # 1度目の保存
     attribute_and_value_hash.each do |attribute, value|
       model.send(
         "#{attribute}=",
@@ -233,11 +233,11 @@ module ModelHelper
     end
     model.save
 
-    # Modelクラスのバリデーションエラーテスト
+    # 2度目の保存：Modelクラスのバリデーションエラーテスト
     model_dup = model.dup
     expect(model_dup).not_to be_valid
 
-    # DBの制約違反テスト
+    # 2度目の保存：DBの制約違反テスト
     expect {
       model_dup.save(validate: false)
     }.to raise_error(ActiveRecord::RecordNotUnique)

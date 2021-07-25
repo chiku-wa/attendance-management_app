@@ -52,10 +52,8 @@ class Employee < ApplicationRecord
   )
 end
 
-# ======================================
+# === プライベートメソッド
 private
-
-# === メソッド
 
 # 社員名、社員名(フリガナ)の前後の空白を除去し、姓と名の間の空白を半角に変換する
 def formatting_name
