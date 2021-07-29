@@ -3,10 +3,15 @@ require "rails_helper"
 RSpec.describe "部署階層モデルのテスト", type: :model do
   # ----- テストデータを登録
   # 部署データの登録
-  let(:department_A) { FactoryBot.build(:department_A) }
-  let(:department_A_sales) { FactoryBot.build(:department_A_sales) }
-  let(:department_A_sales_department) { FactoryBot.build(:department_A_sales_department) }
-  let(:department_A_sales_department_division) { FactoryBot.build(:department_A_sales_department_division) }
+  [
+    :department_A,
+    :department_A_sales,
+    :department_A_sales_department1,
+    :department_A_sales_department1_division1,
+    :department_A_sales_department1_division2,
+  ].each do |fb|
+    let(fb) { FactoryBot.build(fb) }
+  end
 
   before do
     @department_hierarcy = DepartmentHierarchy.new(
@@ -27,8 +32,8 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
       valid_uniques(
         model: @department_hierarcy,
         attribute_and_value_hash: {
-          parent_department: department_A_sales_department,
-          child_department: department_A_sales_department_division,
+          parent_department: department_A_sales_department1,
+          child_department: department_A_sales_department1_division1,
         },
         is_case_sensitive: false,
       )
