@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_23_030002) do
+ActiveRecord::Schema.define(version: 2021_08_19_040809) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 2021_07_23_030002) do
     t.bigint "child_department_id", null: false, comment: "子親部署ID"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "generations", null: false
     t.index ["parent_department_id", "child_department_id"], name: "index_department_hierarchies_on_parent_child", unique: true
   end
 

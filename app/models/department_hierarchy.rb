@@ -12,6 +12,16 @@ class DepartmentHierarchy < ApplicationRecord
     { class_name: Department.name, foreign_key: "child_department_id" }
   )
 
+  # === バリデーション
+  # --- 単一の属性に対するバリデーション
+  # 世代
+  validates(
+    :generations,
+    {
+      presence: true,
+    }
+  )
+
   # --- 複数の属性に対するバリデーション
   # 親部署、子部署の複合ユニーク
   validates(
