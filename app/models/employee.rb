@@ -1,6 +1,6 @@
 class Employee < ApplicationRecord
 
-  # === 従属関係
+  # =============== 従属関係
   # 社員-部署
   has_many :employee_departments
 
@@ -10,10 +10,10 @@ class Employee < ApplicationRecord
   # 就業状況
   belongs_to :employment_status
 
-  # === フィルタリング
+  # =============== フィルタリング
   before_save :formatting_name
 
-  # === バリデーション
+  # =============== バリデーション
   # 社員コード
   include EmployeeCodeValidators
 
@@ -52,7 +52,7 @@ class Employee < ApplicationRecord
   )
 end
 
-# === プライベートメソッド
+# =============== プライベートメソッド
 private
 
 # 社員名、社員名(フリガナ)の前後の空白を除去し、姓と名の間の空白を半角に変換する

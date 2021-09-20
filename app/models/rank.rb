@@ -1,5 +1,5 @@
 class Rank < ApplicationRecord
-  # === バリデーション
+  # =============== バリデーション
   # ランクコード
   include RankCodeValidators
 end

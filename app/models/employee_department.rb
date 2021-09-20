@@ -1,5 +1,5 @@
 class EmployeeDepartment < ApplicationRecord
-  # === 従属関係
+  # =============== 従属関係
   # 社員
   belongs_to :employee
   # 部署
@@ -7,7 +7,7 @@ class EmployeeDepartment < ApplicationRecord
   # 所属種別
   belongs_to :affilitation_type
 
-  # === バリデーション
+  # =============== バリデーション
   # 着任日
   validates(
     :start_date,

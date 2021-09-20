@@ -1,9 +1,9 @@
 class AffilitationType < ApplicationRecord
-  # === 従属関係
+  # =============== 従属関係
   # 社員-部署
   has_many :employee_departments
 
-  # === バリデーション
+  # =============== バリデーション
   # 所属種別名
   validates(
     :affilitation_type_name,

@@ -1,9 +1,9 @@
 class EmploymentStatus < ApplicationRecord
-  # === 従属関係
+  # =============== 従属関係
   # 社員
   has_many :employees
 
-  # === バリデーション
+  # =============== バリデーション
   # 就業状況コード
   include EmploymentStatusCodeValidators
 
