@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "プロジェクトモデルのテスト", type: :model do
-  # ----- テストデータを登録
+  # ===== テストデータを登録
   let(:project) { FactoryBot.build(:project) }
 
   context "テストデータの事前確認用テスト" do

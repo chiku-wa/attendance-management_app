@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "所属種別のテスト", type: :model do
-  # ----- テストデータを登録
+  # ===== テストデータを登録
   # 所属種別(本務)
   let(:affilitation_type_regular) { FactoryBot.build(:affiltiation_type_regular) }
 

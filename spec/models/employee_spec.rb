@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "社員モデルのテスト", type: :model do
-  # ----- テストデータを登録
+  # ===== テストデータを登録
   let(:employee_work) { FactoryBot.build(:employee) }
 
   context "テストデータの事前確認用テスト" do

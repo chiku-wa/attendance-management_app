@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Rank, type: :model do
-  # ----- テストデータを登録
+  # ===== テストデータを登録
   let(:rank_A) { FactoryBot.build(:rank_A) }
 
   context "テストデータの事前確認用テスト" do

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "就業状況モデルのテスト", type: :model do
-  # ----- テストデータを登録
+  # ===== テストデータを登録
   # 就業状況(在職)
   let(:employment_status_work) { FactoryBot.build(:employment_status_work) }
 
