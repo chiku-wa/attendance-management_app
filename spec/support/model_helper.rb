@@ -136,8 +136,8 @@ module ModelHelper
     # アルファベットが存在しないテストケースではcase_sensitiveは意味を成さないため、注記を出力して終了する
     if (value =~ /[a-zA-Z]/) == nil
       raise <<~MSG
-                      #{attribute}(値：#{value})はアルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
-             テストデータにアルファベットを含めるか、大文字小文字を区別しない場合は、is_case_sensitiveをfalseにしてください。
+              #{attribute}(値：#{value})はアルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
+              テストデータにアルファベットを含めるか、大文字小文字を区別しない場合は、is_case_sensitiveをfalseにしてください。
             MSG
     end
 
@@ -177,7 +177,7 @@ module ModelHelper
   # -----------------------------------------------------
   # # 概要
   # 引数として渡したモデルインスタンスと、属性名をもとに、一意制約(複合ユニーク)のバリデーションチェックを行う。
-  # **前提として、引数のモデルインスタンス、属性名の組み合わせの情報は未保存の状態とする。**
+  # **前提として、引数のモデルインスタンス、属性名の組み合わせの情報は未保存(saveされていない)の状態とする。**
   # なお、前提としてテスト対象データの属性には単一ユニークが付与されていないこととする。
   # ※単一ユニークが存在する場合は、本メソッドではバリデーションエラーとして検出する。
   #
@@ -212,12 +212,21 @@ module ModelHelper
     attribute_and_value_hash.each do |attribute, value|
       if model.send(attribute) == value
         raise <<~MSG
-                第1引数(model)と、第2引数(attribute_and_value_hash)に含める属性値には異なる値を指定してください。"
+                第1引数(model)と、第2引数(attribute_and_value_hash)に含める属性値には異なる値を指定してください。
                  属性値が同じ値:
                  model -> #{model[attribute]}
                  attribute_and_value_hash -> #{value}
               MSG
       end
+    end
+
+    # 引数のモデルインスタンスがすでに保存されている場合は、テストをエラーにして終了させる。
+    if model.persisted?
+      raise <<~MSG
+              引数のモデルインスタンスはすでにDBに登録されています。未保存のモデルインスタンスを引数として指定してください。
+               属性値が同じ値:
+               model -> #{model}
+            MSG
     end
 
     # 引数の値をバックアップとして保存
