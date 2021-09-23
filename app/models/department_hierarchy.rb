@@ -131,7 +131,8 @@ class DepartmentHierarchy < ApplicationRecord
 
   # ----------------------------------------------------
   # # 概要
-  # 引数の部署モデルインスタンスを、親部署ID・子部署IDに設定して部署階層テーブルに登録する
+  # 部署階層テーブルに、引数の部署モデルインスタンスを、親部署ID・子部署IDに設定して
+  # 部署階層テーブルに登録する。
   # すでに同一のレコードが存在する場合は登録しない。
   #
   # # 引数
@@ -139,6 +140,14 @@ class DepartmentHierarchy < ApplicationRecord
   # 登録したい部署のモデルインスタンス。
   #
   def self.add_own_hierarchy(department)
+    # ===
+    # find_or_create_byメソッドで、同じ組み合わせのレコードが存在すれば生成し、存在すれば生成しない
+    DepartmentHierarchy.find_or_create_by(
+      parent_department: department,
+      child_department: department,
+      generations: 0,
+    )
+
     department_hierarcy_hash = {
       parent_department: department,
       child_department: department,
@@ -159,7 +168,7 @@ class DepartmentHierarchy < ApplicationRecord
   # * child_department
   # add_child()メソッドの引数の子部署
   #
-  def remove_relation(parent_department:, child_department:)
+  def self.remove_relation(parent_department:, child_department:)
     # add_child()メソッド引数(子部署)の、親のID一覧を取得する(直属より上の親部署も含む)
     parent_department_ids = DepartmentHierarchy.where(
       child_department_id: parent_department.id,

@@ -126,11 +126,129 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
     end
   end
 
-  pending "remove_relationメソッドのテスト" do
-    pending "最上位の部署の場合は、配下の情報のみが削除されること" do
+  context "remove_relationメソッドのテスト" do
+    it "世代:0のレコードは削除されないこと" do
+      # 初期データとして親子関係を作成
+      DepartmentHierarchy.import(@department_hierarchies)
+      expect_department_hierarchies_num = DepartmentHierarchy.where(
+        generations: 0,
+      ).size
+
+      # 部署階層を削除
+      DepartmentHierarchy.remove_relation(
+        parent_department: department_A_sales_department1,
+        child_department: department_A_sales_department1_division1,
+      )
+
+      # 世代:0のレコード数が変わらない(削除されていない)こと
+      expect(
+        DepartmentHierarchy.where(generations: 0).size
+      ).to eq expect_department_hierarchies_num
     end
 
-    pending "末端の部署の場合は、親部署の情報のみが削除されること" do
+    it "想定通り部署階層が削除されること" do
+      # --- 想定する処理
+      # A事業部配下の営業部をB事業部に付け替える
+      #
+      # [before]
+      # A事業部 department_A
+      # ┗営業部 department_A_sales
+      # 　┗第一営業部 department_A_sales_department1
+      # 　　┗第一営業部 一課 department_A_sales_department1_division1
+      # 　　┗第一営業部 二課 department_A_sales_department1_division2
+      # ....
+      # B事業部 department_B
+      #  ↓
+      # [before]
+      # A事業部 department_A
+      # ....
+      # B事業部 department_B
+      # ┗営業部 department_A_sales
+      # 　┗第一営業部 department_A_sales_department1)
+      # 　　┗第一営業部 一課 department_A_sales_department1_division1
+      # 　　┗第一営業部 二課 department_A_sales_department1_division2
+      #
+      # この場合、部署階層の追加メソッドの想定引数は下記のとおりとなる。
+      # add_child(
+      #  parent_department: department_B,
+      #  child_department: department_A_sales
+      # )
+      #
+      # この場合、remove_relationに渡される引数は以下の通りとなる。
+      # remove_relation(
+      #   parent_department: <add_childの引数child_departmentに対してすでに紐付いている親部署のID>,
+      #   child_department: <add_childの引数child_department>,
+      # )
+      # →remove_relation(
+      #   parent_department: A事業部 department_A,
+      #   child_department: 営業部 department_A_sales,
+      # )
+      #
+      # 削除される部署は直積の関係にあるため、以下のDELETE文が発行される。
+      # DELETE FROM 部署階層
+      # WHERE
+      #   親部署ID IN (A事業部 department_A)
+      #   AND
+      #   子部署ID IN (
+      #     営業部 department_A_sales
+      #     , 第一営業部 department_A_sales_department1
+      #     , 第一営業部 一課 department_A_sales_department1_division1
+      #     , 第一営業部 二課 department_A_sales_department1_division2
+      #     , 第二営業部 department_A_sales_department2
+      #     , 第二営業部 一課 department_A_sales_department2_division1
+      #     , 第二営業部 二課 department_A_sales_department2_division2
+      #   )
+
+      # テスト用データをsave
+      DepartmentHierarchy.import(@department_hierarchies)
+
+      # 後の処理で期待値を評価するために、部署階層を削除する前のレコード数を保存
+      department_hierarchy_num_before = DepartmentHierarchy.count
+
+      # 削除されることを期待する部署階層の一覧を定義する
+      expect_deleted_department_hierarchies = []
+      # [0]:親部署ID
+      # [1]:子部署ID
+      # [2]:世代
+      [
+        [department_A, department_A_sales, 1],
+        [department_A, department_A_sales_department1, 2],
+        [department_A, department_A_sales_department1_division1, 3],
+        [department_A, department_A_sales_department1_division2, 3],
+        [department_A, department_A_sales_department2, 2],
+        [department_A, department_A_sales_department2_division1, 3],
+        [department_A, department_A_sales_department2_division2, 3],
+      ].each do |arr|
+        # 部署階層はparent_department,child_departmentの組み合わせで一意であるため、
+        # これらを抽出条件にしている時点で1件しかレコードは返ってこないことは保証されているため、
+        # find_byを用いる。
+        expect_deleted_department_hierarchies << DepartmentHierarchy.find_by({
+          parent_department: arr[0],
+          child_department: arr[1],
+          generations: arr[2],
+        })
+      end
+
+      # メソッド実行前は、削除予定のレコードが存在することを確認する
+      # ※抽出条件に一致しないレコードが含まれている場合は、whereメソッドの戻り値が空の配列
+      #  となるため、それを判断基準とする。
+      expect(expect_deleted_department_hierarchies.include?([])).to be_falsey
+
+      # メソッドを実行し、部署階層を削除
+      DepartmentHierarchy.remove_relation(
+        parent_department: department_A,
+        child_department: department_A_sales,
+      )
+
+      # メソッド実行後は、想定するレコードが存在しないこと
+      expect(
+        DepartmentHierarchy.where(
+          id: expect_deleted_department_hierarchies.map(&:id),
+        ).size
+      ).to eq 0
+
+      # 想定外のレコードが削除されていないこと
+      expect(DepartmentHierarchy.count).to eq (department_hierarchy_num_before - expect_deleted_department_hierarchies.size)
     end
   end
 
