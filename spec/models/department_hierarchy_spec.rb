@@ -14,7 +14,7 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
     :department_A_sales_department2_division2,
     :department_B,
   ].each do |fb|
-    # バリデーションテストを正確にテストするために、親テーブルである部署情報を登録する
+    # バリデーションテストを正確にテストするために、親テーブルである部署情報はDBに保存する
     # ※presenceのRSpecテスト実行時、部署テーブルのレコードを保存しないまま部署階層テーブル
     #  をテストしようとすると、すべての属性がnilになり、正常にテストできないため
     let(fb) { FactoryBot.create(fb) }
@@ -134,7 +134,7 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
         generations: 0,
       ).size
 
-      # 部署階層を削除
+      # メソッドを実行し、部署階層を削除
       DepartmentHierarchy.remove_relation(
         parent_department: department_A_sales_department1,
         child_department: department_A_sales_department1_division1,
@@ -264,6 +264,39 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
           child_department: department_A,
         )
       }.to raise_error("循環する親子関係は登録できません。子部署として追加しようとしている部署がすでに親として設定されていないか確認してください。")
+    end
+
+    it "世代:0(親部署ID=子部署ID)のレコードが新規に生成されること" do
+      # メソッド実行前はレコードが存在しないこと
+      expect(DepartmentHierarchy.count).to eq 0
+
+      # --- 1回目の実行
+      # メソッドを実行し、自身と同じレコードを生成する
+      DepartmentHierarchy.add_child(
+        parent_department: department_A,
+        child_department: department_A_sales,
+      )
+
+      # メソッド実行後は親部署ID=子部署ID、世代0のレコードが1つ生成されていること
+      expect(DepartmentHierarchy.count).to eq 2
+      [
+        department_A,
+        department_A_sales,
+      ].each do |d|
+        expect(DepartmentHierarchy.find_by(
+          parent_department: d,
+          child_department: d,
+          generations: 0,
+        )).not_to be_nil
+      end
+
+      # --- 2回目の実行
+      # 再度メソッドを実行してもエラーが発生せず、レコードが生成されないこと
+      DepartmentHierarchy.add_child(
+        parent_department: department_A,
+        child_department: department_A_sales,
+      )
+      expect(DepartmentHierarchy.count).to eq 2
     end
 
     pending "想定通りのレコード数となっていること" do

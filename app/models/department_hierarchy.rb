@@ -62,11 +62,16 @@ class DepartmentHierarchy < ApplicationRecord
     end
 
     # --- 親・子それぞれの自分自身を閉包テーブルに登録する、二重登録はNGのためすでに登録済みならスキップする
-    # 親部署
-    add_own_hierarchy(parent_department)
-
-    # 子部署
-    add_own_hierarchy(child_department)
+    [
+      parent_department,
+      child_department,
+    ].each do |d|
+      DepartmentHierarchy.find_or_create_by!(
+        parent_department_id: d.id,
+        child_department_id: d.id,
+        generations: 0,
+      )
+    end
 
     # --- 引数の部署の親子関係のレコードを生成する
     DepartmentHierarchy.create(parent_department: parent_department, child_department: child_department)
@@ -128,33 +133,6 @@ class DepartmentHierarchy < ApplicationRecord
 
   # =============== プライベートメソッド
   private
-
-  # ----------------------------------------------------
-  # # 概要
-  # 部署階層テーブルに、引数の部署モデルインスタンスを、親部署ID・子部署IDに設定して
-  # 部署階層テーブルに登録する。
-  # すでに同一のレコードが存在する場合は登録しない。
-  #
-  # # 引数
-  # * department
-  # 登録したい部署のモデルインスタンス。
-  #
-  def self.add_own_hierarchy(department)
-    # ===
-    # find_or_create_byメソッドで、同じ組み合わせのレコードが存在すれば生成し、存在すれば生成しない
-    DepartmentHierarchy.find_or_create_by(
-      parent_department: department,
-      child_department: department,
-      generations: 0,
-    )
-
-    department_hierarcy_hash = {
-      parent_department: department,
-      child_department: department,
-      generations: 0,
-    }
-    DepartmentHierarchy.new(department_hierarcy_hash).save
-  end
 
   # [概要]
   # add_child()メソッドでのみ使用するメソッド。
