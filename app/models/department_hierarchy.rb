@@ -52,8 +52,7 @@ class DepartmentHierarchy < ApplicationRecord
   # 子部署として紐付けたい部署のモデルインスタンス。
   #
   def self.add_child(parent_department:, child_department:)
-    # --- エラーチェック
-    # 既存の親子関係を反転したデータが登録されようとした場合にはエラーとする
+    # === 既存の親子関係を反転したデータが登録されようとした場合にはエラーとする
     if DepartmentHierarchy.find_by(
       parent_department: child_department,
       child_department: parent_department,
@@ -61,7 +60,7 @@ class DepartmentHierarchy < ApplicationRecord
       raise("循環する親子関係は登録できません。子部署として追加しようとしている部署がすでに親として設定されていないか確認してください。")
     end
 
-    # --- 親・子それぞれの自分自身を閉包テーブルに登録する、二重登録はNGのためすでに登録済みならスキップする
+    # === 親・子それぞれの自分自身を閉包テーブルに登録する、二重登録はNGのためすでに登録済みならスキップする
     [
       parent_department,
       child_department,
@@ -73,11 +72,32 @@ class DepartmentHierarchy < ApplicationRecord
       )
     end
 
-    # --- 引数の部署の親子関係のレコードを生成する
-    DepartmentHierarchy.create(parent_department: parent_department, child_department: child_department)
+    # === 既存の親子関係を削除する
+    # 以下の条件に合致する場合のみ、親子関係を削除する
+    # ①引数の子部署に対して、すでに直属(世代=1)の親部署が紐付いている
+    # ②引数で渡された親部署と1.の親部署が同じでない
+    #   [②の詳細]
+    #   ・同じでない：子部署には1つの親部署しか紐付かないため、すでに別の親部署が紐付いているなら親子関係の削除(以降の処理)が必要
+    #   ・同じ     ：登録しようとしている親子関係がすでに登録されているので以降の処理(親子関係削除)が不要
 
-    # --- 引数の子部署部署の配下にさらに子部署が存在する場合、それらの子部署すべてに対して、引数の部署を親として設定する
-    # TODO：実装する
+    # 引数の子部署の、直属の親部署(世代=1)を抽出する
+    existing_department_hierarchy = DepartmentHierarchy.find_by(
+      child_department: child_department,
+      generations: 1,
+    )
+
+    # 条件に一致する場合は親子関係を削除する
+    if (existing_department_hierarchy &&
+        parent_department != existing_department_hierarchy.parent_department)
+      remove_relation(
+        parent_department: Department.find(
+          existing_department_hierarchy.parent_department
+        ),
+        child_department: child_department,
+      )
+    end
+
+    # === 引数の子部署部署の配下にさらに子部署が存在する場合、それらの子部署すべてに対して、引数の部署を親として設定する
 
   end
 
