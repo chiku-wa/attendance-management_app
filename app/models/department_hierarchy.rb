@@ -60,18 +60,6 @@ class DepartmentHierarchy < ApplicationRecord
       raise("循環する親子関係は登録できません。子部署として追加しようとしている部署がすでに親として設定されていないか確認してください。")
     end
 
-    # === 親・子それぞれの自分自身を閉包テーブルに登録する、二重登録はNGのためすでに登録済みならスキップする
-    [
-      parent_department,
-      child_department,
-    ].each do |d|
-      DepartmentHierarchy.find_or_create_by!(
-        parent_department_id: d.id,
-        child_department_id: d.id,
-        generations: 0,
-      )
-    end
-
     # === 既存の親子関係を削除する
     # 以下の条件に合致する場合のみ、親子関係を削除する
     # ①引数の子部署に対して、すでに直属(世代=1)の親部署が紐付いている
@@ -91,14 +79,53 @@ class DepartmentHierarchy < ApplicationRecord
         parent_department != existing_department_hierarchy.parent_department)
       remove_relation(
         parent_department: Department.find(
-          existing_department_hierarchy.parent_department
+          existing_department_hierarchy.parent_department.id
         ),
         child_department: child_department,
       )
     end
 
-    # === 引数の子部署部署の配下にさらに子部署が存在する場合、それらの子部署すべてに対して、引数の部署を親として設定する
+    # === 世代=0のレコード(親・子それぞれの自分自身となっているレコード)を生成する。
+    #     二重登録はNGのためすでに登録済みならスキップする。
+    [
+      parent_department,
+      child_department,
+    ].each do |d|
+      DepartmentHierarchy.find_or_create_by!(
+        parent_department_id: d.id,
+        child_department_id: d.id,
+        generations: 0,
+      )
+    end
 
+    # === 親子関係を登録する
+    #     引数の子部署部署の配下にさらに子部署が存在する場合、それらの子部署すべてに対して、
+    #     引数の部署を親として設定する。
+
+    # 今回追加しようとしている親の、さらに親の一覧を取得する
+    parent_department_hierarchies = DepartmentHierarchy.where(
+      child_department_id: parent_department.id,
+    )
+
+    # 今回追加しようとしている子の、さらに子の一覧を取得する
+    child_department_hierarchies = DepartmentHierarchy.where(
+      parent_department_id: child_department.id,
+    )
+
+    # バルクインサート用配列を生成し、一括登録
+    insert_department_hierarchies = []
+
+    parent_department_hierarchies.each do |pd|
+      child_department_hierarchies.each do |cd|
+        insert_department_hierarchies << DepartmentHierarchy.new(
+          parent_department: pd.parent_department,
+          child_department: cd.child_department,
+          generations: (pd.generations + cd.generations + 1),
+        )
+      end
+    end
+
+    DepartmentHierarchy.import(insert_department_hierarchies)
   end
 
   # # 概要

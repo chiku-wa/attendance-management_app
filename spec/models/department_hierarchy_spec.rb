@@ -164,7 +164,7 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
       # ....
       # B事業部 department_B
       # ┗営業部 department_A_sales
-      # 　┗第一営業部 department_A_sales_department1)
+      # 　┗第一営業部 department_A_sales_department1
       # 　　┗第一営業部 一課 department_A_sales_department1_division1
       # 　　┗第一営業部 二課 department_A_sales_department1_division2
       #
@@ -255,7 +255,11 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
   context "add_childメソッドのテスト" do
     it "既存の親子関係を反転したデータが登録されようとした場合にはエラーとなること" do
       # 初期データとして親子関係を作成
-      DepartmentHierarchy.import(@department_hierarchies)
+      DepartmentHierarchy.create(
+        parent_department: department_A,
+        child_department: department_A_sales,
+        generations: 1,
+      )
 
       # 初期データの親子関係を反転させたデータを作成
       expect {
@@ -270,15 +274,13 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
       # メソッド実行前はレコードが存在しないこと
       expect(DepartmentHierarchy.count).to eq 0
 
-      # --- 1回目の実行
       # メソッドを実行し、自身と同じレコードを生成する
       DepartmentHierarchy.add_child(
         parent_department: department_A,
         child_department: department_A_sales,
       )
 
-      # メソッド実行後は親部署ID=子部署ID、世代0のレコードが1つ生成されていること
-      expect(DepartmentHierarchy.count).to eq 2
+      # メソッド実行後は親部署ID=子部署ID、世代0のレコードが生成されていること
       [
         department_A,
         department_A_sales,
@@ -289,86 +291,105 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
           generations: 0,
         )).not_to be_nil
       end
-
-      # --- 2回目の実行
-      # 再度メソッドを実行してもエラーが発生せず、レコードが生成されないこと
-      DepartmentHierarchy.add_child(
-        parent_department: department_A,
-        child_department: department_A_sales,
-      )
-      expect(DepartmentHierarchy.count).to eq 2
     end
 
-    pending "想定通りのレコード数となっていること" do
-      # --- 世代1〜2の親子関係の追加
-      # [例]
-      # A:世代1
-      # ┗B:世代2 ★追加
+    # === 想定する処理の概要
+    # 「A事業部」配下の「営業部」を「B事業部」に付け替える
+    #
+    # [before]
+    # A事業部 department_A
+    # ┗営業部 department_A_sales
+    # 　┗第一営業部 department_A_sales_department1
+    # 　　┗第一営業部 一課 department_A_sales_department1_division1
+    # 　　┗第一営業部 二課 department_A_sales_department1_division2
+    # 　┗第二営業部　A01B01C02000
+    # 　　┗第ニ営業部　　一課　　A01B01C02001
+    # 　　┗第ニ営業部　　ニ課　　A01B01C02002
+    # B事業部 department_B
+    #  ↓
+    # [before]
+    # A事業部 department_A
+    # 　┗第二営業部　A01B01C02000
+    # 　　┗第ニ営業部　　一課　　A01B01C02001
+    # 　　┗第ニ営業部　　ニ課　　A01B01C02002
+    # B事業部 department_B
+    # ┗営業部 department_A_sales
+    # 　┗第一営業部 department_A_sales_department1
+    # 　　┗第一営業部 一課 department_A_sales_department1_division1
+    # 　　┗第一営業部 二課 department_A_sales_department1_division2
+    #
+    # この場合、部署階層の追加メソッドの想定引数は下記のとおりとなる。
+    # add_child(
+    #  parent_department: department_B,
+    #  child_department: department_A_sales
+    # )
+    it "既存部署の親子関係を付け替えできること" do
+      # === 事前準備
+      # テスト用データをsave
+      DepartmentHierarchy.import(@department_hierarchies)
 
-      # 子部署を追加する
-      department_A.add_child(department_A_sales)
+      # メソッド実行前のレコード数を保存
+      # ※ 既存部署の付替なので、メソッド実行前後でレコード数は変わらない
+      num_of_record_before = DepartmentHierarchy.count
 
-      # 件数が想定どおりであること
-      # 1組の親子関係を作成した場合以下の内訳になる。
-      # * A・Bの自分自身のレコード：1+1=2件
-      # * 親子関係(A-B)のレコード：1件
-      expect(DepartmentHierarchy.count).to eq 3
-
-      # --- 世代2〜3の親子関係の追加
-      # 先ほど追加した子部署の配下に更に子部署を追加する
-      # [例]
-      # A:世代1
-      # ┗B:世代2
-      #  ┗C:世代3 ★追加
-      department_A_sales.add_child(department_A_sales_department1)
-
-      # 件数が想定どおりであること
-      # 先ほど登録した親子関係も含め、以下の内訳になる。
-      # * A・B・Cの自分自身のレコード：1+1+1=3件
-      # * 親子関係(A-B、B-C)のレコード：2件
-      # * A-Cの親子関係のレコード：1件
-      expect(DepartmentHierarchy.count).to eq 6
-    end
-
-    it "parent_department,child_departmentに自身のIDが指定されているレコードが登録されていること" do
-      # 子部署を追加する
+      # === メソッドを実行し、期待値を確認
       DepartmentHierarchy.add_child(
-        parent_department: department_A,
+        parent_department: department_B,
         child_department: department_A_sales,
       )
-      DepartmentHierarchy.add_child(
-        parent_department: department_A_sales,
-        child_department: department_A_sales_department1,
-      )
 
-      # 階層情報に自身のIDが指定されているIDが登録されていること
-      [
-        department_A,
+      # NOTE: remove_relationの妥当性は別のメソッドでテスト済みのため、ここではテストしない
+
+      # --- 部署がつけ変わっていることを確認する
+      # 付け替え対象になっている部署の一覧(add_childの引数の子部署と、その子部署配下の部署の一覧)
+      # [構成]
+      # ┗営業部 department_A_sales
+      # 　┗第一営業部 department_A_sales_department1
+      # 　　┗第一営業部 一課 department_A_sales_department1_division1
+      # 　　┗第一営業部 二課 department_A_sales_department1_division2
+      # 　┗第二営業部　A01B01C02000
+      # 　　┗第ニ営業部　　一課　　A01B01C02001
+      # 　　┗第ニ営業部　　ニ課　　A01B01C02002
+      target_child_departments = [
         department_A_sales,
         department_A_sales_department1,
-      ].each do |d|
-        expect(DepartmentHierarchy.where(parent_department: d, child_department: d).exists?).to be_truthy
+        department_A_sales_department1_division1,
+        department_A_sales_department1_division2,
+        department_A_sales_department2,
+        department_A_sales_department2_division1,
+        department_A_sales_department2_division2,
+      ]
+
+      # 付替前の部署の配下には、引数として渡した子部署と、その子部署の配下の部署が存在しないこと
+      previous_parent_department_hierarchies = DepartmentHierarchy.where(
+        # 付替前の部署
+        parent_department: department_A,
+      )
+      target_child_departments.each do |d|
+        expect(
+          previous_parent_department_hierarchies.find_by(id: d.id)
+        ).to be_nil
       end
-    end
 
-    pending "階層テーブルに適切な親子関係、世代情報が登録されていること" do
-      # 子部署を追加する
-      # [例]
-      # A:世代1
-      # ┗B:世代2
-      #  ┗C:世代3
-      department_A.add_child(department_A_sales)
-      department_A_sales.add_child(department_A_sales_department1)
+      # 付替後の部署の配下には、引数として渡した子部署と、その配下の部署が存在すること
+      following_parent_department_hierarchies = DepartmentHierarchy.where(
+        # 付替後の部署
+        parent_department: department_B,
+      )
+      ap "========================="
+      ap following_parent_department_hierarchies
+      ap "========================="
 
-      # --- 親子関係の閉包データが登録されていること
-      expect(DepartmentHierarchy.where(parent_department: department_A, child_department: department_A_sales).exists?).to be_truthy
-      expect(DepartmentHierarchy.where(parent_department: department_A_sales, child_department: department_A_sales_department1).exists?).to be_truthy
+      target_child_departments.each do |d|
+        expect(
+          following_parent_department_hierarchies.find_by(
+            child_department_id: d.id,
+          )
+        ).not_to be_nil
+      end
 
-      # --- 世代情報が登録されていること
-      # A-Bの世代差 → 1
-      # expect(DepartmentHierarchy.where(parent_department: department_A, child_department: department_A_sales).generations).to eq 1
-
-      # A-Cの世代差 → 2
+      # --- メソッド実行前後でレコード数が変わらないこと
+      expect(DepartmentHierarchy.count).to eq num_of_record_before
     end
   end
 
