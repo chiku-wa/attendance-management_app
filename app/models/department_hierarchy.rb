@@ -185,7 +185,7 @@ class DepartmentHierarchy < ApplicationRecord
   # add_child()メソッドでのみ使用するメソッド。
   # add_child()メソッドの引数(子部署)がすでに親子関係を持っている場合、関連する親子関係を
   # すべて削除する。
-  # ただし、親部署ID＝子部署IDとなっているレコード(世代:0)は削除しない。
+  # ただし、世代:0(親部署ID＝子部署IDとなっている)のレコードは削除しない。
   #
   # [引数]
   # * parent_department

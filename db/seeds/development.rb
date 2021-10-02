@@ -10,6 +10,7 @@ department_A_sales_department2_division1 = FactoryBot.create(:department_A_sales
 department_A_sales_department2_division2 = FactoryBot.create(:department_A_sales_department2_division2)
 
 department_B = FactoryBot.create(:department_B)
+department_B_production = FactoryBot.create(:department_B_production)
 
 # === 部署階層登録
 # --- 部署階層テーブル:世代0のレコード(親=子の階層)を登録
@@ -23,6 +24,7 @@ department_B = FactoryBot.create(:department_B)
   :department_A_sales_department2_division1,
   :department_A_sales_department2_division2,
   :department_B,
+  :department_B_production,
 ].each do |fb|
   DepartmentHierarchy.create(
     parent_department: eval("#{fb}"),
@@ -74,6 +76,10 @@ end
   # 　　　┗第ニ営業部　　ニ課　　A01B01C02002
   { parent_department: department_A_sales_department1, child_department: department_A_sales_department1_division1, generations: 1 },
   { parent_department: department_A_sales_department1, child_department: department_A_sales_department1_division2, generations: 1 },
+
+  # B事業部　B01000000000
+  # 　┗製造部　B01C01000000
+  { parent_department: department_B, child_department: department_B_production, generations: 1 },
 ].each do |dh|
   DepartmentHierarchy.create(dh)
 end

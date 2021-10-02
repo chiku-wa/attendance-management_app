@@ -13,6 +13,7 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
     :department_A_sales_department2_division1,
     :department_A_sales_department2_division2,
     :department_B,
+    :department_B_production,
   ].each do |fb|
     # バリデーションテストを正確にテストするために、親テーブルである部署情報はDBに保存する
     # ※presenceのRSpecテスト実行時、部署テーブルのレコードを保存しないまま部署階層テーブル
@@ -37,6 +38,7 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
       :department_A_sales_department2_division1,
       :department_A_sales_department2_division2,
       :department_B,
+      :department_B_production,
     ].each do |fb|
       @department_hierarchies << DepartmentHierarchy.new(
         parent_department: eval("#{fb}"),
@@ -88,6 +90,10 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
       # 　　　┗第ニ営業部　　ニ課　　A01B01C02002
       { parent_department: department_A_sales_department1, child_department: department_A_sales_department1_division1, generations: 1 },
       { parent_department: department_A_sales_department1, child_department: department_A_sales_department1_division2, generations: 1 },
+
+      # B事業部　B01000000000
+      # 　┗企画部　B01C01000000
+      { parent_department: department_B, child_department: department_B_production, generations: 1 },
     ].each do |dh|
       @department_hierarchies << DepartmentHierarchy.new(dh)
     end
@@ -298,30 +304,32 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
     #
     # [before]
     # A事業部 department_A
-    # ┗営業部 department_A_sales
-    # 　┗第一営業部 department_A_sales_department1
-    # 　　┗第一営業部 一課 department_A_sales_department1_division1
-    # 　　┗第一営業部 二課 department_A_sales_department1_division2
-    # 　┗第二営業部　A01B01C02000
-    # 　　┗第ニ営業部　　一課　　A01B01C02001
-    # 　　┗第ニ営業部　　ニ課　　A01B01C02002
+    # 　┗営業部 department_A_sales
+    # 　　┗第一営業部 department_A_sales_department1
+    # 　　　┗第一営業部 一課 department_A_sales_department1_division1
+    # 　　　┗第一営業部 二課 department_A_sales_department1_division2
+    # 　　┗第ニ営業部 department_A_sales_department2
+    # 　　　┗第ニ営業部　一課　department_A_sales_department2_division1
+    # 　　　┗第ニ営業部　ニ課　department_A_sales_department2_division2
     # B事業部 department_B
+    # 　┗製造部　department_B_production
     #  ↓
     # [before]
     # A事業部 department_A
-    # 　┗第二営業部　A01B01C02000
-    # 　　┗第ニ営業部　　一課　　A01B01C02001
-    # 　　┗第ニ営業部　　ニ課　　A01B01C02002
+    # 　┗営業部 department_A_sales
+    # 　　┗第一営業部 department_A_sales_department1
+    # 　　　┗第一営業部 一課 department_A_sales_department1_division1
+    # 　　　┗第一営業部 二課 department_A_sales_department1_division2
     # B事業部 department_B
-    # ┗営業部 department_A_sales
-    # 　┗第一営業部 department_A_sales_department1
-    # 　　┗第一営業部 一課 department_A_sales_department1_division1
-    # 　　┗第一営業部 二課 department_A_sales_department1_division2
+    # 　┗製造部　department_B_production
+    # 　　┗第一営業部 department_A_sales_department1
+    # 　　　┗第一営業部 一課 department_A_sales_department1_division1
+    # 　　　┗第一営業部 二課 department_A_sales_department1_division2
     #
     # この場合、部署階層の追加メソッドの想定引数は下記のとおりとなる。
     # add_child(
     #  parent_department: department_B,
-    #  child_department: department_A_sales
+    #  child_department: department_A_sales_department1
     # )
     it "既存部署の親子関係を付け替えできること" do
       # === 事前準備
@@ -329,13 +337,13 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
       DepartmentHierarchy.import(@department_hierarchies)
 
       # メソッド実行前のレコード数を保存
-      # ※ 既存部署の付替なので、メソッド実行前後でレコード数は変わらない
+      # ※ 既存部署の付替なので、メソッド実行前後でレコード数は変わらないことを確認する
       num_of_record_before = DepartmentHierarchy.count
 
       # === メソッドを実行し、期待値を確認
       DepartmentHierarchy.add_child(
         parent_department: department_B,
-        child_department: department_A_sales,
+        child_department: department_A_sales_department1,
       )
 
       # NOTE: remove_relationの妥当性は別のメソッドでテスト済みのため、ここではテストしない
@@ -343,7 +351,6 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
       # --- 部署がつけ変わっていることを確認する
       # 付け替え対象になっている部署の一覧(add_childの引数の子部署と、その子部署配下の部署の一覧)
       # [構成]
-      # ┗営業部 department_A_sales
       # 　┗第一営業部 department_A_sales_department1
       # 　　┗第一営業部 一課 department_A_sales_department1_division1
       # 　　┗第一営業部 二課 department_A_sales_department1_division2
@@ -351,7 +358,6 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
       # 　　┗第ニ営業部　　一課　　A01B01C02001
       # 　　┗第ニ営業部　　ニ課　　A01B01C02002
       target_child_departments = [
-        department_A_sales,
         department_A_sales_department1,
         department_A_sales_department1_division1,
         department_A_sales_department1_division2,
@@ -363,7 +369,7 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
       # 付替前の部署の配下には、引数として渡した子部署と、その子部署の配下の部署が存在しないこと
       previous_parent_department_hierarchies = DepartmentHierarchy.where(
         # 付替前の部署
-        parent_department: department_A,
+        parent_department: department_A_sales,
       )
       target_child_departments.each do |d|
         expect(
@@ -376,9 +382,6 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
         # 付替後の部署
         parent_department: department_B,
       )
-      ap "========================="
-      ap following_parent_department_hierarchies
-      ap "========================="
 
       target_child_departments.each do |d|
         expect(

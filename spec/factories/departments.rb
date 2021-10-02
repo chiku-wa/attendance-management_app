@@ -27,6 +27,8 @@ FactoryBot.define do
   # 　　　┗第ニ営業部　　一課　　A01B01C02001
   # 　　　┗第ニ営業部　　ニ課　　A01B01C02002
   # B事業部　B01000000000
+  # 　┗製造部　B01C01000000
+  #
 
   # A事業部
   factory :department_A, class: Department do
@@ -105,6 +107,15 @@ FactoryBot.define do
     department_code { "B01000000000" }
     department_name { "B事業部" }
     department_kana_name { "ビージギョウブ" }
+    establishment_date { establishment_date }
+    abolished_date { abolished_date }
+  end
+
+  # 製造部
+  factory :department_B_production, class: Department do
+    department_code { "B01C01000000" }
+    department_name { "製造部" }
+    department_kana_name { "セイゾウブ" }
     establishment_date { establishment_date }
     abolished_date { abolished_date }
   end
