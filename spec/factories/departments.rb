@@ -29,6 +29,11 @@ FactoryBot.define do
   # B事業部　B01000000000
   # 　┗製造部　B01C01000000
   #
+  # なお、下記は原則としてseedやRSpecで初期登録はせず、テストの際に必要に応じて登録するための
+  # 情報とする。
+  # テスト部署1 Z99999999991
+  # テスト部署2 Z99999999992
+  # テスト部署3 Z99999999993
 
   # A事業部
   factory :department_A, class: Department do
@@ -116,6 +121,33 @@ FactoryBot.define do
     department_code { "B01C01000000" }
     department_name { "製造部" }
     department_kana_name { "セイゾウブ" }
+    establishment_date { establishment_date }
+    abolished_date { abolished_date }
+  end
+
+  # テスト部署1
+  factory :department_test_1, class: Department do
+    department_code { "Z99999999991" }
+    department_name { "テスト部署1" }
+    department_kana_name { "テストブショイチ" }
+    establishment_date { establishment_date }
+    abolished_date { abolished_date }
+  end
+
+  # テスト部署2
+  factory :department_test_2, class: Department do
+    department_code { "Z99999999992" }
+    department_name { "テスト部署2" }
+    department_kana_name { "テストブショニ" }
+    establishment_date { establishment_date }
+    abolished_date { abolished_date }
+  end
+
+  # テスト部署3
+  factory :department_test_3, class: Department do
+    department_code { "Z99999999993" }
+    department_name { "テスト部署3" }
+    department_kana_name { "テストブショサン" }
     establishment_date { establishment_date }
     abolished_date { abolished_date }
   end

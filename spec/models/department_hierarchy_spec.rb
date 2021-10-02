@@ -299,39 +299,116 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
       end
     end
 
-    # === 想定する処理の概要
-    # 「A事業部」配下の「営業部」を「B事業部」に付け替える
-    #
-    # [before]
-    # A事業部 department_A
-    # 　┗営業部 department_A_sales
-    # 　　┗第一営業部 department_A_sales_department1
-    # 　　　┗第一営業部 一課 department_A_sales_department1_division1
-    # 　　　┗第一営業部 二課 department_A_sales_department1_division2
-    # 　　┗第ニ営業部 department_A_sales_department2
-    # 　　　┗第ニ営業部　一課　department_A_sales_department2_division1
-    # 　　　┗第ニ営業部　ニ課　department_A_sales_department2_division2
-    # B事業部 department_B
-    # 　┗製造部　department_B_production
-    #  ↓
-    # [before]
-    # A事業部 department_A
-    # 　┗営業部 department_A_sales
-    # 　　┗第一営業部 department_A_sales_department1
-    # 　　　┗第一営業部 一課 department_A_sales_department1_division1
-    # 　　　┗第一営業部 二課 department_A_sales_department1_division2
-    # B事業部 department_B
-    # 　┗製造部　department_B_production
-    # 　　┗第一営業部 department_A_sales_department1
-    # 　　　┗第一営業部 一課 department_A_sales_department1_division1
-    # 　　　┗第一営業部 二課 department_A_sales_department1_division2
-    #
-    # この場合、部署階層の追加メソッドの想定引数は下記のとおりとなる。
-    # add_child(
-    #  parent_department: department_B,
-    #  child_department: department_A_sales_department1
-    # )
     it "既存部署の親子関係を付け替えできること" do
+      # === 想定する処理の概要
+      # 「A事業部」配下の「営業部」を「B事業部」に付け替える
+      #
+      # [before]
+      # A事業部 department_A
+      # 　┗営業部 department_A_sales
+      # 　　┗第一営業部 department_A_sales_department1
+      # 　　　┗第一営業部 一課 department_A_sales_department1_division1
+      # 　　　┗第一営業部 二課 department_A_sales_department1_division2
+      # 　　┗第ニ営業部 department_A_sales_department2
+      # 　　　┗第ニ営業部　一課　department_A_sales_department2_division1
+      # 　　　┗第ニ営業部　ニ課　department_A_sales_department2_division2
+      # B事業部 department_B
+      # 　┗製造部　department_B_production
+      #  ↓
+      # [before]
+      # A事業部 department_A
+      # 　┗営業部 department_A_sales
+      # 　　┗第一営業部 department_A_sales_department1
+      # 　　　┗第一営業部 一課 department_A_sales_department1_division1
+      # 　　　┗第一営業部 二課 department_A_sales_department1_division2
+      # B事業部 department_B
+      # 　┗製造部　department_B_production
+      # 　　┗第一営業部 department_A_sales_department1
+      # 　　　┗第一営業部 一課 department_A_sales_department1_division1
+      # 　　　┗第一営業部 二課 department_A_sales_department1_division2
+      #
+      # この場合、部署階層の追加メソッドの想定引数は下記のとおりとなる。
+      # add_child(
+      #  parent_department: department_B_production,
+      #  child_department: department_A_sales_department1
+      # )
+
+      # === 事前準備
+      # テスト用データをsave
+      DepartmentHierarchy.import(@department_hierarchies)
+
+      # メソッド実行前のレコード数を保存
+      # ※ 既存部署の付替なので、メソッド実行前後でレコード数は変わらないことを確認する
+      num_of_record_before = DepartmentHierarchy.count
+
+      # === メソッドを実行し、期待値を確認
+      DepartmentHierarchy.add_child(
+        parent_department: department_B_production,
+        child_department: department_A_sales_department1,
+      )
+
+      # NOTE: remove_relationの妥当性は別のメソッドでテスト済みのため、ここではテストしない
+
+      # --- 部署がつけ変わっていることを確認する
+      # 付け替え対象になっている部署の一覧(add_childの引数の子部署と、その子部署配下の部署の一覧)
+      # [構成]
+      # 　┗第一営業部 department_A_sales_department1
+      # 　　┗第一営業部 一課 department_A_sales_department1_division1
+      # 　　┗第一営業部 二課 department_A_sales_department1_division2
+      target_child_departments = [
+        department_A_sales_department1,
+        department_A_sales_department1_division1,
+        department_A_sales_department1_division2,
+      ]
+
+      # 付替前の部署の配下には、引数として渡した子部署と、その子部署の配下の部署が存在しないこと
+      previous_parent_department_hierarchies = DepartmentHierarchy.where(
+        # 付替前の部署
+        parent_department: department_A_sales,
+      )
+      target_child_departments.each do |d|
+        expect(
+          previous_parent_department_hierarchies.find_by(id: d.id)
+        ).to be_nil
+      end
+
+      # 付替後の部署の配下には、引数として渡した子部署と、その配下の部署が存在すること
+      following_parent_department_hierarchies = DepartmentHierarchy.where(
+        # 付替後の部署
+        parent_department: department_B_production,
+      )
+
+      target_child_departments.each do |d|
+        expect(
+          following_parent_department_hierarchies.find_by(
+            child_department_id: d.id,
+          )
+        ).not_to be_nil
+      end
+
+      # --- メソッド実行前後でレコード数が変わらないこと
+      expect(DepartmentHierarchy.count).to eq num_of_record_before
+    end
+
+    pending "既存の部署に対し、新規に作成した部署を子部署として紐付けできること" do
+      # === 想定する処理の概要
+      # 「A事業部」配下の「営業部」を「B事業部」に付け替える
+      #
+      # [before]
+      # B事業部 department_B
+      # 　┗製造部　department_B_production
+      #  ↓
+      # [before]
+      # B事業部 department_B
+      # 　┗製造部　department_B_production
+      # 　　┗テスト部署1　department_test_1
+      #
+      # この場合、部署階層の追加メソッドの想定引数は下記のとおりとなる。
+      # add_child(
+      #  parent_department: department_B_production,
+      #  child_department: department_test_1
+      # )
+
       # === 事前準備
       # テスト用データをsave
       DepartmentHierarchy.import(@department_hierarchies)
