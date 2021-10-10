@@ -334,7 +334,7 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
       # )
 
       # === 事前準備
-      # テスト用データをsave
+      # 部署階層のテスト用データをsave
       DepartmentHierarchy.import(@department_hierarchies)
 
       # メソッド実行前のレコード数を保存
@@ -390,7 +390,7 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
       expect(DepartmentHierarchy.count).to eq num_of_record_before
     end
 
-    pending "既存の部署に対し、新規に作成した部署を子部署として紐付けできること" do
+    it "既存の部署に対し、新規に作成した部署を子部署として紐付けできること" do
       # === 想定する処理の概要
       # 「A事業部」配下の「営業部」を「B事業部」に付け替える
       #
@@ -402,6 +402,8 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
       # B事業部 department_B
       # 　┗製造部　department_B_production
       # 　　┗テスト部署1　department_test_1
+      # 　　　┗テスト部署2 department_test_2
+      # 　　　　┗テスト部署3 department_test_3
       #
       # この場合、部署階層の追加メソッドの想定引数は下記のとおりとなる。
       # add_child(
@@ -410,54 +412,71 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
       # )
 
       # === 事前準備
-      # テスト用データをsave
+      # --- 事前に用意したテストデータの登録
+      # 部署階層のテスト用データをsave
       DepartmentHierarchy.import(@department_hierarchies)
 
+      # --- 新規の部署・部署階層データを作成
+      department_test_1 = FactoryBot.create(:department_test_1)
+      department_test_2 = FactoryBot.create(:department_test_2)
+      department_test_3 = FactoryBot.create(:department_test_3)
+
+      dhs = []
+
+      # 世代0のレコード(親=子の階層)を登録
+      [
+        :department_test_1,
+        :department_test_2,
+        :department_test_3,
+      ].each do |fb|
+        dhs << DepartmentHierarchy.new(
+          parent_department: eval("#{fb}"),
+          child_department: eval("#{fb}"),
+          generations: 0,
+        )
+      end
+
+      # 世代1〜のレコードを登録
+      [
+        # テスト部署1　department_test_1
+        # 　┗テスト部署2 department_test_2
+        # 　　┗テスト部署3 department_test_3
+        { parent_department: department_test_1, child_department: department_test_2, generations: 1 },
+        { parent_department: department_test_1, child_department: department_test_3, generations: 2 },
+        { parent_department: department_test_2, child_department: department_test_3, generations: 1 },
+      ].each do |dh|
+        dhs << DepartmentHierarchy.new(dh)
+      end
+
+      DepartmentHierarchy.import(dhs)
+
       # メソッド実行前のレコード数を保存
-      # ※ 既存部署の付替なので、メソッド実行前後でレコード数は変わらないことを確認する
+      # ※ 新規部署の付替なので、メソッド実行前後でレコード数が変わることを確認するため
       num_of_record_before = DepartmentHierarchy.count
 
       # === メソッドを実行し、期待値を確認
       DepartmentHierarchy.add_child(
-        parent_department: department_B,
-        child_department: department_A_sales_department1,
+        parent_department: department_B_production,
+        child_department: department_test_1,
       )
 
       # NOTE: remove_relationの妥当性は別のメソッドでテスト済みのため、ここではテストしない
 
       # --- 部署がつけ変わっていることを確認する
-      # 付け替え対象になっている部署の一覧(add_childの引数の子部署と、その子部署配下の部署の一覧)
+      # 対象になっている部署の一覧(add_childの引数の子部署と、その子部署配下の部署の一覧)
       # [構成]
-      # 　┗第一営業部 department_A_sales_department1
-      # 　　┗第一営業部 一課 department_A_sales_department1_division1
-      # 　　┗第一営業部 二課 department_A_sales_department1_division2
-      # 　┗第二営業部　A01B01C02000
-      # 　　┗第ニ営業部　　一課　　A01B01C02001
-      # 　　┗第ニ営業部　　ニ課　　A01B01C02002
+      # 　┗製造部　department_B_production
+      # 　　┗テスト部署1　department_test_1
       target_child_departments = [
-        department_A_sales_department1,
-        department_A_sales_department1_division1,
-        department_A_sales_department1_division2,
-        department_A_sales_department2,
-        department_A_sales_department2_division1,
-        department_A_sales_department2_division2,
+        department_test_1,
+        department_test_2,
+        department_test_3,
       ]
-
-      # 付替前の部署の配下には、引数として渡した子部署と、その子部署の配下の部署が存在しないこと
-      previous_parent_department_hierarchies = DepartmentHierarchy.where(
-        # 付替前の部署
-        parent_department: department_A_sales,
-      )
-      target_child_departments.each do |d|
-        expect(
-          previous_parent_department_hierarchies.find_by(id: d.id)
-        ).to be_nil
-      end
 
       # 付替後の部署の配下には、引数として渡した子部署と、その配下の部署が存在すること
       following_parent_department_hierarchies = DepartmentHierarchy.where(
         # 付替後の部署
-        parent_department: department_B,
+        parent_department: department_B_production,
       )
 
       target_child_departments.each do |d|
@@ -468,8 +487,59 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
         ).not_to be_nil
       end
 
-      # --- メソッド実行前後でレコード数が変わらないこと
-      expect(DepartmentHierarchy.count).to eq num_of_record_before
+      # --- メソッド実行後、新規に作成した部署の部署階層が登録されていること
+      # 想定レコードは下記の通り。
+      #
+      # [レコードの内訳]
+      # 1. 世代0(0レコード)
+      #   ※なし(テスト実行前に登録済みのため)
+      #
+      # 2. 世代1(1レコード)
+      #   (1)
+      # 　┗製造部　department_B_production
+      # 　　┗テスト部署1　department_test_1
+      #
+      #   以下のパターンはテスト実行前に登録済みのため除外
+      #
+      # 　　┗テスト部署1　department_test_1
+      # 　　　┗テスト部署2 Z99999999992
+      #
+      # 　　　┗テスト部署2 Z99999999992
+      # 　　　　┗テスト部署3 Z99999999993
+      #
+      # 3. 世代2(2レコード)
+      # (1)
+      # B事業部 department_B
+      # 　…
+      # 　　┗テスト部署1　department_test_1
+      # (2)
+      # 　┗製造部　department_B_production
+      # 　…
+      # 　　　┗テスト部署2 Z99999999992
+      #
+      #   以下のパターンはテスト実行前に登録済みのため除外
+      #
+      # 　　┗テスト部署1　department_test_1
+      # 　…
+      # 　　　　┗テスト部署3 Z99999999993
+      #
+      # 4. 世代3(2レコード)
+      # (1)
+      # B事業部 department_B
+      # 　…
+      # 　　　┗テスト部署2 Z99999999992
+      #
+      # (2)
+      # 　┗製造部　department_B_production
+      # 　…
+      # 　　　　┗テスト部署3 Z99999999993
+      #
+      # 5. 世代4(1レコード)
+      # B事業部 department_B
+      # 　…
+      # 　　　　┗テスト部署3 Z99999999993
+      # 想定した数だけレコード数が増えていること
+      expect(DepartmentHierarchy.count).to eq (num_of_record_before + 6)
     end
   end
 
