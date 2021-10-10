@@ -212,36 +212,44 @@ class DepartmentHierarchy < ApplicationRecord
   #       ┗第一営業部　一課　　A01B01C01001
   #
   def self.awesome_print_hierarchies
-    # 出力用文字列用配列定義
+    # 出力用配列
     output_str = []
 
     # 階層の度合いを示すインデント文字列
     indent_str = "  "
 
     # 省略文字(世代2以降の場合のみ使用するため、予めインデント文字列を挿入する)
-    omit_str = "#{indent_str}...\n"
+    omit_str = "#{indent_str}..."
 
     DepartmentHierarchy.order(:parent_department_id, :generations).each do |dh|
+      # 世代0の場合は、太めの区切り文字を出力
+      # ※部門ごとの区切りがわかりやすいようにする
+      if dh.generations == 0
+        output_str << "============================================"
+      end
 
       # 「世代:XX」
-      output_str << "[世代:#{dh.generations}]\n"
-      output_str << "#{dh.parent_department.department_name}\n"
+      output_str << "[世代:#{dh.generations}]"
+
+      # 親部署
+      output_str << "#{dh.parent_department.department_name}"
 
       # 「...」 世代差が1以下の場合は出力しないため、-1してループさせる
       (dh.generations - 1).times do |n|
-        output_str << "#{(indent_str * n) + (omit_str)}\n"
+        output_str << "#{(indent_str * n) + (omit_str)}"
       end
 
+      # 世代:0(親部署=子部署)の場合は、子部署は出力しない
       if dh.generations >= 1
         # 「<空白>┗」
-        output_str << (indent_str * dh.generations) + "┗#{dh.child_department.department_name}\n"
+        output_str << (indent_str * dh.generations) + "┗#{dh.child_department.department_name}"
       end
 
-      # 区切り文字
-      output_str << "-------------------------------------\n"
+      # 区切り文字(世代:0の場合に出力した、太めの区切り文字と被らないように条件式で制御)
+      output_str << "\n"
     end
 
-    puts output_str.join
+    puts output_str.join("\n")
   end
 
   # =============== プライベートメソッド
