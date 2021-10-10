@@ -178,6 +178,72 @@ class DepartmentHierarchy < ApplicationRecord
     childs_hash = {}
   end
 
+  # # 概要
+  # [デバッグ用:テストは作成しない]
+  # 部署階層テーブルをいい感じに整形して標準出力するメソッド。
+  #
+  # # 引数
+  # なし
+  #
+  # 部署階層が以下の形式になっている場合。
+  # A事業部　A01000000000
+  #   ┗営業部　A01B01000000
+  #     ┗第一営業部　A01B01C01000
+  #       ┗第一営業部　一課　　A01B01C01001
+  #
+  # 出力は以下の通り。
+  # <hr>
+  # [世代:0]
+  # A事業部　A01000000000
+  # <hr>
+  # [世代:1]
+  # A事業部　A01000000000
+  #   ┗営業部　A01B01000000
+  # <hr>
+  # [世代:2]
+  # A事業部　A01000000000
+  #     ...
+  #       ┗第一営業部　A01B01C01000
+  # <hr>
+  # [世代:3]
+  # A事業部　A01000000000
+  #     ...
+  #     ...
+  #       ┗第一営業部　一課　　A01B01C01001
+  #
+  def self.awesome_print_hierarchies
+    # 出力用文字列用配列定義
+    output_str = []
+
+    # 階層の度合いを示すインデント文字列
+    indent_str = "  "
+
+    # 省略文字(世代2以降の場合のみ使用するため、予めインデント文字列を挿入する)
+    omit_str = "#{indent_str}...\n"
+
+    DepartmentHierarchy.order(:parent_department_id, :generations).each do |dh|
+
+      # 「世代:XX」
+      output_str << "[世代:#{dh.generations}]\n"
+      output_str << "#{dh.parent_department.department_name}\n"
+
+      # 「...」 世代差が1以下の場合は出力しないため、-1してループさせる
+      (dh.generations - 1).times do |n|
+        output_str << "#{(indent_str * n) + (omit_str)}\n"
+      end
+
+      if dh.generations >= 1
+        # 「<空白>┗」
+        output_str << (indent_str * dh.generations) + "┗#{dh.child_department.department_name}\n"
+      end
+
+      # 区切り文字
+      output_str << "-------------------------------------\n"
+    end
+
+    puts output_str.join
+  end
+
   # =============== プライベートメソッド
   private
 
