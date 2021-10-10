@@ -181,9 +181,11 @@ class DepartmentHierarchy < ApplicationRecord
   # # 概要
   # [デバッグ用:テストは作成しない]
   # 部署階層テーブルをいい感じに整形して標準出力するメソッド。
+  # 引数で指定した部署IDに紐づく部署階層を出力する。引数を指定しない、もしくはnilを
+  # 指定した場合はすべての部署階層を出力対象とする。
   #
   # # 引数
-  # なし
+  # parent_department_id
   #
   # 部署階層が以下の形式になっている場合。
   # A事業部　A01000000000
@@ -194,24 +196,24 @@ class DepartmentHierarchy < ApplicationRecord
   # 出力は以下の通り。
   # <hr>
   # [世代:0]
-  # A事業部　A01000000000
+  # A事業部　A01000000000<ID>
   # <hr>
   # [世代:1]
-  # A事業部　A01000000000
-  #   ┗営業部　A01B01000000
+  # A事業部　A01000000000<ID>
+  #   ┗営業部　A01B01000000<ID>
   # <hr>
   # [世代:2]
-  # A事業部　A01000000000
+  # A事業部　A01000000000<ID>
   #     ...
-  #       ┗第一営業部　A01B01C01000
+  #       ┗第一営業部　A01B01C01000<ID>
   # <hr>
   # [世代:3]
-  # A事業部　A01000000000
+  # A事業部　A01000000000<ID>
   #     ...
   #     ...
-  #       ┗第一営業部　一課　　A01B01C01001
+  #       ┗第一営業部　一課　　A01B01C01001<ID>
   #
-  def self.awesome_print_hierarchies
+  def self.awesome_print_hierarchies(parent_department_id = nil)
     # 出力用配列
     output_str = []
 
@@ -221,7 +223,10 @@ class DepartmentHierarchy < ApplicationRecord
     # 省略文字(世代2以降の場合のみ使用するため、予めインデント文字列を挿入する)
     omit_str = "#{indent_str}..."
 
-    DepartmentHierarchy.order(:parent_department_id, :generations).each do |dh|
+    department_hierarchies = parent_department_id == nil ?
+      DepartmentHierarchy.all : DepartmentHierarchy.where(parent_department_id: parent_department_id)
+
+    department_hierarchies.order(:parent_department_id, :generations).each do |dh|
       # 世代0の場合は、太めの区切り文字を出力
       # ※部門ごとの区切りがわかりやすいようにする
       if dh.generations == 0
@@ -232,7 +237,7 @@ class DepartmentHierarchy < ApplicationRecord
       output_str << "[世代:#{dh.generations}]"
 
       # 親部署
-      output_str << "#{dh.parent_department.department_name}"
+      output_str << "#{dh.parent_department.department_name}<#{dh.parent_department.id}>"
 
       # 「...」 世代差が1以下の場合は出力しないため、-1してループさせる
       (dh.generations - 1).times do |n|
@@ -242,7 +247,8 @@ class DepartmentHierarchy < ApplicationRecord
       # 世代:0(親部署=子部署)の場合は、子部署は出力しない
       if dh.generations >= 1
         # 「<空白>┗」
-        output_str << (indent_str * dh.generations) + "┗#{dh.child_department.department_name}"
+        output_str << (indent_str * dh.generations) +
+                      "┗#{dh.child_department.department_name}<#{dh.child_department.id}>"
       end
 
       # 区切り文字(世代:0の場合に出力した、太めの区切り文字と被らないように条件式で制御)
