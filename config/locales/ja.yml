@@ -1,0 +1,54 @@
+ja:
+ activerecord:
+    models:
+      employment_status: 社員
+      department: 部署
+      hierarchy_department: 部署階層
+      employee_department: 社員-部署
+      project: プロジェクト
+      affilitation_type: 所属種別
+      employment_status: 就業状況
+      rank: ランク
+      work_table: 勤務表
+    attributes:
+      employee:
+        employee_code: 社員コード
+        employee_name: 社員名
+        employee_name_kana: 社員名(フリガナ)
+        age: 年齢
+        employment_status: 就業状況
+      department:
+        department_code: 部署コード
+        establishment_date: 設立日
+        abolished_date: 廃止日
+        department_name: 部署名
+        department_kana_name: 部署名(カナ)
+      department_hierarchy:
+        parent_department: 親部署
+        child_department: 子親部署
+      employee_department:
+        department: 部署
+        employee: 社員
+        affilitation_type: 所属種別
+        start_date: 着任日
+        end_date: 離任日
+      project:
+        project_code: プロジェクトコード
+        project_name: プロジェクト名
+        enabled: 有効フラグ
+        start_date: プロジェクト開始日
+        end_date: プロジェクト終了日
+      affilitation_type:
+        affilitation_type_name: 所属種別名
+      employment_status:
+        status_code: 就業状況コード
+        status_name: 就業状況
+      rank:
+        rank_code: ランクコード
+      work_table:
+        employee_code: 社員コード
+        working_date: 勤務日
+        project_code: プロジェクトコード
+        employee_code: 就業状況コード
+        rank_code: ランクコード
+        closed: 締めフラグ

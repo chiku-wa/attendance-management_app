@@ -1,2 +1,0 @@
-class HierarchyDepartment < ApplicationRecord
-end
