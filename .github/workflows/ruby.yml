@@ -31,11 +31,9 @@ jobs:
         key: bundle-${{ hashFiles('**/Gemfile.lock') }}
 
     # 使用するRubyバージョンを指定する
-    - name: Set up Ruby 2.6
-      # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
-      uses: actions/checkout@v2
-      with:
-        ruby-version: 2.6.6
+    - name: Set up Ruby with .ruby-version
+      # 「.ruby-version」に記載されたRubyバージョンを使用
+      uses: ruby/setup-ruby@477b21f02be01bcb8030d50f37cfec92bfa615b6
 
     # bundle install実行
     - name: setup bundle
