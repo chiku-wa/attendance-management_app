@@ -39,7 +39,7 @@ jobs:
       # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
       uses: actions/checkout@v2
       with:
-        ruby-version: 2.6.x
+        ruby-version: 2.6.6
 
     # マイグレーション実行
     - name: setup migrate
