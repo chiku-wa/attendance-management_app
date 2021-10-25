@@ -1,7 +1,5 @@
 default: &default
   adapter: postgresql
-  username: <%= ENV['DATABASE_USERNAME'] %>
-  password: <%= ENV['DATABASE_PASSWORD'] %>
   pool: <%= ENV.fetch('RAILS_MAX_THREADS') { 5 } %>
   timeout: 5000
   encoding: unicode
@@ -9,11 +7,17 @@ default: &default
 development:
   <<: *default
   database: kintai_development
+  username: <%= ENV['DATABASE_DEV_USERNAME'] %>
+  password: <%= ENV['DATABASE_DEV_PASSWORD'] %>
 
 test:
   <<: *default
   database: kintai_test
+  username: <%= ENV['DATABASE_TEST_USERNAME'] %>
+  password: <%= ENV['DATABASE_TEST_PASSWORD'] %>
 
 production:
   <<: *default
   database: kintai
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>

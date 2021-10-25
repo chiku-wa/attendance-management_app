@@ -1,9 +1,12 @@
-name: Ruby
+name: RSpec
 
 # master,developmentブランチへのPush時に実行
 on:
+  # 以下の条件をトリガーに動作させる
+  # 1. 所定のブランチに対してPushされた時
   push:
     branches: [ master,development ]
+  # 2. masterブランチにプルリクされた時
   pull_request:
     branches: [ master ]
 
@@ -17,6 +20,27 @@ jobs:
     # windows-latest
     runs-on: macos-latest
 
+    # Gitのコミットメッセージの先頭に「ga skip」がある場合は、GithubActionsをスキップさせる
+    # ※GithubActionsの無料枠を節約するため
+    if: "!contains(github.event.head_commit.message, 'ga skip')"
+    services:
+      # PostgreSQLの設定
+      posgres:
+        image: posgres:13
+        # database.ymlに設定されている、テスト用ユーザの接続情報を指定する
+        env:
+          POSTGRES_USER: kintai_test_user
+          POSTGRES_PASSWORD: Kintai@test
+          POSTGRES_DB: kintai_test
+        # オプションはGithubActionsの公式ドキュメントより引用
+        # https://docs.github.com/ja/actions/using-containerized-services/creating-postgresql-service-containers
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
     # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
     - uses: actions/checkout@v2
