@@ -5,10 +5,10 @@ on:
   # 以下の条件をトリガーに動作させる
   # 1. 所定のブランチに対してPushされた時
   push:
-    branches: [ master,development ]
+    branches: [master, development]
   # 2. masterブランチにプルリクされた時
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   run_spec:
@@ -42,37 +42,41 @@ jobs:
         ports:
           - 5432:5432
     steps:
-    # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
-    - uses: actions/checkout@v2
+      # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
+      # ※キャッシュを使用する
+      - uses: actions/checkout@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
 
-    # 画像の加工に必要なソフトウェアのインストール
-    - run: brew install imagemagick
+      # 画像の加工に必要なソフトウェアをOSにインストール
+      - name: Install imagemagick
+        run: brew install imagemagick
 
-    # gemをキャッシュする
-    - uses: actions/cache@v1
-      with:
-        path: vendor/bundle
-        key: bundle-${{ hashFiles('**/Gemfile.lock') }}
+      # 使用するRubyバージョンを指定する
+      - name: Set up Ruby with .ruby-version
+        # 「.ruby-version」に記載されたRubyバージョンを使用
+        uses: ruby/setup-ruby@477b21f02be01bcb8030d50f37cfec92bfa615b6
+        with:
+          bundler-cache: true
 
-    # 使用するRubyバージョンを指定する
-    - name: Set up Ruby with .ruby-version
-      # 「.ruby-version」に記載されたRubyバージョンを使用
-      uses: ruby/setup-ruby@477b21f02be01bcb8030d50f37cfec92bfa615b6
+      # bundle install実行
+      - name: Bundle install
+        run: |
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
 
-    # bundle install実行
-    - name: setup bundle
-      run: bundle install
+      # マイグレーション実行
+      - name: Setup migrate
+        run: |
+          rails db:create RAILS_ENV=test
+          rails db:migrate RAILS_ENV=test
 
-    # マイグレーション実行
-    - name: setup migrate
-      run: |
-        rails db:create RAILS_ENV=test
-        rails db:migrate RAILS_ENV=test
-
-    # テスト実行
-    - name: Test with Rspec
-      # gemをインストールし、テストを実行する
-      run: |
-        gem install bundler
-        bundle install --path vendor/bundle --quiet --jobs 4 --retry 3
-        bundle exec rspec
+      # テスト実行
+      - name: Test with Rspec
+        # gemをインストールし、テストを実行する
+        run: |
+          gem install bundler
+          bundle exec rspec
