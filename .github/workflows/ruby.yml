@@ -29,7 +29,6 @@ jobs:
         image: postgres:13
         # database.ymlに設定されている、テスト用ユーザの接続情報を指定する
         env:
-          RAILS_DATABASE_HOST: postgres
           POSTGRES_DB: kintai_test
           POSTGRES_USER: kintai_test_user
           POSTGRES_PASSWORD: Kintai@test
@@ -42,6 +41,12 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+    # 環境変数を定義
+    env:
+      # PostgreSQLにアクセスできなくなるため定義する
+      RAILS_DATABASE_HOST: postgres
+      # テスト環境であることを明示
+      RAILS_ENV: test
     steps:
       # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
       - uses: actions/checkout@v2
@@ -87,6 +92,6 @@ jobs:
       - name: Test with Rspec
         # gemをインストールし、テストを実行する
         run: |
-          bin/rails db:create RAILS_ENV=test
-          bin/rails db:migrate RAILS_ENV=test
+          bin/rails db:create
+          bin/rails db:migrate
           bundle exec rspec
