@@ -18,7 +18,7 @@ jobs:
     # 例：
     # macos-latest
     # windows-latest
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     # Gitのコミットメッセージの先頭に「ga skip」がある場合は、GithubActionsをスキップさせる
     # ※GithubActionsの無料枠を節約するため
