@@ -51,15 +51,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gems-
 
-      # 画像の加工に必要なソフトウェアをOSにインストール
-      - name: Install imagemagick
-        run: brew install imagemagick
-
       # 使用するRubyバージョンを指定する
-      - name: Set up Ruby with .ruby-version
-        # 「.ruby-version」に記載されたRubyバージョンを使用
+      - name: Set up Ruby
         uses: ruby/setup-ruby@477b21f02be01bcb8030d50f37cfec92bfa615b6
         with:
+          ruby-version: 2.6.6
           bundler-cache: true
 
       # bundle install実行
