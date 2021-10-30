@@ -42,11 +42,6 @@ jobs:
         ports:
           - 5432:5432
     # 環境変数を定義
-    env:
-      # PostgreSQLにアクセスできなくなるため定義する
-      RAILS_DATABASE_HOST: postgres
-      # テスト環境であることを明示
-      RAILS_ENV: test
     steps:
       # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
       - uses: actions/checkout@v2
@@ -57,6 +52,9 @@ jobs:
         with:
           ruby-version: 2.6.6
           bundler-cache: true
+        env:
+          # テスト環境であることを明示
+          RAILS_ENV: test
 
       # gemをキャッシュする
       # [path]
