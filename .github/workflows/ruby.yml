@@ -45,11 +45,6 @@ jobs:
       # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
       # ※キャッシュを使用する
       - uses: actions/checkout@v2
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
 
       # 使用するRubyバージョンを指定する
       - name: Set up Ruby
@@ -61,8 +56,7 @@ jobs:
       # bundle install実行
       - name: Bundle install
         run: |
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
+          bundle install
 
       # マイグレーション実行
       - name: Setup migrate
@@ -75,4 +69,5 @@ jobs:
         # gemをインストールし、テストを実行する
         run: |
           gem install bundler
+          bundle install --path vendor/bundle --quiet --jobs 4 --retry 3
           bundle exec rspec
