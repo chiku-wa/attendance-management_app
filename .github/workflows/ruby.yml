@@ -45,7 +45,12 @@ jobs:
     steps:
       # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
       - uses: actions/checkout@v2
-
+      - name: Setup docker
+        shell: bash
+        # GitHubActionsのエラー回避のため、yarnのインストール・アップデートを行う
+        run: docker-compose run app yarn install --check-files
+          docker-compose run app yarn upgrade
+          docker-compose build
       # 使用するRubyバージョンを指定する
       - name: Set up Ruby
         uses: ruby/setup-ruby@477b21f02be01bcb8030d50f37cfec92bfa615b6
