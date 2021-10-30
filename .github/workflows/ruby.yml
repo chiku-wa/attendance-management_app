@@ -29,9 +29,10 @@ jobs:
         image: postgres:13
         # database.ymlに設定されている、テスト用ユーザの接続情報を指定する
         env:
+          RAILS_DATABASE_HOST: postgres
+          POSTGRES_DB: kintai_test
           POSTGRES_USER: kintai_test_user
           POSTGRES_PASSWORD: Kintai@test
-          POSTGRES_DB: kintai_test
         # オプションはGithubActionsの公式ドキュメントより引用
         # https://docs.github.com/ja/actions/using-containerized-services/creating-postgresql-service-containers
         options: >-
@@ -79,7 +80,8 @@ jobs:
       - name: Bundle install
         run: |
           gem install bundler
-          bundle install --path vendor/bundle --quiet --jobs 4 --retry 3
+          bundle config path vendor/bundle
+          bundle install --quiet --jobs 4 --retry 3
 
       # テスト実行
       - name: Test with Rspec
