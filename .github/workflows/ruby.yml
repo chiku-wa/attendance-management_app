@@ -26,7 +26,7 @@ jobs:
     services:
       # PostgreSQLの設定
       posgres:
-        image: posgres:13
+        image: posttgres:13
         # database.ymlに設定されている、テスト用ユーザの接続情報を指定する
         env:
           POSTGRES_USER: kintai_test_user
