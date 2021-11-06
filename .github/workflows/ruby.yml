@@ -39,8 +39,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        ports:
-          - 5432:5432
     # 環境変数を定義
     steps:
       # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
@@ -54,6 +52,10 @@ jobs:
         env:
           # テスト環境であることを明示
           RAILS_ENV: test
+          # PostgreSQLサービスコンテナとの通信に使われるホスト名
+          POSTGRES_HOST: postgres
+          # デフォルトのPostgreSQLポート
+          POSTGRES_PORT: 5432
 
       # 必要なライブラリをキャッシュし、GitHubActionsの動作を高速化させる。
       # [path]
