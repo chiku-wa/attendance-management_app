@@ -53,7 +53,7 @@ jobs:
           # テスト環境であることを明示
           RAILS_ENV: test
           # PostgreSQLサービスコンテナとの通信に使われるホスト名
-          POSTGRES_HOST: postgres
+          POSTGRES_HOST: postgres:13
           # デフォルトのPostgreSQLポート
           POSTGRES_PORT: 5432
 
