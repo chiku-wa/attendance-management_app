@@ -25,7 +25,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'ga skip')"
     services:
       # PostgreSQLの設定
-      posgres:
+      postgres:
         image: postgres:13
         # database.ymlに設定されている、テスト用ユーザの接続情報を指定する
         env:
@@ -53,7 +53,8 @@ jobs:
           # テスト環境であることを明示
           RAILS_ENV: test
           # PostgreSQLサービスコンテナとの通信に使われるホスト名
-          POSTGRES_HOST: 127.0.0.1
+          # ※services -> postgres -> imageの値と同じものを設定すること
+          POSTGRES_HOST: postgres:13
           # デフォルトのPostgreSQLポート
           POSTGRES_PORT: 5432
 
