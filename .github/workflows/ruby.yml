@@ -39,7 +39,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    # 環境変数を定義
     steps:
       # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
       - uses: actions/checkout@v2
@@ -104,6 +103,11 @@ jobs:
       - name: yarn install
         run: |
           yarn install --check-files
+
+      # PostgreSQL
+      - name: Start PostgreSQL
+        run: |
+          sudo systemctl start postgresql.service
 
       # テスト実行
       - name: Test with Rspec
