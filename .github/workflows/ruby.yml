@@ -108,6 +108,7 @@ jobs:
       - name: Start PostgreSQL
         run: |
           sudo systemctl start postgresql.service
+          pg_isready
 
       # テスト実行
       - name: Test with Rspec
