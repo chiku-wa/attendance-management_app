@@ -12,6 +12,7 @@ development:
 
 test:
   <<: *default
+  host: 127.0.0.1
   database: kintai_test
   username: <%= ENV['DATABASE_TEST_USERNAME'] %>
   password: <%= ENV['DATABASE_TEST_PASSWORD'] %>
