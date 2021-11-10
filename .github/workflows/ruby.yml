@@ -56,9 +56,6 @@ jobs:
           POSTGRES_HOST: postgres
           # デフォルトのPostgreSQLポート
           POSTGRES_PORT: 5432
-      - name: Confirm startup of PostgreSQL
-        run: |
-          pg_isready
 
       # 必要なライブラリをキャッシュし、GitHubActionsの動作を高速化させる。
       # [path]
@@ -106,6 +103,12 @@ jobs:
       - name: yarn install
         run: |
           yarn install --check-files
+
+      # PostgreSQL
+      - name: Start PostgreSQL and confirm start up service
+        run: |
+          sudo systemctl start postgresql.service
+          pg_isready
 
       # テスト実行
       - name: Test with Rspec
