@@ -31,7 +31,7 @@ jobs:
         env:
           POSTGRES_DB: kintai_test
           POSTGRES_USER: kintai_test_user
-          POSTGRES_PASSWORD: Kintai@test
+          POSTGRES_PASSWORD: Kintai_test
         # オプションはGithubActionsの公式ドキュメントより引用
         # https://docs.github.com/ja/actions/using-containerized-services/creating-postgresql-service-containers
         options: >-
@@ -48,16 +48,11 @@ jobs:
         with:
           ruby-version: 2.6.6
           bundler-cache: true
-        env:
-          # テスト環境であることを明示
-          RAILS_ENV: test
-          # PostgreSQLサービスコンテナとの通信に使われるホスト名
-          # ※services 直下の名前「postgres」と同じにすること
-          POSTGRES_HOST: postgres
-          # デフォルトのPostgreSQLポート
-          POSTGRES_PORT: 5432
-          # 接続用URL
-          DATABASE_URL: postgres://kintai_test_user:Kintai@test@localhost:5432/kintai_test
+        run: |
+          echo "rails_env=test" >> $GITHUB_ENV
+          echo "postgres_host=postgres" >> $GITHUB_ENV
+          echo "postgres_port=5432" >> $GITHUB_ENV
+          echo "database_url=postgres://kintai_test_user:Kintai_test@localhost:5432/kintai_test" >> $GITHUB_ENV
 
       # 必要なライブラリをキャッシュし、GitHubActionsの動作を高速化させる。
       # [path]
@@ -105,11 +100,6 @@ jobs:
       - name: yarn install
         run: |
           yarn install --check-files
-
-      # 環境変数を出力
-      - name: Show environments
-        run: |
-          printenv
 
       # PostgreSQL
       - name: Start PostgreSQL and confirm start up service
