@@ -56,6 +56,8 @@ jobs:
           POSTGRES_HOST: postgres
           # デフォルトのPostgreSQLポート
           POSTGRES_PORT: 5432
+          # 接続用URL
+          DATABASE_URL: postgres://kintai_test_user:Kintai@test@localhost:5432/kintai_test
 
       # 必要なライブラリをキャッシュし、GitHubActionsの動作を高速化させる。
       # [path]
@@ -103,6 +105,11 @@ jobs:
       - name: yarn install
         run: |
           yarn install --check-files
+
+      # 環境変数を出力
+      - name: Show environments
+        run: |
+          printenv
 
       # PostgreSQL
       - name: Start PostgreSQL and confirm start up service
