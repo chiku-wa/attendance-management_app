@@ -48,6 +48,8 @@ jobs:
         with:
           ruby-version: 2.6.6
           bundler-cache: true
+
+      - name: Set env
         run: |
           echo "rails_env=test" >> $GITHUB_ENV
           echo "postgres_host=postgres" >> $GITHUB_ENV
