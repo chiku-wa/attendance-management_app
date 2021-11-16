@@ -12,7 +12,9 @@ development:
 
 test:
   <<: *default
-  host: 127.0.0.1
+  # GithubActionsでテスト実行するために、環境変数でURLを明示する
+  # ※.github/workflows/ruby.ymlの環境変数「database_url」に対応
+  host: <%= ENV['DATABASE_URL'] %>
   database: kintai_test
   username: <%= ENV['DATABASE_TEST_USERNAME'] %>
   password: <%= ENV['DATABASE_TEST_PASSWORD'] %>
