@@ -52,8 +52,6 @@ jobs:
       - name: Set env
         run: |
           echo "rails_env=test" >> $GITHUB_ENV
-          echo "postgres_host=postgres" >> $GITHUB_ENV
-          echo "postgres_port=5432" >> $GITHUB_ENV
           echo "database_url=postgres://kintai_test_user:Kintai_test@localhost:5432/kintai_test" >> $GITHUB_ENV
 
       # 必要なライブラリをキャッシュし、GitHubActionsの動作を高速化させる。
