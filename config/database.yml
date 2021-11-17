@@ -6,21 +6,18 @@ default: &default
 
 development:
   <<: *default
-  database: kintai_development
+  database: <%= ENV['DATABASE_DEV_NAME'] %>
   username: <%= ENV['DATABASE_DEV_USERNAME'] %>
   password: <%= ENV['DATABASE_DEV_PASSWORD'] %>
 
 test:
   <<: *default
-  # GithubActionsでテスト実行するために、環境変数でURLを明示する
-  # ※.github/workflows/ruby.ymlの環境変数「database_url」に対応
-  host: <%= ENV['DATABASE_URL'] %>
-  database: kintai_test
+  database: <%= ENV['DATABASE_TEST_NAME'] %>
   username: <%= ENV['DATABASE_TEST_USERNAME'] %>
   password: <%= ENV['DATABASE_TEST_PASSWORD'] %>
 
 production:
   <<: *default
-  database: kintai
+  database: <%= ENV['DATABASE_NAME'] %>
   username: <%= ENV['DATABASE_USERNAME'] %>
   password: <%= ENV['DATABASE_PASSWORD'] %>

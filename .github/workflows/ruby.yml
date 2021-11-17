@@ -49,11 +49,6 @@ jobs:
           ruby-version: 2.6.6
           bundler-cache: true
 
-      - name: Set env
-        run: |
-          echo "rails_env=test" >> $GITHUB_ENV
-          echo "database_url=postgres://kintai_test_user:Kintai_test@localhost:5432/kintai_test" >> $GITHUB_ENV
-
       # 必要なライブラリをキャッシュし、GitHubActionsの動作を高速化させる。
       # [path]
       # キャッシュとして保存＆復元するディレクトリのパス。
@@ -109,6 +104,13 @@ jobs:
 
       # テスト実行
       - name: Test with Rspec
+        env:
+          RAILS_ENV: test
+          POSTGRES_HOST: postgres
+          POSTGRES_USER: kintai_test_user
+          POSTGRES_PASSWORD: Kintai_test
+          POSTGRES_DB: kintai_test
+          POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
         # gemをインストールし、テストを実行する
         run: |
           bin/rails db:create
