@@ -105,12 +105,12 @@ jobs:
       # テスト実行
       - name: Test with Rspec
         env:
+          # Railsの実行環境
           RAILS_ENV: test
-          POSTGRES_HOST: postgres
-          POSTGRES_USER: kintai_test_user
-          POSTGRES_PASSWORD: Kintai_test
-          POSTGRES_DB: kintai_test
-          POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
+          # .envで定義しているDB設定
+          DATABASE_TEST_NAME: kintai_test
+          DATABASE_TEST_USERNAME: kintai_test_user
+          DATABASE_TEST_PASSWORD: Kintai_test
         # gemをインストールし、テストを実行する
         run: |
           bin/rails db:create
