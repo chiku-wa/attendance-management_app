@@ -25,6 +25,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'ga skip')"
     services:
       # PostgreSQLの設定
+      # postgresコンテナの仕様：https://hub.docker.com/_/postgres
       postgres:
         image: postgres:13
         env:
@@ -36,6 +37,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 5432:5432
     steps:
       # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
       - uses: actions/checkout@v2
