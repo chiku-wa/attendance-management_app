@@ -41,82 +41,78 @@ jobs:
         ports:
           - 5432:5432
     steps:
-      # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
-      - uses: actions/checkout@v2
-      # 使用するRubyバージョンを指定する
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@477b21f02be01bcb8030d50f37cfec92bfa615b6
-        with:
-          ruby-version: 2.6.6
-          bundler-cache: true
-
-      # 必要なライブラリをキャッシュし、GitHubActionsの動作を高速化させる。
-      # [path]
-      # キャッシュとして保存＆復元するディレクトリのパス。
-      # 絶対パスか、プロジェクトのルートディレクトリからの相対パスを指定する。
-      #
-      # [key]
-      # キャッシュを保存＆復元するためのキー。最大512文字。
-      #
-      # [restore-keys]
-      # キャッシュ復元時に[key]に完全に一致するキャッシュが存在しなかったときに使われるキーのリスト(任意、必須ではない)
-      #
-      # なお、度作成したキャッシュの上書きはできないため、キャッシュキーの先頭にバージョン名など
-      # を入れておくと、バージョン番号を変更するだけでキャッシュをまとめて無効化できるため推奨。
-      # 例：「actions/cache@v1」→「actions/cache@v2」に変更すると、キャッシュを使ず動作する。
-      #     ※OSと連動させたいなら`${{ runner.os }}`と記せば良い。
-      # Gemfileをキャッシュ
-      - uses: actions/cache@v1
-        with:
-          path: vendor/bundle
-          key: ${{ env.cache-version }}-bundle-${{ hashFiles('**/Gemfile.lock') }}
-          # keyで定義したキーを前方一致で検索して復元
-          restore-keys: ${{ env.cache-version }}-bundle-
-
-      # yarnをキャッシュ(参考：https://github.com/actions/cache/blob/main/examples.md#node---yarn)
-      # キャッシュを行う前に、キャッシュディレクトリを取得する
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v1
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ env.cache-version }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ env.cache-version }}-yarn-
-
-      # Bunlerインストール
-      - name: Bundle install
+      - name: Check run for PostgreSQL
         run: |
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --quiet --jobs 4 --retry 3
-
-      # yarnインストール
-      - name: yarn install
-        run: |
-          yarn install --check-files
-
-      # # PostgreSQL起動&起動確認
-      # - name: Start PostgreSQL and confirm start up service
-      #   run: |
-      #     sudo systemctl start postgresql.service
-      #     pg_isready
-
-      # テスト実行
-      - name: Test with Rspec
-        env:
-          # Railsの実行環境
-          RAILS_ENV: test
-          # 前述の設定で定義した「services -> postgres」を参照させるための設定
-          POSTGRES_HOST: localhost
-          # database.ymlが参照しているDBの環境変数を定義
-          DATABASE_TEST_NAME: postgres
-          DATABASE_TEST_USERNAME: postgres
-          DATABASE_TEST_PASSWORD: postgres
-        # gemをインストールし、テストを実行する
-        run: |
-          bin/rails db:create
-          bin/rails db:migrate
-          bundle exec rspec
+          PGPASSWORD=postgre psql -U postgre -d postgre -c "\du"
+    #   # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
+    #   - uses: actions/checkout@v2
+    #   # 使用するRubyバージョンを指定する
+    #   - name: Set up Ruby
+    #     uses: ruby/setup-ruby@477b21f02be01bcb8030d50f37cfec92bfa615b6
+    #     with:
+    #       ruby-version: 2.6.6
+    #       bundler-cache: true
+    #   # 必要なライブラリをキャッシュし、GitHubActionsの動作を高速化させる。
+    #   # [path]
+    #   # キャッシュとして保存＆復元するディレクトリのパス。
+    #   # 絶対パスか、プロジェクトのルートディレクトリからの相対パスを指定する。
+    #   #
+    #   # [key]
+    #   # キャッシュを保存＆復元するためのキー。最大512文字。
+    #   #
+    #   # [restore-keys]
+    #   # キャッシュ復元時に[key]に完全に一致するキャッシュが存在しなかったときに使われるキーのリスト(任意、必須ではない)
+    #   #
+    #   # なお、度作成したキャッシュの上書きはできないため、キャッシュキーの先頭にバージョン名など
+    #   # を入れておくと、バージョン番号を変更するだけでキャッシュをまとめて無効化できるため推奨。
+    #   # 例：「actions/cache@v1」→「actions/cache@v2」に変更すると、キャッシュを使ず動作する。
+    #   #     ※OSと連動させたいなら`${{ runner.os }}`と記せば良い。
+    #   # Gemfileをキャッシュ
+    #   - uses: actions/cache@v1
+    #     with:
+    #       path: vendor/bundle
+    #       key: ${{ env.cache-version }}-bundle-${{ hashFiles('**/Gemfile.lock') }}
+    #       # keyで定義したキーを前方一致で検索して復元
+    #       restore-keys: ${{ env.cache-version }}-bundle-
+    #   # yarnをキャッシュ(参考：https://github.com/actions/cache/blob/main/examples.md#node---yarn)
+    #   # キャッシュを行う前に、キャッシュディレクトリを取得する
+    #   - name: Get yarn cache directory path
+    #     id: yarn-cache-dir-path
+    #     run: echo "::set-output name=dir::$(yarn cache dir)"
+    #   - uses: actions/cache@v1
+    #     with:
+    #       path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+    #       key: ${{ env.cache-version }}-yarn-${{ hashFiles('**/yarn.lock') }}
+    #       restore-keys: |
+    #         ${{ env.cache-version }}-yarn-
+    #   # Bunlerインストール
+    #   - name: Bundle install
+    #     run: |
+    #       gem install bundler
+    #       bundle config path vendor/bundle
+    #       bundle install --quiet --jobs 4 --retry 3
+    #   # yarnインストール
+    #   - name: yarn install
+    #     run: |
+    #       yarn install --check-files
+    #   # # PostgreSQL起動&起動確認
+    #   # - name: Start PostgreSQL and confirm start up service
+    #   #   run: |
+    #   #     sudo systemctl start postgresql.service
+    #   #     pg_isready
+    #   # テスト実行
+    #   - name: Test with Rspec
+    #     env:
+    #       # Railsの実行環境
+    #       RAILS_ENV: test
+    #       # 前述の設定で定義した「services -> postgres」を参照させるための設定
+    #       POSTGRES_HOST: localhost
+    #       # database.ymlが参照しているDBの環境変数を定義
+    #       DATABASE_TEST_NAME: postgres
+    #       DATABASE_TEST_USERNAME: postgres
+    #       DATABASE_TEST_PASSWORD: postgres
+    #     # gemをインストールし、テストを実行する
+    #     run: |
+    #       bin/rails db:create
+    #       bin/rails db:migrate
+    #       bundle exec rspec
