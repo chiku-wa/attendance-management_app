@@ -44,8 +44,6 @@ jobs:
           - 5432:5432
     steps:
       - name: Check run for PostgreSQL
-        env:
-          POSTGRES_HOST: localhost
         run: |
           PGPASSWORD=postgres  psql -h postgres -U postgres -d postgres -c "\du"
     #   # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
