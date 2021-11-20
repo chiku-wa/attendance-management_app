@@ -92,16 +92,17 @@ jobs:
           gem install bundler
           bundle config path vendor/bundle
           bundle install --quiet --jobs 4 --retry 3
+
       # yarnインストール
       - name: yarn install
         run: |
           yarn install --check-files
 
-      # PostgreSQL
-      - name: Start PostgreSQL and confirm start up service
-        run: |
-          sudo systemctl start postgresql.service
-          pg_isready
+      # # PostgreSQL
+      # - name: Start PostgreSQL and confirm start up service
+      #   run: |
+      #     sudo systemctl start postgresql.service
+      #     pg_isready
 
       # テスト実行
       - name: Test with Rspec
