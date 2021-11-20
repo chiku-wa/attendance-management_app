@@ -20,9 +20,6 @@ jobs:
     # windows-latest
     runs-on: ubuntu-latest
 
-    # Gitのコミットメッセージの先頭に「ga skip」がある場合は、GithubActionsをスキップさせる
-    # ※GithubActionsの無料枠を節約するため
-    if: "!contains(github.event.head_commit.message, 'ga skip')"
     services:
       # PostgreSQLの設定
       # postgresコンテナの仕様：https://hub.docker.com/_/postgres
@@ -40,10 +37,12 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+    env:
+      POSTGRES_HOST: postgres
     steps:
       - name: Check run for PostgreSQL
         run: |
-          PGPASSWORD=postgres psql -h postgres -U postgres -d postgres -c "\du"
+          PGPASSWORD=postgres -U postgres -d postgres -c "\du"
     #   # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
     #   - uses: actions/checkout@v2
     #   # 使用するRubyバージョンを指定する
