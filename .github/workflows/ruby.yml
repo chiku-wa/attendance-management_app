@@ -110,7 +110,7 @@ jobs:
           # Railsの実行環境
           RAILS_ENV: test
           # 前述の設定で定義した「services -> postgres」を参照させるための設定
-          POSTGRES_HOST: postgres
+          POSTGRES_HOST: localhost
           # database.ymlが参照しているDBの環境変数を定義
           DATABASE_TEST_NAME: postgres
           DATABASE_TEST_USERNAME: postgres
