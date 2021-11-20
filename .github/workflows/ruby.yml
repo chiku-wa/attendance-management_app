@@ -1,4 +1,4 @@
-name: RSpec
+name: Execute RSpec on PostgreSQL
 
 # master,developmentブランチへのPush時に実行
 on:
@@ -11,7 +11,7 @@ on:
     branches: [master]
 
 jobs:
-  run_spec:
+  container-job:
     name: Run spec
 
     # ジョブを実行する仮想マシンを選択
@@ -20,14 +20,18 @@ jobs:
     # windows-latest
     runs-on: ubuntu-latest
 
+    # `container-job` が実行される Docker Hub イメージ
+    container: node:10.18-jessie
+
     # Gitのコミットメッセージの先頭に「ga skip」がある場合は、GithubActionsをスキップさせる
     # ※GithubActionsの無料枠を節約するため
     if: "!contains(github.event.head_commit.message, 'ga skip')"
     services:
       # PostgreSQLの設定
       # postgresコンテナの仕様：https://hub.docker.com/_/postgres
+      # 「postgres」という名前でラベル付けする(後述の処理で、PostgreSQLが必要な場合に使用する)
       postgres:
-        image: postgres:13
+        image: postgres
         env:
           POSTGRES_PASSWORD: postgres
         # オプションはGithubActionsの公式ドキュメントより引用
