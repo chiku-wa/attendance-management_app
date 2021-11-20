@@ -28,14 +28,14 @@ jobs:
       postgres:
         image: postgres:13
         env:
-          # 「POSTGRES_DB」にはdatabase.ymlに設定されている、テスト用DBを指定する
-          # ただし、POSTGRES_USER、POSTGRES_PASSWORDはpostgres固定とすること
-          POSTGRES_DB: kintai_test
-          POSTGRES_USER: kintai_test_user
-          POSTGRES_PASSWORD: Kintai_test
+          POSTGRES_PASSWORD: postgres
         # オプションはGithubActionsの公式ドキュメントより引用
         # https://docs.github.com/ja/actions/using-containerized-services/creating-postgresql-service-containers
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
       - uses: actions/checkout@v2
@@ -105,10 +105,12 @@ jobs:
         env:
           # Railsの実行環境
           RAILS_ENV: test
-          # .envで定義しているDB設定
-          DATABASE_TEST_NAME: kintai_test
-          DATABASE_TEST_USERNAME: kintai_test_user
-          DATABASE_TEST_PASSWORD: Kintai_test
+          # 前述の設定で定義した「services -> postgres」を参照させるための設定
+          POSTGRES_HOST: postgres
+          # database.ymlが参照しているDBの環境変数を定義
+          DATABASE_TEST_NAME: postgres
+          DATABASE_TEST_USERNAME: postgres
+          DATABASE_TEST_PASSWORD: postgres
         # gemをインストールし、テストを実行する
         run: |
           bin/rails db:create
