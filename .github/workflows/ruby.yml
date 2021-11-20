@@ -35,11 +35,7 @@ jobs:
           POSTGRES_PASSWORD: Kintai_test
         # オプションはGithubActionsの公式ドキュメントより引用
         # https://docs.github.com/ja/actions/using-containerized-services/creating-postgresql-service-containers
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
       - uses: actions/checkout@v2
@@ -98,7 +94,7 @@ jobs:
         run: |
           yarn install --check-files
 
-      # # PostgreSQL
+      # # PostgreSQL起動&起動確認
       # - name: Start PostgreSQL and confirm start up service
       #   run: |
       #     sudo systemctl start postgresql.service
