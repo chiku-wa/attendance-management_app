@@ -31,8 +31,8 @@ jobs:
           # 「POSTGRES_DB」にはdatabase.ymlに設定されている、テスト用DBを指定する
           # ただし、POSTGRES_USER、POSTGRES_PASSWORDはpostgres固定とすること
           POSTGRES_DB: kintai_test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: kintai_test_user
+          POSTGRES_PASSWORD: Kintai_test
         # オプションはGithubActionsの公式ドキュメントより引用
         # https://docs.github.com/ja/actions/using-containerized-services/creating-postgresql-service-containers
         options: >-
@@ -110,8 +110,8 @@ jobs:
           RAILS_ENV: test
           # .envで定義しているDB設定
           DATABASE_TEST_NAME: kintai_test
-          DATABASE_TEST_USERNAME: postgres
-          DATABASE_TEST_PASSWORD: postgres
+          DATABASE_TEST_USERNAME: kintai_test_user
+          DATABASE_TEST_PASSWORD: Kintai_test
         # gemをインストールし、テストを実行する
         run: |
           bin/rails db:create
