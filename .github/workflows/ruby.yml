@@ -42,7 +42,7 @@ jobs:
     steps:
       - name: Check run for PostgreSQL
         run: |
-          PGPASSWORD=postgres -U postgres -d postgres -c "\du"
+          PGPASSWORD=postgres psql -U postgres -d postgres -c "\du"
     #   # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
     #   - uses: actions/checkout@v2
     #   # 使用するRubyバージョンを指定する
