@@ -45,9 +45,7 @@ jobs:
         env:
           POSTGRES_HOST: localhost
         run: |
-          sudo systemctl start postgresql.service
-          pg_isready
-          PGPASSWORD=postgre psql -U postgre -d postgre -c "\du"
+          PGPASSWORD=postgres -h postgres s psql -U postgres -d postgres -c "\du"
     #   # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
     #   - uses: actions/checkout@v2
     #   # 使用するRubyバージョンを指定する
