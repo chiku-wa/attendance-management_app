@@ -44,6 +44,8 @@ jobs:
       - name: Check run for PostgreSQL
         run: |
           PGPASSWORD=postgre psql -U postgre -d postgre -c "\du"
+          sudo systemctl start postgresql.service
+          pg_isready
     #   # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
     #   - uses: actions/checkout@v2
     #   # 使用するRubyバージョンを指定する
