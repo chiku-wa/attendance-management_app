@@ -38,8 +38,6 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-    env:
-      POSTGRES_HOST: postgres
     steps:
       - name: Install PostgreSQL client
         run: |
@@ -50,7 +48,7 @@ jobs:
           POSTGRES_HOST: postgres
           POSTGRES_PORT: 5432
         run: |
-          PGPASSWORD=postgres psql -U postgres -d postgres -c "\du"
+          PGPASSWORD=postgres psql -h $POSTGRES_HOST -U postgres -d postgres -c "\du"
     #   # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
     #   - uses: actions/checkout@v2
     #   # 使用するRubyバージョンを指定する
