@@ -19,7 +19,7 @@ jobs:
     # macos-latest
     # windows-latest
     runs-on: ubuntu-latest
-    container: node:10.18-jessie
+    container: node:latest
 
     services:
       # PostgreSQLの設定
