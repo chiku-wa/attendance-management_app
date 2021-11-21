@@ -58,6 +58,9 @@ jobs:
         DATABASE_TEST_USERNAME: postgres
         DATABASE_TEST_PASSWORD: postgres
     steps:
+      # ソースをチェックアウトする
+      - uses: actions/checkout@v2
+      # 使用するRubyバージョンを指定する
       # 必要なライブラリをキャッシュし、GitHubActionsの動作を高速化させる。
       # [path]
       # キャッシュとして保存＆復元するディレクトリのパス。
