@@ -108,7 +108,6 @@ jobs:
       #     pg_isready
       # テスト実行
       - name: Test with Rspec
-        env:
         # gemをインストールし、テストを実行する
         run: |
           bin/rails db:create
