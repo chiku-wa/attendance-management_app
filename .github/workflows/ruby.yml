@@ -59,6 +59,7 @@ jobs:
         DATABASE_TEST_PASSWORD: postgres
     steps:
       # ソースをチェックアウトする
+      - uses: actions/checkout@v2
       - name: Set up Ruby
         uses: ruby/setup-ruby@477b21f02be01bcb8030d50f37cfec92bfa615b6
         with:
