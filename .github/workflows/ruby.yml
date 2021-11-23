@@ -115,7 +115,7 @@ jobs:
       # yarnインストール
       - name: yarn install
         run: |
-          bundle exec rails yarn:install
+          yarn install --check-files
 
       # テスト実行
       - name: Test with Rspec
