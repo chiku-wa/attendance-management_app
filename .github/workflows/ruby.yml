@@ -18,7 +18,7 @@ jobs:
     # 例：
     # macos-latest
     # windows-latest
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     services:
       # PostgreSQLの設定
@@ -61,14 +61,15 @@ jobs:
         CACHE_DIR_YARN: .cache/yarn
         CACHE_DIR_GEMFILE: vendor/bundle
     steps:
-      # libv-8-dev
+      # nodeをインストール
       # Ubuntu環境で、下記エラーを抑止するために実施する。
       # ExecJS::RuntimeUnavailable: Could not find a JavaScript runtime. See https://github.com/rails/execjs for a list of available runtimes.
-      - name: Install libv-8-dev
-        run: |
-          apt update
-          apt install libv8-dev
-
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          # 開発環境のMacOSにインストールされているバージョンと同じものを指定
+          node-version: "14"
+          cache: npm
       # ソースをチェックアウトする
       - uses: actions/checkout@v2
 
