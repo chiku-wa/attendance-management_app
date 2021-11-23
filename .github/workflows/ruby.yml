@@ -84,7 +84,6 @@ jobs:
         with:
           # 開発環境のMacOSにインストールされているバージョンと同じものを指定
           node-version: "14"
-          cache: npm
 
       # 必要なライブラリをキャッシュし、GitHubActionsの動作を高速化させる。
       #
@@ -108,6 +107,15 @@ jobs:
       # に変更すると、キャッシュをクリアする。
       # ※OSと連動させたいなら`${{ runner.os }}`と記せば良い。
 
+      # yarnをキャッシュ
+      # キャッシュを行う前に、キャッシュディレクトリを取得する
+      - uses: actions/cache@v1
+        with:
+          path: ${CACHE_DIR_YARN}
+          key: ${{ env.cache-version }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ env.cache-version }}-yarn-
+
       # Gemfileをキャッシュ
       - name: Cache Gemfile
         uses: actions/cache@v1
@@ -117,18 +125,18 @@ jobs:
           # keyで定義したキーを前方一致で検索して復元
           restore-keys: ${{ env.cache-version }}-bundle-
 
+      # yarnインストール
+      - name: yarn install
+        run: |
+          npm install --global yarn
+          yarn install --check-files
+
       # Bunlerインストール
       - name: Bundle install
         run: |
           gem install bundler
           bundle config path ${CACHE_DIR_GEMFILE}
           bundle install --quiet --jobs 4 --retry 3
-
-      # yarnインストール
-      - name: yarn install
-        run: |
-          npm install --global yarn
-          yarn install --check-files
 
       # テスト実行
       - name: Test with Rspec
