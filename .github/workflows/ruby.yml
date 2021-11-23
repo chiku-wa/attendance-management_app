@@ -105,12 +105,12 @@ jobs:
       # yarnインストール
       - name: yarn install
         run: |
-          yarn install --check-files
+          bundle exec rails yarn:install
 
       # テスト実行
       - name: Test with Rspec
         # gemをインストールし、テストを実行する
         run: |
-          bin/rails db:create
-          bin/rails db:migrate
+          bundle exec rails db:create
+          bundle exec rails db:migrate
           bundle exec rspec
