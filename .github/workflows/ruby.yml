@@ -112,10 +112,11 @@ jobs:
           bundle config path ${CACHE_DIR_GEMFILE}
           bundle install --quiet --jobs 4 --retry 3
 
-      # # yarnインストール
-      # - name: yarn install
-      #   run: |
-      #     yarn install --check-files
+      # yarnインストール
+      - name: yarn install
+        run: |
+          npm install --global yarn
+          yarn install --check-files
 
       # テスト実行
       - name: Test with Rspec
