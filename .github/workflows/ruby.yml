@@ -58,8 +58,8 @@ jobs:
         DATABASE_TEST_USERNAME: postgres
         DATABASE_TEST_PASSWORD: postgres
         # キャッシュの保存先ディレクトリ
-        CACHE_FOLDER_YARN: .cache/yarn
-        CACHE_FOLDER_GEMFILE: vendor/bundle
+        CACHE_DIR_YARN: .cache/yarn
+        CACHE_DIR_GEMFILE: vendor/bundle
     steps:
       # ソースをチェックアウトする
       - uses: actions/checkout@v2
@@ -87,37 +87,21 @@ jobs:
       # ※OSと連動させたいなら`${{ runner.os }}`と記せば良い。
 
       # Gemfileをキャッシュ
-      - uses: actions/cache@v1
+      - name: Cache Gemfile
+        uses: actions/cache@v1
         with:
-          path: ${CACHE_FOLDER_GEMFILE}
+          path: ${CACHE_DIR_GEMFILE}
           key: ${{ env.cache-version }}-bundle-${{ hashFiles('**/Gemfile.lock') }}
           # keyで定義したキーを前方一致で検索して復元
           restore-keys: ${{ env.cache-version }}-bundle-
-
-      # yarnをキャッシュ
-      # キャッシュを行う前に、キャッシュディレクトリを取得する
-      - uses: actions/cache@v1
-        with:
-          path: ${CACHE_FOLDER_YARN}
-          key: ${{ env.cache-version }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ env.cache-version }}-yarn-
 
       # Bunlerインストール
       - name: Bundle install
         run: |
           gem install bundler
-          bundle config path vendor/bundle
+          bundle config path ${CACHE_DIR_GEMFILE}
           bundle install --quiet --jobs 4 --retry 3
-      # yarnインストール
-      - name: yarn install
-        run: |
-          yarn install --check-files
-      # # PostgreSQL起動&起動確認
-      # - name: Start PostgreSQL and confirm start up service
-      #   run: |
-      #     sudo systemctl start postgresql.service
-      #     pg_isready
+
       # テスト実行
       - name: Test with Rspec
         # gemをインストールし、テストを実行する
