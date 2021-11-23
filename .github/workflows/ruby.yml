@@ -57,15 +57,15 @@ jobs:
         DATABASE_TEST_NAME: postgres
         DATABASE_TEST_USERNAME: postgres
         DATABASE_TEST_PASSWORD: postgres
+        # キャッシュの保存先ディレクトリ
+        CACHE_FOLDER_YARN: .cache/yarn
+        CACHE_FOLDER_GEMFILE: vendor/bundle
     steps:
       # ソースをチェックアウトする
       - uses: actions/checkout@v2
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@477b21f02be01bcb8030d50f37cfec92bfa615b6
-        with:
-          bundler-cache: true
-      # 使用するRubyバージョンを指定する
+
       # 必要なライブラリをキャッシュし、GitHubActionsの動作を高速化させる。
+      #
       # [path]
       # キャッシュとして保存＆復元するディレクトリのパス。
       # 絶対パスか、プロジェクトのルートディレクトリからの相対パスを指定する。
@@ -74,30 +74,35 @@ jobs:
       # キャッシュを保存＆復元するためのキー。最大512文字。
       #
       # [restore-keys]
-      # キャッシュ復元時に[key]に完全に一致するキャッシュが存在しなかったときに使われるキーのリスト(任意、必須ではない)
+      # キャッシュ復元時に、[key]で指定した値に完全に一致するキャッシュが存在しなかったときに
+      # ここで定義した文字列を前方一致でキーを検索し、一致したキャッシュを用いる。
+      # その性質上、原則として[key]の先頭文字列を同じ値を指定する必要がある。
+      # ※任意、必須ではない
       #
-      # なお、度作成したキャッシュの上書きはできないため、キャッシュキーの先頭にバージョン名など
-      # を入れておくと、バージョン番号を変更するだけでキャッシュをまとめて無効化できるため推奨。
-      # 例：「actions/cache@v1」→「actions/cache@v2」に変更すると、キャッシュを使ず動作する。
-      #     ※OSと連動させたいなら`${{ runner.os }}`と記せば良い。
+      # なお、一度作成したキャッシュの上書きはできない。自動的にキャッシュをクリアしたい場合は、
+      # キャッシュキーの先頭にバージョン名など変動する値を入れておくと良い。
+      # 例えば、[key]に「env.cache-version」を含めておくと、
+      # 「actions/cache@v1」→「actions/cache@v2」
+      # に変更すると、キャッシュをクリアする。
+      # ※OSと連動させたいなら`${{ runner.os }}`と記せば良い。
+
       # Gemfileをキャッシュ
       - uses: actions/cache@v1
         with:
-          path: vendor/bundle
+          path: ${CACHE_FOLDER_GEMFILE}
           key: ${{ env.cache-version }}-bundle-${{ hashFiles('**/Gemfile.lock') }}
           # keyで定義したキーを前方一致で検索して復元
           restore-keys: ${{ env.cache-version }}-bundle-
-      # yarnをキャッシュ(参考：https://github.com/actions/cache/blob/main/examples.md#node---yarn)
+
+      # yarnをキャッシュ
       # キャッシュを行う前に、キャッシュディレクトリを取得する
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
       - uses: actions/cache@v1
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          path: ${CACHE_FOLDER_YARN}
           key: ${{ env.cache-version }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ env.cache-version }}-yarn-
+
       # Bunlerインストール
       - name: Bundle install
         run: |
