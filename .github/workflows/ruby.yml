@@ -54,6 +54,7 @@ jobs:
         # database.ymlで使用している環境変数を定義
         # PostgreSQLコンテナ作成時の環境変数と同じ値を指定すること
         # ※services -> postgres -> envの値
+        DATABASE_TEST_HOST: postgres # ホスト名は、services直下ので指定しているラベル「postgres」を指定すること
         DATABASE_TEST_NAME: postgres
         DATABASE_TEST_USERNAME: postgres
         DATABASE_TEST_PASSWORD: postgres

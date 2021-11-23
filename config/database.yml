@@ -12,6 +12,9 @@ development:
 
 test:
   <<: *default
+  # GithubActions実行時はホスト名の明示が必要なため、test環境の場合のみホストを指定する
+  # ※Railsアプリケーションが存在するホストにはPostgreSQLは存在せず、PostgreSQLのDockerコンテナにアクセスする必要があるため
+  host: <%= ENV['DATABASE_TEST_HOST'] %>
   database: <%= ENV['DATABASE_TEST_NAME'] %>
   username: <%= ENV['DATABASE_TEST_USERNAME'] %>
   password: <%= ENV['DATABASE_TEST_PASSWORD'] %>
