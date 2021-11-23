@@ -61,6 +61,17 @@ jobs:
         CACHE_DIR_YARN: .cache/yarn
         CACHE_DIR_GEMFILE: vendor/bundle
     steps:
+      - name: Install PostgreSQL client
+        run: |
+          apt-get update
+          apt-get install --yes postgresql-client
+      - name: Check run for PostgreSQL
+        env:
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+        run: |
+          PGPASSWORD=postgres psql -h $POSTGRES_HOST -U postgres -d postgres -c "\du"
+
       # ソースをチェックアウトする
       - uses: actions/checkout@v2
 
