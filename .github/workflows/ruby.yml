@@ -12,7 +12,7 @@ on:
 
 jobs:
   container-job:
-    name: Run spec
+    name: Run RSpec
 
     # ジョブを実行する仮想マシンを選択
     # 例：
@@ -64,12 +64,6 @@ jobs:
       # ソースをチェックアウトする
       - uses: actions/checkout@v2
 
-      # Rubyをセットアップする
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-
       # 必要なライブラリをキャッシュし、GitHubActionsの動作を高速化させる。
       #
       # [path]
@@ -107,6 +101,11 @@ jobs:
           gem install bundler
           bundle config path ${CACHE_DIR_GEMFILE}
           bundle install --quiet --jobs 4 --retry 3
+
+      # yarnインストール
+      - name: yarn install
+        run: |
+          yarn install --check-files
 
       # テスト実行
       - name: Test with Rspec
