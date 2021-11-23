@@ -66,7 +66,7 @@ jobs:
       # ExecJS::RuntimeUnavailable: Could not find a JavaScript runtime. See https://github.com/rails/execjs for a list of available runtimes.
       - name: Install libv-8-dev
         run: |
-          sudo apt-get install libv8-dev
+          apt-get install libv8-dev
 
       # ソースをチェックアウトする
       - uses: actions/checkout@v2
