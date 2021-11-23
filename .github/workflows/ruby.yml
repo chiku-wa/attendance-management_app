@@ -42,7 +42,7 @@ jobs:
         ports:
           - 5432:5432
     # 【注意】
-    # containerは必ずしていすること！PostgreSQLが起動しているコンテナへの名前解決できなくなる！
+    # containerは必ず指定すること！PostgreSQLが起動しているコンテナへの名前解決できず、RSpec実行時にDB接続に失敗する。
     container:
       # .ruby-versionで定義されているバージョンと同じものを指定すること
       image: ruby:2.6.6
@@ -50,8 +50,8 @@ jobs:
         # Railsの実行環境
         RAILS_ENV: test
         # 前述の設定で定義した「services -> postgres」を参照させるための設定
-        POSTGRES_HOST: posgres
-        # database.ymlで仕様している環境変数を定義
+        POSTGRES_HOST: postgres
+        # database.ymlで使用している環境変数を定義
         # PostgreSQLコンテナ作成時の環境変数と同じ値を指定すること
         # ※services -> postgres -> envの値
         DATABASE_TEST_NAME: postgres
