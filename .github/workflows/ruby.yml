@@ -18,7 +18,7 @@ jobs:
     # 例：
     # macos-latest
     # windows-latest
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     services:
       # PostgreSQLの設定
