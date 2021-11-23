@@ -61,17 +61,14 @@ jobs:
         CACHE_DIR_YARN: .cache/yarn
         CACHE_DIR_GEMFILE: vendor/bundle
     steps:
-      # nodeをインストール
-      # Ubuntu環境で、下記エラーを抑止するために実施する。
-      # ExecJS::RuntimeUnavailable: Could not find a JavaScript runtime. See https://github.com/rails/execjs for a list of available runtimes.
-      - name: Set up node
-        uses: actions/setup-node@v2
-        with:
-          # 開発環境のMacOSにインストールされているバージョンと同じものを指定
-          node-version: "14"
-          cache: npm
       # ソースをチェックアウトする
       - uses: actions/checkout@v2
+
+      # Rubyをセットアップする
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
 
       # 必要なライブラリをキャッシュし、GitHubActionsの動作を高速化させる。
       #
