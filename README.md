@@ -100,3 +100,13 @@ https://docs.google.com/spreadsheets/d/16DTE2wg3ElNfrV1qs4X9JZwdrkx3qFS1tYo4NKYu
 https://docs.google.com/spreadsheets/d/1CBhZUgEMrRyd-Trv4FnO5cIrsOcu-ithNDEERFCkMUg/edit?usp=sharing
 
 なお、本アプリでは`閉包テーブルモデル`の実装にあたり`closure_tree`gemは使用していません。
+
+# Herokuについて
+事前に、開発環境上で`heroku`コマンドが実行できるようにしておくこと。
+
+## 事前導入パッケージ
+以下のコマンドを実行し、RubyとNode.jsを導入すること。
+```
+heroku buildpacks:add --index 1 heroku/nodejs -a <AP名>
+heroku buildpacks:add --index 2 heroku/ruby -a <AP名>
+```
