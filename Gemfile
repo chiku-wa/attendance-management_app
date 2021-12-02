@@ -23,6 +23,9 @@ gem "bootstrap", "~> 4.5", ">= 4.5.2"
 gem "bootsnap", ">= 1.4.2", require: false
 gem "font-awesome-sass"
 
+# --- ログイン機能用
+gem "bcrypt", "~> 3.1", ">= 3.1.16"
+
 # --- その他
 # テストデータなど、大量データをバルクインサートするためのgem
 gem "activerecord-import", "~> 1.0", ">= 1.0.8"

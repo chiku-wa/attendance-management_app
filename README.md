@@ -1,5 +1,15 @@
+# 設計情報
+## DB設計書
+DB設計書はGoogleスプレッドシート上で作成しています。詳しくは下記をご覧ください。
+https://docs.google.com/spreadsheets/d/16DTE2wg3ElNfrV1qs4X9JZwdrkx3qFS1tYo4NKYuVgE/edit?usp=sharing
+
+なお、階層構造は`閉包テーブルモデル`を使用しています。実装が複雑なため、必要に応じて以下の参考資料を御覧ください。
+https://docs.google.com/spreadsheets/d/1CBhZUgEMrRyd-Trv4FnO5cIrsOcu-ithNDEERFCkMUg/edit?usp=sharing
+
+なお、本アプリでは`閉包テーブルモデル`の実装にあたり`closure_tree`gemは使用していません。
+
 # 前提条件
-## DB環境の準備方法
+## DB関連
 DBはPostgreSQLを前提としています。
 以下の環境を準備してください。
 
@@ -83,23 +93,16 @@ db/seeds
 └test.rb
 ```
 
+### PostgreSQLの設定情報
+下記資料の`PostgreSQL設定情報`シートをご覧ください。
+https://docs.google.com/spreadsheets/d/16DTE2wg3ElNfrV1qs4X9JZwdrkx3qFS1tYo4NKYuVgE/edit?usp=sharing
+
 ## CI情報
 GithubActionsを使ってCIを設定しています。CIの方針は以下の通りとしています。
 * PostgreSQLを使用(バージョンは、`development`環境と同様のものを使用)
 * `master`,`development`ブランチへのPushをトリガーとして起動
 * 使用するRubyのバージョンは、開発環境の`.ruby-version`と同じものを使用
 * `bundler`,`yarn`についてはキャッシュを使用し、CIを高速化する
-
-# 設計について
-## 設計書
-DB設計書はGoogleスプレッドシート上で作成しています。詳しくは下記をご覧ください。
-https://docs.google.com/spreadsheets/d/16DTE2wg3ElNfrV1qs4X9JZwdrkx3qFS1tYo4NKYuVgE/edit?usp=sharing
-
-## DB設計の方針
-階層構造は`閉包テーブルモデル`を使用しています。実装が複雑なため、必要に応じて以下の参考資料を御覧ください。
-https://docs.google.com/spreadsheets/d/1CBhZUgEMrRyd-Trv4FnO5cIrsOcu-ithNDEERFCkMUg/edit?usp=sharing
-
-なお、本アプリでは`閉包テーブルモデル`の実装にあたり`closure_tree`gemは使用していません。
 
 # Herokuについて
 事前に、開発環境上で`heroku`コマンドが実行できるようにしておくこと。
