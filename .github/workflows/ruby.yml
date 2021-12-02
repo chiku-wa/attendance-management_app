@@ -1,56 +1,136 @@
-name: Ruby
+name: Execute RSpec on PostgreSQL
 
 # master,developmentブランチへのPush時に実行
 on:
+  # 以下の条件をトリガーに動作させる
+  # 1. 所定のブランチに対してPushされた時
   push:
-    branches: [ master,development ]
+    branches: [master, development]
+  # 2. masterブランチにプルリクされた時
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-  run_spec:
-    name: Run spec
+  container-job:
+    name: Run RSpec
 
     # ジョブを実行する仮想マシンを選択
     # 例：
     # macos-latest
     # windows-latest
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
+    services:
+      # PostgreSQLの設定
+      # postgresコンテナの仕様：https://hub.docker.com/_/postgres
+      # 「postgres」という名前でラベル付けする(後述の処理で、PostgreSQLが必要な場合に使用する)
+      postgres:
+        image: postgres:13
+        env:
+          # postgresコンテナでは「POSTGRES_PASSWORD」のみが必須であり、他の項目は任意だが
+          # yaml内で整合性を保てるように明記する。
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        # オプションはGithubActionsの公式ドキュメントより引用
+        # https://docs.github.com/ja/actions/using-containerized-services/creating-postgresql-service-containers
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    # 【注意】
+    # containerは必ず指定すること！PostgreSQLが起動しているコンテナへの名前解決できず、RSpec実行時にDB接続に失敗する。
+    container:
+      # .ruby-versionで定義されているバージョンと同じものを指定すること
+      image: ruby:2.7.1
+      env:
+        # Railsの実行環境
+        RAILS_ENV: test
+        # 前述の設定で定義した「services -> postgres」を参照させるための設定
+        POSTGRES_HOST: postgres
+        # database.ymlで使用している環境変数を定義
+        # PostgreSQLコンテナ作成時の環境変数と同じ値を指定すること
+        # ※services -> postgres -> envの値
+        DATABASE_TEST_HOST: postgres # ホスト名は、services直下ので指定しているラベル「postgres」を指定すること
+        DATABASE_TEST_NAME: postgres
+        DATABASE_TEST_USERNAME: postgres
+        DATABASE_TEST_PASSWORD: postgres
+        # キャッシュの保存先ディレクトリ
+        CACHE_DIR_YARN: .cache/yarn
+        CACHE_DIR_GEMFILE: vendor/bundle
     steps:
-    # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
-    - uses: actions/checkout@v2
+      # ソースをチェックアウトする
+      - uses: actions/checkout@v2
 
-    # 画像の加工に必要なソフトウェアのインストール
-    - run: brew install imagemagick
+      # nodeをインストール
+      # Ubuntu環境で、下記エラーを抑止するために実施する。
+      # ExecJS::RuntimeUnavailable: Could not find a JavaScript runtime. See https://github.com/rails/execjs for a list of available runtimes.
+      - name: Set up node
+        uses: actions/setup-node@v1
+        with:
+          # 開発環境のMacOSにインストールされているバージョンと同じものを指定
+          node-version: "14"
 
-    # gemをキャッシュする
-    - uses: actions/cache@v1
-      with:
-        path: vendor/bundle
-        key: bundle-${{ hashFiles('**/Gemfile.lock') }}
+      # 必要なライブラリをキャッシュし、GitHubActionsの動作を高速化させる。
+      #
+      # [path]
+      # キャッシュとして保存＆復元するディレクトリのパス。
+      # 絶対パスか、プロジェクトのルートディレクトリからの相対パスを指定する。
+      #
+      # [key]
+      # キャッシュを保存＆復元するためのキー。最大512文字。
+      #
+      # [restore-keys]
+      # キャッシュ復元時に、[key]で指定した値に完全に一致するキャッシュが存在しなかったときに
+      # ここで定義した文字列を前方一致でキーを検索し、一致したキャッシュを用いる。
+      # その性質上、原則として[key]の先頭文字列を同じ値を指定する必要がある。
+      # ※任意、必須ではない
+      #
+      # なお、一度作成したキャッシュの上書きはできない。自動的にキャッシュをクリアしたい場合は、
+      # キャッシュキーの先頭にバージョン名など変動する値を入れておくと良い。
+      # 例えば、[key]に「env.cache-version」を含めておくと、
+      # 「actions/cache@v1」→「actions/cache@v2」
+      # に変更すると、キャッシュをクリアする。
+      # ※OSと連動させたいなら`${{ runner.os }}`と記せば良い。
 
-    # bundle install実行
-    - name: setup bundle
-      run: bundle install
+      # yarnをキャッシュ
+      # キャッシュを行う前に、キャッシュディレクトリを取得する
+      - uses: actions/cache@v1
+        with:
+          path: ${CACHE_DIR_YARN}
+          key: ${{ env.cache-version }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ env.cache-version }}-yarn-
 
-    # 使用するRubyバージョンを指定する
-    - name: Set up Ruby 2.6
-      # 標準的なチェックアウトアクションを実行(https://docs.github.com/ja/actions/configuring-and-managing-workflows/configuring-a-workflow#using-the-checkout-action)
-      uses: actions/checkout@v2
-      with:
-        ruby-version: 2.6.6
+      # Gemfileをキャッシュ
+      - name: Cache Gemfile
+        uses: actions/cache@v1
+        with:
+          path: ${CACHE_DIR_GEMFILE}
+          key: ${{ env.cache-version }}-bundle-${{ hashFiles('**/Gemfile.lock') }}
+          # keyで定義したキーを前方一致で検索して復元
+          restore-keys: ${{ env.cache-version }}-bundle-
 
-    # マイグレーション実行
-    - name: setup migrate
-      run: |
-        rails db:create RAILS_ENV=test
-        rails db:migrate RAILS_ENV=test
+      # yarnインストール
+      - name: yarn install
+        run: |
+          npm install --global yarn
+          yarn install --check-files
 
-    # テスト実行
-    - name: Test with Rspec
-      # gemをインストールし、テストを実行する
-      run: |
-        gem install bundler
-        bundle install --path vendor/bundle --quiet --jobs 4 --retry 3
-        bundle exec rspec
+      # Bunlerインストール
+      - name: Bundle install
+        run: |
+          gem install bundler
+          bundle config path ${CACHE_DIR_GEMFILE}
+          bundle install --quiet --jobs 4 --retry 3
+
+      # テスト実行
+      - name: Test with Rspec
+        # gemをインストールし、テストを実行する
+        run: |
+          bundle exec rails db:create
+          bundle exec rails db:migrate
+          bundle exec rspec

@@ -1,19 +1,26 @@
 default: &default
   adapter: postgresql
-  username: <%= ENV['DATABASE_USERNAME'] %>
-  password: <%= ENV['DATABASE_PASSWORD'] %>
   pool: <%= ENV.fetch('RAILS_MAX_THREADS') { 5 } %>
   timeout: 5000
   encoding: unicode
 
 development:
   <<: *default
-  database: kintai_development
+  database: <%= ENV['DATABASE_DEV_NAME'] %>
+  username: <%= ENV['DATABASE_DEV_USERNAME'] %>
+  password: <%= ENV['DATABASE_DEV_PASSWORD'] %>
 
 test:
   <<: *default
-  database: kintai_test
+  # GithubActions実行時はホスト名の明示が必要なため、test環境の場合のみホストを指定する
+  # ※Railsアプリケーションが存在するホストにはPostgreSQLは存在せず、PostgreSQLのDockerコンテナにアクセスする必要があるため
+  host: <%= ENV['DATABASE_TEST_HOST'] %>
+  database: <%= ENV['DATABASE_TEST_NAME'] %>
+  username: <%= ENV['DATABASE_TEST_USERNAME'] %>
+  password: <%= ENV['DATABASE_TEST_PASSWORD'] %>
 
 production:
   <<: *default
-  database: kintai
+  database: <%= ENV['DATABASE_NAME'] %>
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
