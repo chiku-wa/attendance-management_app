@@ -1,5 +1,5 @@
 # 前提条件
-## DB環境準備
+## DB環境の準備方法
 DBはPostgreSQLを前提としています。
 以下の環境を準備してください。
 
@@ -109,4 +109,18 @@ https://docs.google.com/spreadsheets/d/1CBhZUgEMrRyd-Trv4FnO5cIrsOcu-ithNDEERFCk
 ```
 heroku buildpacks:add --index 1 heroku/nodejs -a <AP名>
 heroku buildpacks:add --index 2 heroku/ruby -a <AP名>
+```
+
+# 注意事項
+## 各種バージョンアップ
+Ruby、PostgreSQLをバージョンアップする場合、CIの設定ファイルも連動して変更するようにしてください。
+該当箇所は下記のとおりです。
+```yaml
+      postgres:
+        image: postgres:13
+...
+    container:
+      # .ruby-versionで定義されているバージョンと同じものを指定すること
+      image: ruby:2.7.1
+...
 ```

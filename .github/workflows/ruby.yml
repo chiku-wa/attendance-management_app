@@ -45,7 +45,7 @@ jobs:
     # containerは必ず指定すること！PostgreSQLが起動しているコンテナへの名前解決できず、RSpec実行時にDB接続に失敗する。
     container:
       # .ruby-versionで定義されているバージョンと同じものを指定すること
-      image: ruby:2.6.6
+      image: ruby:2.7.1
       env:
         # Railsの実行環境
         RAILS_ENV: test
