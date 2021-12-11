@@ -1,4 +1,9 @@
 class Employee < ApplicationRecord
+  # =============== ログイン機構を使用するためのdeviseの設定
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
 
   # =============== 従属関係
   # 社員-部署
