@@ -1,7 +1,7 @@
 ja:
  activerecord:
     models:
-      employment_status: 社員
+      employee: 社員
       department: 部署
       hierarchy_department: 部署階層
       employee_department: 社員-部署
@@ -17,6 +17,12 @@ ja:
         employee_name_kana: 社員名(フリガナ)
         age: 年齢
         employment_status: 就業状況
+        email: メールアドレス
+        reset_password_token: パスワードリセット用トークン
+        status_code: 就業状況コード
+        status_name: 就業状況
+        project_code: プロジェクトコード
+        rank_code: ランクコード
       department:
         department_code: 部署コード
         establishment_date: 設立日
