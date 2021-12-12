@@ -2,8 +2,11 @@ class Employee < ApplicationRecord
   # =============== ログイン機構を使用するためのdeviseの設定
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+  devise :database_authenticatable,
+         :registerable,
+         :recoverable,
+         :rememberable,
+         :validatable
 
   # =============== 従属関係
   # 社員-部署
@@ -53,6 +56,14 @@ class Employee < ApplicationRecord
     :employment_status,
     {
       presence: true,
+    }
+  )
+
+  # メールアドレス
+  validates(
+    :email,
+    {
+      length: { maximum: 255 },
     }
   )
 end

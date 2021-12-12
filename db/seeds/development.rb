@@ -118,6 +118,8 @@ employees = []
     employee_name: gimei.kanji,
     employee_name_kana: gimei.katakana,
     age: rand(1..100),
+    email: "test#{i}@example.com",
+    password: "foo_bar#{i}",
     employment_status: employment_statuses[
       rand(0..(employment_statuses.size - 1))
     ],

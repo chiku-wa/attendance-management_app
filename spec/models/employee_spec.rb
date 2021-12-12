@@ -29,12 +29,14 @@ RSpec.describe "社員モデルのテスト", type: :model do
     end
 
     it "社員コードに重複した値が登録された場合はエラーとなること" do
-      employee_work.save
       valid_unique(
         model: employee_work,
         attribute: :employee_code,
         value: "A0001",
         is_case_sensitive: false,
+        other_unique_attributes: {
+          email: "hoge@example.com",
+        },
       )
     end
 
@@ -89,7 +91,44 @@ RSpec.describe "社員モデルのテスト", type: :model do
         attribute: :employment_status,
       )
     end
+
+    # ---------------------
+    # --- メールアドレスのテスト
+    it "メールアドレスがスペース、空文字のみの場合はバリデーションエラーとなること" do
+      valid_presence(
+        model: employee_work,
+        attribute: :email,
+      )
+    end
+
+    it "メールアドレスが規定の最大文字数(全角、半角区別なし)を超えている場合はバリデーションエラーとなること" do
+      valid_maximum_num_of_email(
+        model: employee_work,
+        attribute: :email,
+        valid_number_of_characters: 255,
+      )
+    end
+
+    it "メールアドレスに重複した値が登録された場合はエラーとなること" do
+      valid_unique(
+        model: employee_work,
+        attribute: :email,
+        value: "hoge@example.com",
+        is_case_sensitive: false,
+        other_unique_attributes: {
+          employee_code: "B0002",
+        },
+      )
+    end
   end
+
+  # NOTE:
+  # deviseによってデフォルトで追加される以下のカラムはテスト対象外とする(emailのみ、
+  # サイズの調整を行っているためテストを実施している)
+  # * encrypted_password
+  # * reset_password_token
+  # * reset_password_sent_at
+  # * remember_created_at
 
   context "その他のテスト" do
     it "姓(last name)と名(first name)の間の空白が半角に変換されること" do

@@ -99,6 +99,43 @@ module ModelHelper
 
   # -----------------------------------------------------
   # # 概要
+  # 引数として渡したモデルインスタンスと、属性名をもとに、メールアドレスの最大文字数のバリデーションチェックを行う
+  # ※メールアドレスの形式に則って文字数チェックを行う必要があるため、メールアドレスのみは別メソッドとして切り分けている
+  #
+  # # 引数
+  # * model                       テスト対象のモデルインスタンスを指定する
+  # --
+  # * attribute                   テスト対象のカラム名を指定する
+  # --
+  # * valid_number_of_characters  テスト対象のカラムで許容されているカラムサイズ(文字数)
+  #
+  def valid_maximum_num_of_email(model:, attribute:, valid_number_of_characters:)
+    # テスト用のドメイン部分の定義
+    email_domain_str = "@example.com"
+    valid_number_of_characters_without_domain = valid_number_of_characters - (email_domain_str.size)
+
+    # --- 半角文字のテスト
+    # Modelクラスのバリデーションエラーテスト
+    model.send(
+      "#{attribute}=",
+      "a" * (valid_number_of_characters_without_domain) + email_domain_str,
+    )
+    expect(model).to be_valid
+
+    model.send(
+      "#{attribute}=",
+      "a" * (valid_number_of_characters_without_domain + 1) + email_domain_str,
+    )
+    expect(model).not_to be_valid
+
+    # DBの制約違反テスト
+    expect {
+      model.save(validate: false)
+    }.to raise_error(ActiveRecord::ValueTooLong)
+  end
+
+  # -----------------------------------------------------
+  # # 概要
   # 引数として渡したモデルインスタンスと、属性名をもとに、一意制約(単一ユニーク)のバリデーションチェックを行う
   #
   # # 引数
@@ -114,8 +151,16 @@ module ModelHelper
   # * is_case_sensitive
   # 大文字小文字を区別するかどうか
   # ※モデルクラスで指定しているis_sensitiveと同じ真偽値を指定すること
+  # --
+  # * other_unique_attributes
+  # 同一モデルクラス内で、テスト対象のカラム以外に一意制約が付与されている場合、それらのカラム名
+  # と、引数`model`で指定した値**以外**の値をマップ形式で指定する。
+  # ※複数の一意制約違反が検知されると正しくテストが実行できないため
+  # [例]
+  # {email: "aaa@example.com", employee_code: "C00003"}
   #
-  def valid_unique(model:, attribute:, value:, is_case_sensitive:)
+  #
+  def valid_unique(model:, attribute:, value:, is_case_sensitive:, other_unique_attributes: {})
     # ----- 引数のテストデータをそのまま二重登録してバリデーションテスト
     model.send(
       "#{attribute}=",
@@ -125,12 +170,35 @@ module ModelHelper
 
     # Modelクラスのバリデーションエラーテスト
     model_dup = model.dup
-    expect(model_dup).not_to be_valid
+
+    # テスト対象以外のカラムで一意制約違反が発生しないように、テスト対象外のカラムには別の値を設定する
+    other_unique_attributes.each do |atr, val|
+      model_dup.send(
+        "#{atr}=",
+        val,
+      )
+    end
+
+    expect(model_dup.valid?).to be_falsey
+    # 一意性制約が付与されている他のプロパティでバリデーションエラーが検知されている場合は終了する
+    if model_dup.errors.size > 1
+      raise <<~MSG
+              複数の一意制約違反が検知されました。一意制約違反をテストする場合は、1つだけ検知されるように引数を修正してください。
+              [検知された一意制約違反]
+              #{model_dup.errors.full_messages.join("\n")}
+            MSG
+    end
+    expect(model_dup.errors.messages[attribute].join).to include("すでに存在します")
 
     # DBの制約違反テスト
+    # 例外メッセージに、評価するカラム名が含まれていることを確認する。
+    # ※一意性制約が付与されている他のカラムのバリデーションエラーが誤検知されていないことを確認するため
     expect {
       model_dup.save(validate: false)
-    }.to raise_error(ActiveRecord::RecordNotUnique)
+    }.to raise_error(
+      ActiveRecord::RecordNotUnique,
+      /#{attribute}/
+    )
 
     # ----- 大文字・小文字変換に変換してバリデーションテスト(case_sensitiveのテスト)
     # アルファベットが存在しないテストケースではcase_sensitiveは意味を成さないため、注記を出力して終了する
@@ -144,7 +212,7 @@ module ModelHelper
     # テスト登録したデータを削除する
     model.destroy
 
-    # 大文字で登録
+    # 大文字で登録(引数が小文字のみの場合、テストが想定どおりに動作しないため一旦大文字に変換する)
     model_upper = model.dup
     model_upper.send(
       "#{attribute}=",
@@ -159,19 +227,26 @@ module ModelHelper
       model_lower[attribute].downcase,
     )
 
+    # テスト対象以外のカラムで一意制約違反が発生しないように、テスト対象外のカラムには別の値を設定する
+    other_unique_attributes.each do |atr, val|
+      model_lower.send(
+        "#{atr}=",
+        val,
+      )
+    end
+
     if is_case_sensitive
       # 大文字小文字を区別して「いる」場合、変換するとバリデーションエラーに「ならない」こと
       expect(model_lower).to be_valid
+
+      # DBの制約違反テスト
+      expect {
+        model_lower.save(validate: false)
+      }.not_to raise_error
     else
       # 大文字小文字を区別して「いない」場合、変換してもバリデーションエラーに「なる」こと
       expect(model_lower).not_to be_valid
     end
-
-    # - DBの制約違反テスト
-    # DBは大文字小文字は常に区別されるため、モデルで定義されたcase_sensitiveの真偽値に関わらず制約エラーとならないこと
-    expect {
-      model_lower.save(validate: false)
-    }.not_to raise_error
   end
 
   # -----------------------------------------------------

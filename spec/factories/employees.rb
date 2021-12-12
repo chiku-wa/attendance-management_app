@@ -8,6 +8,8 @@ FactoryBot.define do
     employee_name { "山田　太郎" }
     employee_name_kana { "ヤマダ　タロウ" }
     age { 30 }
+    email { "test@example.com" }
+    password { "foo_bar" }
 
     association(:employment_status, factory: :employment_status_work)
   end
