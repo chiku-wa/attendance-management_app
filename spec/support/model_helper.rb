@@ -15,7 +15,7 @@ module ModelHelper
   # テスト対象のモデルインスタンスを指定する
   # --
   # * attribute
-  # テスト対象のカラム名を指定する
+  # テスト対象のプロパティ名を指定する
   #
   def valid_presence(model:, attribute:)
     # ===== String型の場合のみ、空文字・スペースのテストを実行する
@@ -53,9 +53,9 @@ module ModelHelper
   # # 引数
   # * model                       テスト対象のモデルインスタンスを指定する
   # --
-  # * attribute                   テスト対象のカラム名を指定する
+  # * attribute                   テスト対象のプロパティ名を指定する
   # --
-  # * valid_number_of_characters  テスト対象のカラムで許容されているカラムサイズ(文字数)
+  # * valid_number_of_characters  テスト対象のプロパティで許容されている文字数を指定する
   #
   def valid_maximum_num_of_char(model:, attribute:, valid_number_of_characters:)
     # --- 半角文字のテスト
@@ -105,9 +105,9 @@ module ModelHelper
   # # 引数
   # * model                       テスト対象のモデルインスタンスを指定する
   # --
-  # * attribute                   テスト対象のカラム名を指定する
+  # * attribute                   テスト対象のプロパティ名を指定する
   # --
-  # * valid_number_of_characters  テスト対象のカラムで許容されているカラムサイズ(文字数)
+  # * valid_number_of_characters  テスト対象のプロパティで許容されている文字数を指定する
   #
   def valid_maximum_num_of_email(model:, attribute:, valid_number_of_characters:)
     # テスト用のドメイン部分の定義
@@ -143,17 +143,17 @@ module ModelHelper
   # テスト対象のモデルインスタンスを指定する
   # --
   # * attribute
-  # テスト対象のカラム名を指定する
+  # テスト対象のプロパティ名を指定する
   # --
   # * value
-  # テスト対象のカラムに設定する値を指定する
+  # テスト対象のプロパティに設定する値を指定する
   # --
   # * is_case_sensitive
   # 大文字小文字を区別するかどうか
   # ※モデルクラスで指定しているis_sensitiveと同じ真偽値を指定すること
   # --
   # * other_unique_attributes
-  # 同一モデルクラス内で、テスト対象のカラム以外に一意制約が付与されている場合、それらのカラム名
+  # 同一モデルクラス内で、テスト対象のプロパティ以外に一意制約が付与されている場合、それらのプロパティ名
   # と、引数`model`で指定した値**以外**の値をマップ形式で指定する。
   # ※複数の一意制約違反が検知されると正しくテストが実行できないため
   # [例]
@@ -171,7 +171,7 @@ module ModelHelper
     # Modelクラスのバリデーションエラーテスト
     model_dup = model.dup
 
-    # テスト対象以外のカラムで一意制約違反が発生しないように、テスト対象外のカラムには別の値を設定する
+    # テスト対象以外のプロパティで一意制約違反が発生しないように、テスト対象外のプロパティには別の値を設定する
     other_unique_attributes.each do |atr, val|
       model_dup.send(
         "#{atr}=",
@@ -179,7 +179,9 @@ module ModelHelper
       )
     end
 
+    # バリデーションエラーとなること
     expect(model_dup.valid?).to be_falsey
+
     # 一意性制約が付与されている他のプロパティでバリデーションエラーが検知されている場合は終了する
     if model_dup.errors.size > 1
       raise <<~MSG
@@ -188,11 +190,13 @@ module ModelHelper
               #{model_dup.errors.full_messages.join("\n")}
             MSG
     end
+
+    # 想定したプロパティでバリデーションが発生していることを確認する
     expect(model_dup.errors.messages[attribute].join).to include("すでに存在します")
 
     # DBの制約違反テスト
-    # 例外メッセージに、評価するカラム名が含まれていることを確認する。
-    # ※一意性制約が付与されている他のカラムのバリデーションエラーが誤検知されていないことを確認するため
+    # 例外メッセージに、評価するプロパティ名が含まれていることを確認する。
+    # ※一意性制約が付与されている他のプロパティのバリデーションエラーが誤検知されていないことを確認するため
     expect {
       model_dup.save(validate: false)
     }.to raise_error(
@@ -227,7 +231,7 @@ module ModelHelper
       model_lower[attribute].downcase,
     )
 
-    # テスト対象以外のカラムで一意制約違反が発生しないように、テスト対象外のカラムには別の値を設定する
+    # テスト対象以外のプロパティで一意制約違反が発生しないように、テスト対象外のプロパティには別の値を設定する
     other_unique_attributes.each do |atr, val|
       model_lower.send(
         "#{atr}=",
@@ -261,14 +265,14 @@ module ModelHelper
   # テスト対象のモデルインスタンスを指定する。
   # --
   # * attribute_and_value_hash
-  # 複合キーとして設定しているカラム名と、テストに使用する値のハッシュを指定する。
+  # 複合キーとして設定しているプロパティ名と、テストに使用する値のハッシュを指定する。
   # 【注意点】
   # 1. 第1引数のmodelの属性値とは異なる値を指定すること
   # 2. 文字列はString型、日付型はActiveSupport::TimeWithZone型を指定すること
   # 例：
-  # カラム名`department_code`&値=`A01000000000`
-  # カラム名`establishment_date`&値='2021/05/25 18:30'
-  # カラム名`abolished_date`&値='9999/12/31 23:59:59'
+  # プロパティ名`department_code`&値=`A01000000000`
+  # プロパティ名`establishment_date`&値='2021/05/25 18:30'
+  # プロパティ名`abolished_date`&値='9999/12/31 23:59:59'
   #
   # ```
   # {
@@ -283,32 +287,13 @@ module ModelHelper
   # ※モデルクラスで指定しているis_sensitiveと同じ真偽値を指定すること
   #
   def valid_uniques(model:, attribute_and_value_hash:, is_case_sensitive:)
-    # モデルインスタンスの属性値と、attribute_and_value_hashの属性値が同じものが含まれている場合は、テストをエラーにして終了させる。
-    attribute_and_value_hash.each do |attribute, value|
-      if model.send(attribute) == value
-        raise <<~MSG
-                第1引数(model)と、第2引数(attribute_and_value_hash)に含める属性値には異なる値を指定してください。
-                 属性値が同じ値:
-                 model -> #{model[attribute]}
-                 attribute_and_value_hash -> #{value}
-              MSG
-      end
-    end
-
-    # 引数のモデルインスタンスがすでに保存されている場合は、テストをエラーにして終了させる。
-    if model.persisted?
-      raise <<~MSG
-              引数のモデルインスタンスはすでにDBに登録されています。未保存のモデルインスタンスを引数として指定してください。
-               属性値が同じ値:
-               model -> #{model}
-            MSG
-    end
+    # 引数の妥当性を確認する。
+    check_for_unique_test_arg(model, attribute_and_value_hash)
 
     # 引数の値をバックアップとして保存
     model_org = model.dup
 
     # ----- 引数のテストデータをそのまま二重登録してバリデーションテスト
-    # 1度目の保存
     attribute_and_value_hash.each do |attribute, value|
       model.send(
         "#{attribute}=",
@@ -317,20 +302,32 @@ module ModelHelper
     end
     model.save
 
-    # 2度目の保存：Modelクラスのバリデーションエラーテスト
+    # Modelクラスのバリデーションエラーテスト
     model_dup = model.dup
-    expect(model_dup).not_to be_valid
+    expect(model_dup.valid?).to be_falsey
 
-    # 2度目の保存：DBの制約違反テスト
+    # 一意性制約が付与されている他のプロパティでバリデーションエラーが検知されている場合は終了する
+    if model_dup.errors.size > 1
+      raise <<~MSG
+              複数の一意制約違反が検知されました。一意制約違反をテストする場合は、1つだけ検知されるように引数を修正してください。
+              [検知された一意制約違反]
+              #{model_dup.errors.full_messages.join("\n")}
+            MSG
+    end
+
+    # 想定したプロパティでバリデーションが発生していることを確認する
+    expect(model_dup.errors.messages[attribute].join).to include("すでに存在します")
+
+    # DBの制約違反テスト
     expect {
       model_dup.save(validate: false)
     }.to raise_error(ActiveRecord::RecordNotUnique)
 
-    # ----- いずれか1つのカラムのみが重複していてもバリデーションエラーとならないこと
+    # ----- いずれか1つのプロパティのみが重複していてもバリデーションエラーとならないこと
     # 先ほどテストで作成したテストデータをクリアする
     model.destroy
 
-    # 単一のカラムのみ値を重複させてもバリデーションエラーにならないことを確認する
+    # 単一のプロパティのみ値を重複させてもバリデーションエラーにならないことを確認する
     attribute_and_value_hash.each do |attribute, value|
       # 引数のモデルインスタンスを復元する
       model = model_org.dup
@@ -400,6 +397,66 @@ module ModelHelper
           }.not_to raise_error
         end
       end
+    end
+  end
+
+  # =============== プライベートメソッド
+  private
+
+  # -----------------------------------------------------
+  # # 概要
+  # 一意制約のバリデーションテストメソッドでのみ使用するプライベートメソッド。
+  # テストメソッドの引数に異常値が紛れていないかをチェックし、異常がある場合は例外を発生させる。
+  #
+  # # 引数
+  # * model
+  # テスト対象のモデルインスタンスを指定する。
+  # --
+  # * attribute_and_value_hash
+  # 複合キーとして設定しているプロパティ名と、テストに使用する値のハッシュを指定する。
+  # 【注意点】
+  # 1. 第1引数のmodelの属性値とは異なる値を指定すること
+  # 2. 文字列はString型、日付型はActiveSupport::TimeWithZone型を指定すること
+  # 例：
+  # プロパティ名`department_code`&値=`A01000000000`
+  # プロパティ名`establishment_date`&値='2021/05/25 18:30'
+  # プロパティ名`abolished_date`&値='9999/12/31 23:59:59'
+  #
+  # ```
+  # {
+  #   department_code: "A01000000000",
+  #   establishment_date: Time.zone.local(2021,5,25,18,30,0),
+  #   abolished_date: Time.zone.local(2021,5,25,18,30,0),
+  # }
+  # ```
+  #
+  def check_for_unique_test_arg(model, attribute_and_value_hash)
+    error_messages = []
+
+    # モデルインスタンスの属性値と、attribute_and_value_hashの属性値が同じものが含まれている場合はエラーメッセージをを格納
+    attribute_and_value_hash.each do |attribute, value|
+      if model.send(attribute) == value
+        error_messages << <<~MSG
+          引数「model」、「attribute_and_value_hash」に含めるプロパティ値には異なる値を指定してください。
+           属性値が同じ値:
+           model -> #{model[attribute]}
+           attribute_and_value_hash -> #{value}
+        MSG
+      end
+    end
+
+    # 引数のモデルインスタンスがすでに保存されている場合はエラーメッセージを格納
+    if model.persisted?
+      error_messages << <<~MSG
+        引数のモデルインスタンスはすでにDBに登録されています。未保存のモデルインスタンスを引数として指定してください。
+         属性値が同じ値:
+         model -> #{model}
+      MSG
+    end
+
+    # エラーが1件でもある場合は例外を発生させる
+    if error_messages.size >= 1
+      raise error_messages.join('\n')
     end
   end
 end

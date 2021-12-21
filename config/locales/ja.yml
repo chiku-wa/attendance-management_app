@@ -1,5 +1,5 @@
 ja:
- activerecord:
+  activerecord:
     models:
       employee: 社員
       department: 部署
@@ -55,6 +55,6 @@ ja:
         employee_code: 社員コード
         working_date: 勤務日
         project_code: プロジェクトコード
-        employee_code: 就業状況コード
+        status_code: 就業状況コード
         rank_code: ランクコード
         closed: 締めフラグ

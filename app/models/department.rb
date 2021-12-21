@@ -63,6 +63,7 @@ class Department < ApplicationRecord
       ],
       # 部署コードの大文字小文字を区別せず一意とする
       case_sensitive: false,
+      message: "、#{Department.human_attribute_name(:establishment_date)}、#{Department.human_attribute_name(:abolished_date)}の組み合わせが同じ#{Department.model_name.human}がすでに存在します。",
     },
   )
 end
