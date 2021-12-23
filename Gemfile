@@ -26,6 +26,7 @@ gem "font-awesome-sass"
 # --- ログイン機能用
 gem "bcrypt", "~> 3.1", ">= 3.1.16"
 gem "devise", "~> 4.8"
+gem "cancancan", "~> 3.3"
 
 # --- その他
 # テストデータなど、大量データをバルクインサートするためのgem

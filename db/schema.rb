@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_11_022740) do
+ActiveRecord::Schema.define(version: 2021_12_23_110536) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,6 +95,13 @@ ActiveRecord::Schema.define(version: 2021_12_11_022740) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["rank_code"], name: "index_ranks_on_rank_code", unique: true
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.string "role_name", limit: 20, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["role_name"], name: "unique_roles_on_role_name", unique: true
   end
 
   create_table "work_tables", comment: "勤務表", force: :cascade do |t|
