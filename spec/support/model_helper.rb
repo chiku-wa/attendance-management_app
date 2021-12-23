@@ -157,10 +157,15 @@ module ModelHelper
   # と、引数`model`で指定した値**以外**の値をマップ形式で指定する。
   # ※複数の一意制約違反が検知されると正しくテストが実行できないため
   # [例]
+  # ```ruby
   # {email: "aaa@example.com", employee_code: "C00003"}
+  # ```
   #
   #
   def valid_unique(model:, attribute:, value:, is_case_sensitive:, other_unique_attributes: {})
+    # 引数の妥当性を確認する。
+    check_for_unique_test_arg(model, { attribute => value })
+
     # ----- 引数のテストデータをそのまま二重登録してバリデーションテスト
     model.send(
       "#{attribute}=",
@@ -191,8 +196,10 @@ module ModelHelper
             MSG
     end
 
-    # 想定したプロパティでバリデーションが発生していることを確認する
-    expect(model_dup.errors.messages[attribute].join).to include("すでに存在します")
+    # 想定したプロパティでバリデーションエラーが発生していることを確認する
+    expect(
+      model_dup.errors.messages[attribute].join
+    ).to include("すでに存在します")
 
     # DBの制約違反テスト
     # 例外メッセージに、評価するプロパティ名が含まれていることを確認する。
@@ -206,11 +213,13 @@ module ModelHelper
 
     # ----- 大文字・小文字変換に変換してバリデーションテスト(case_sensitiveのテスト)
     # アルファベットが存在しないテストケースではcase_sensitiveは意味を成さないため、注記を出力して終了する
-    if (value =~ /[a-zA-Z]/) == nil
-      raise <<~MSG
-              #{attribute}(値：#{value})はアルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
+    if (value.class == String)
+      if (value =~ /[a-zA-Z]/) == nil
+        raise <<~MSG
+                          #{attribute}(値：#{value})はアルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
               テストデータにアルファベットを含めるか、大文字小文字を区別しない場合は、is_case_sensitiveをfalseにしてください。
-            MSG
+              MSG
+      end
     end
 
     # テスト登録したデータを削除する
@@ -265,22 +274,48 @@ module ModelHelper
   # テスト対象のモデルインスタンスを指定する。
   # --
   # * attribute_and_value_hash
+  #
   # 複合キーとして設定しているプロパティ名と、テストに使用する値のハッシュを指定する。
   # 【注意点】
-  # 1. 第1引数のmodelの属性値とは異なる値を指定すること
-  # 2. 文字列はString型、日付型はActiveSupport::TimeWithZone型を指定すること
+  # １．第1引数のmodelの属性値に設定されている値とは異なる値を指定すること
+  # ２．文字列はString型、日付型はActiveSupport::TimeWithZone型を指定すること
   # 例：
   # プロパティ名`department_code`&値=`A01000000000`
   # プロパティ名`establishment_date`&値='2021/05/25 18:30'
   # プロパティ名`abolished_date`&値='9999/12/31 23:59:59'
-  #
-  # ```
+  # ```ruby
   # {
   #   department_code: "A01000000000",
   #   establishment_date: Time.zone.local(2021,5,25,18,30,0),
   #   abolished_date: Time.zone.local(2021,5,25,18,30,0),
   # }
   # ```
+  #
+  # ３．ハッシュの1番目の要素には、Modelクラスで定義しているvalidatesの第1引数の属性を指定すること。
+  # 例：
+  # Modelクラスで以下の通り複合ユニークを定義している場合。
+  #
+  # ```ruby
+  # validates(
+  #   :department_code,
+  #   uniqueness: {
+  #     scope: [
+  #       :establishment_date,
+  #       :abolished_date,
+  #     ],
+  # ...
+  # )
+  # ```
+  #
+  # テストメソッドに引数として渡すハッシュは以下の通りとなる。
+  # ```ruby
+  # {
+  #   department_code: "A01000000000",
+  #   establishment_date: Time.zone.local(2021,5,25,18,30,0),
+  #   abolished_date: Time.zone.local(2021,5,25,18,30,0),
+  # }
+  # ```
+  #
   # --
   # * is_case_sensitive
   # 大文字小文字を区別するかどうか。
@@ -315,13 +350,18 @@ module ModelHelper
             MSG
     end
 
-    # 想定したプロパティでバリデーションが発生していることを確認する
-    expect(model_dup.errors.messages[attribute].join).to include("すでに存在します")
+    # 想定したプロパティでバリデーションエラーが発生していることを確認する
+    expect(
+      model_dup.errors.messages[attribute_and_value_hash.keys.first].join
+    ).to include("すでに存在します")
 
     # DBの制約違反テスト
     expect {
       model_dup.save(validate: false)
-    }.to raise_error(ActiveRecord::RecordNotUnique)
+    }.to raise_error(
+      ActiveRecord::RecordNotUnique,
+      /#{attribute_and_value_hash.keys.first}/
+    )
 
     # ----- いずれか1つのプロパティのみが重複していてもバリデーションエラーとならないこと
     # 先ほどテストで作成したテストデータをクリアする
@@ -339,10 +379,10 @@ module ModelHelper
       )
       model.save
 
-      # Modelクラスのバリデーションエラーテスト
+      # Modelクラスのバリデーションエラーが発生しないこと
       expect(model).to be_valid
 
-      # DBの制約違反テスト
+      # DBの制約違反が発生しないこと
       expect {
         model.save(validate: false)
       }.not_to raise_error
@@ -353,9 +393,8 @@ module ModelHelper
     model.destroy
 
     attribute_and_value_hash.each do |attribute, value|
-      # 属性が文字列型の場合のみテストする
       if (value.class == String)
-        # アルファベットが存在しないテストケースではcase_sensitiveは意味を成さないため、注記を出力してテストを実施しない
+        # アルファベットが存在しないテストケースではcase_sensitiveは意味を成さないため、注記を出力してテストをスキップする
         if (value =~ /[a-zA-Z]/) == nil
           puts <<~MSG
                  #{attribute}(値：#{value})はアルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
@@ -363,7 +402,6 @@ module ModelHelper
                MSG
           # memo:単一ユニークの場合と異なりreturnは行わない(引数で指定されたハッシュ変数を巡回するため)
         else
-
           # 引数のモデルインスタンスを復元する
           model = model_org.dup
 
@@ -385,16 +423,15 @@ module ModelHelper
           if is_case_sensitive
             # 大文字小文字を区別して「いる」場合、変換するとバリデーションエラーに「ならない」こと
             expect(model_lower).to be_valid
+
+            # DBの制約違反テスト
+            expect {
+              model_lower.save(validate: false)
+            }.not_to raise_error
           else
             # 大文字小文字を区別して「いない」場合、変換してもバリデーションエラーに「なる」こと
             expect(model_lower).not_to be_valid
           end
-
-          # - DBの制約違反テスト
-          # DBは大文字小文字は常に区別されるため、モデルで定義されたcase_sensitiveの真偽値に関わらず制約エラーとならないこと
-          expect {
-            model_lower.save(validate: false)
-          }.not_to raise_error
         end
       end
     end
@@ -413,16 +450,16 @@ module ModelHelper
   # テスト対象のモデルインスタンスを指定する。
   # --
   # * attribute_and_value_hash
+  #
   # 複合キーとして設定しているプロパティ名と、テストに使用する値のハッシュを指定する。
   # 【注意点】
-  # 1. 第1引数のmodelの属性値とは異なる値を指定すること
-  # 2. 文字列はString型、日付型はActiveSupport::TimeWithZone型を指定すること
+  # １．第1引数のmodelの属性値に設定されている値とは異なる値を指定すること
+  # ２．文字列はString型、日付型はActiveSupport::TimeWithZone型を指定すること
   # 例：
   # プロパティ名`department_code`&値=`A01000000000`
   # プロパティ名`establishment_date`&値='2021/05/25 18:30'
   # プロパティ名`abolished_date`&値='9999/12/31 23:59:59'
-  #
-  # ```
+  # ```ruby
   # {
   #   department_code: "A01000000000",
   #   establishment_date: Time.zone.local(2021,5,25,18,30,0),
