@@ -3,13 +3,13 @@ class DepartmentHierarchy < ApplicationRecord
   # 親部署
   belongs_to(
     :parent_department,
-    { class_name: Department.name, foreign_key: "parent_department_id" }
+    **{ class_name: Department.name, foreign_key: "parent_department_id" },
   )
 
   # 子部署
   belongs_to(
     :child_department,
-    { class_name: Department.name, foreign_key: "child_department_id" }
+    **{ class_name: Department.name, foreign_key: "child_department_id" },
   )
 
   # =============== バリデーション
