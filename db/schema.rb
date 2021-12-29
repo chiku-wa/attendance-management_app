@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_23_110536) do
+ActiveRecord::Schema.define(version: 2021_12_29_053948) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,15 @@ ActiveRecord::Schema.define(version: 2021_12_23_110536) do
     t.bigint "affilitation_type_id", null: false, comment: "所属種別ID"
     t.datetime "start_date", precision: 6, null: false, comment: "着任日"
     t.datetime "end_date", precision: 6, null: false, comment: "離任日"
+  end
+
+  create_table "employee_roles", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "employee_id"
+    t.bigint "role_id"
+    t.index ["employee_id"], name: "index_employee_roles_on_employee_id"
+    t.index ["role_id"], name: "index_employee_roles_on_role_id"
   end
 
   create_table "employees", comment: "社員", force: :cascade do |t|
@@ -128,6 +137,8 @@ ActiveRecord::Schema.define(version: 2021_12_23_110536) do
   add_foreign_key "employee_departments", "affilitation_types", name: "fk_affilitation_type_id"
   add_foreign_key "employee_departments", "departments", name: "fk_department_id"
   add_foreign_key "employee_departments", "employees", name: "fk_employee_id"
+  add_foreign_key "employee_roles", "employee_roles", column: "employee_id", name: "fk_employee_id"
+  add_foreign_key "employee_roles", "employee_roles", column: "role_id", name: "fk_role_id"
   add_foreign_key "employees", "employment_statuses", name: "fk_employment_status_id"
   add_foreign_key "work_tables", "work_tables", column: "employee_id", name: "fk_employee_id"
   add_foreign_key "work_tables", "work_tables", column: "employment_status_id", name: "fk_employment_status_id"

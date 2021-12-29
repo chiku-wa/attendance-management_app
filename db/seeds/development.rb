@@ -84,6 +84,20 @@ end
   DepartmentHierarchy.create(dh)
 end
 
+# === 権限登録
+#
+role_admin = Role.create!(
+  role_name: "システム管理者",
+)
+
+role_manager = Role.create!(
+  role_name: "マネージャー",
+)
+
+role_common = Role.create!(
+  role_name: "一般社員",
+)
+
 # === 就業状況登録
 #
 employment_status_work = EmploymentStatus.create!(
@@ -109,7 +123,20 @@ employment_statuses = [
 # === 社員登録
 employees = []
 
-99.times do |i|
+# 管理者
+employees << Employee.new(
+  employee_code: "999999",
+  employee_name: "システム管理者",
+  employee_name_kana: "システムカンリシャ",
+  age: 0,
+  email: "test_admin@example.com",
+  password: "administrator",
+  employment_status: employment_status_work,
+  roles: [role_admin],
+)
+
+# 一般社員、マネージャー
+(1..100).each do |i|
   # gimeiのgemを使ってランダムな名前を生成
   gimei = Gimei.name
 
@@ -117,12 +144,14 @@ employees = []
     employee_code: "A#{format("%05d", i)}",
     employee_name: gimei.kanji,
     employee_name_kana: gimei.katakana,
-    age: rand(1..100),
+    age: rand(20..100),
     email: "test#{i}@example.com",
     password: "foo_bar#{i}",
     employment_status: employment_statuses[
       rand(0..(employment_statuses.size - 1))
     ],
+    # 10人に1人をマネージャーに割り当てる
+    roles: i % 10 == 0 ? [role_manager] : [role_common],
   )
 end
 Employee.import!(employees)

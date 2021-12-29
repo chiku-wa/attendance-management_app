@@ -18,6 +18,10 @@ class Employee < ApplicationRecord
   # 就業状況
   belongs_to :employment_status
 
+  # 社員-権限(中間テーブル)、権限
+  has_many :employee_roles
+  has_many :roles, through: :employee_roles
+
   # =============== フィルタリング
   before_save :formatting_name
 

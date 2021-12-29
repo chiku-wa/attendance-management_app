@@ -213,10 +213,10 @@ module ModelHelper
 
     # ----- 大文字・小文字変換に変換してバリデーションテスト(case_sensitiveのテスト)
     # アルファベットが存在しないテストケースではcase_sensitiveは意味を成さないため、注記を出力して終了する
-    if (value.class == String)
+    if (is_case_sensitive && value.class == String)
       if (value =~ /[a-zA-Z]/) == nil
         raise <<~MSG
-                          #{attribute}(値：#{value})はアルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
+                            #{attribute}(値：#{value})はアルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
               テストデータにアルファベットを含めるか、大文字小文字を区別しない場合は、is_case_sensitiveをfalseにしてください。
               MSG
       end
@@ -395,7 +395,7 @@ module ModelHelper
     attribute_and_value_hash.each do |attribute, value|
       if (value.class == String)
         # アルファベットが存在しないテストケースではcase_sensitiveは意味を成さないため、注記を出力してテストをスキップする
-        if (value =~ /[a-zA-Z]/) == nil
+        if (is_case_sensitive && value =~ /[a-zA-Z]/) == nil
           puts <<~MSG
                  #{attribute}(値：#{value})はアルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
                  テストデータにアルファベットを含めるか、大文字小文字を区別しない場合は、is_case_sensitiveをfalseにしてください。
