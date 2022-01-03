@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_29_053948) do
+ActiveRecord::Schema.define(version: 2022_01_03_061700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,8 +55,9 @@ ActiveRecord::Schema.define(version: 2021_12_29_053948) do
   create_table "employee_roles", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "employee_id"
-    t.bigint "role_id"
+    t.bigint "employee_id", null: false
+    t.bigint "role_id", null: false
+    t.index ["employee_id", "role_id"], name: "unique_employee_roles_on_employee_id_role_id", unique: true
     t.index ["employee_id"], name: "index_employee_roles_on_employee_id"
     t.index ["role_id"], name: "index_employee_roles_on_role_id"
   end
@@ -137,11 +138,11 @@ ActiveRecord::Schema.define(version: 2021_12_29_053948) do
   add_foreign_key "employee_departments", "affilitation_types", name: "fk_affilitation_type_id"
   add_foreign_key "employee_departments", "departments", name: "fk_department_id"
   add_foreign_key "employee_departments", "employees", name: "fk_employee_id"
-  add_foreign_key "employee_roles", "employee_roles", column: "employee_id", name: "fk_employee_id"
-  add_foreign_key "employee_roles", "employee_roles", column: "role_id", name: "fk_role_id"
+  add_foreign_key "employee_roles", "employees", name: "fk_employee_id"
+  add_foreign_key "employee_roles", "roles", name: "fk_role_id"
   add_foreign_key "employees", "employment_statuses", name: "fk_employment_status_id"
-  add_foreign_key "work_tables", "work_tables", column: "employee_id", name: "fk_employee_id"
-  add_foreign_key "work_tables", "work_tables", column: "employment_status_id", name: "fk_employment_status_id"
-  add_foreign_key "work_tables", "work_tables", column: "project_id", name: "fk_project_id"
-  add_foreign_key "work_tables", "work_tables", column: "rank_id", name: "fk_rank_id"
+  add_foreign_key "work_tables", "employees", name: "fk_employee_id"
+  add_foreign_key "work_tables", "employment_statuses", name: "fk_employment_status_id"
+  add_foreign_key "work_tables", "projects", name: "fk_project_id"
+  add_foreign_key "work_tables", "ranks", name: "fk_rank_id"
 end

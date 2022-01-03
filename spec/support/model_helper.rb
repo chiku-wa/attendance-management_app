@@ -38,8 +38,12 @@ module ModelHelper
     # ===== nilのテストはすべてのデータ型に対して実施する
     # --- nil
     # nilの場合のみ、DBの制約違反テストを行う(スペースや空文字は登録できてしまうため)
+    # boolean型の場合はエラーメッセージが異なるため、includeではなくmatchを用いて期待値を確認する
     model.send("#{attribute}=", nil)
     expect(model).not_to be_valid
+    expect(
+      model.errors.messages[attribute].join
+    ).to match(/入力してください|一覧にありません/)
 
     expect {
       model.save(validate: false)
@@ -157,8 +161,10 @@ module ModelHelper
   # と、引数`model`で指定した値**以外**の値をマップ形式で指定する。
   # ※複数の一意制約違反が検知されると正しくテストが実行できないため
   # [例]
+  # emailとemployee_codeにそれぞれ一意制約が付与されており、emailの一意制約テストを実施する場合、
+  # 以下の値を引数として渡すこと。
   # ```ruby
-  # {email: "aaa@example.com", employee_code: "C00003"}
+  # {employee_code: "C00003"}
   # ```
   #
   #
@@ -171,6 +177,7 @@ module ModelHelper
       "#{attribute}=",
       value,
     )
+
     model.save
 
     # Modelクラスのバリデーションエラーテスト
@@ -216,7 +223,7 @@ module ModelHelper
     if (is_case_sensitive && value.class == String)
       if (value =~ /[a-zA-Z]/) == nil
         raise <<~MSG
-                            #{attribute}(値：#{value})はアルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
+                                                          #{attribute}(値：#{value})はアルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
               テストデータにアルファベットを含めるか、大文字小文字を区別しない場合は、is_case_sensitiveをfalseにしてください。
               MSG
       end
