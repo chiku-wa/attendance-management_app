@@ -52,6 +52,10 @@ ja:
       rank:
         rank_code: ランクコード
       work_table:
+        employee: 社員
+        project: プロジェクト
+        employment_status: 就業状況
+        rank: ランク
         employee_code: 社員コード
         working_date: 勤務日
         project_code: プロジェクトコード
