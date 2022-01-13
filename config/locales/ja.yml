@@ -1,7 +1,11 @@
 ja:
   activerecord:
+    # =============== モデルクラス関連
+    # ----- モデルクラス名
     models:
       employee: 社員
+      role: 権限
+      employee_role: 社員-権限
       department: 部署
       hierarchy_department: 部署階層
       employee_department: 社員-部署
@@ -10,6 +14,7 @@ ja:
       employment_status: 就業状況
       rank: ランク
       work_table: 勤務表
+    # ----- モデルのプロパティ名
     attributes:
       employee:
         employee_code: 社員コード
@@ -62,3 +67,19 @@ ja:
         status_code: 就業状況コード
         rank_code: ランクコード
         closed: 締めフラグ
+  # =============== DBに登録するマスタデータ
+  #                 ※文字列が固有の意味を持ち、複数の処理で使用することがあるものはここで一元的に定義する
+  master_data:
+    role:
+      admin: システム管理者
+      manager: マネージャ
+      common: 一般社員
+    employment_status:
+      status_code:
+        work: "00001"
+        absences: "00002"
+        retirement: "00003"
+      status_name:
+        work: 在職
+        absences: 休職
+        retirement: 退職

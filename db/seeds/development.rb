@@ -87,36 +87,36 @@ end
 # === 権限登録
 #
 role_admin = Role.create!(
-  role_name: "システム管理者",
+  role_name: I18n.t("master_data.role.admin"),
 )
 
 role_manager = Role.create!(
-  role_name: "マネージャー",
+  role_name: I18n.t("master_data.role.manager"),
 )
 
 role_common = Role.create!(
-  role_name: "一般社員",
+  role_name: I18n.t("master_data.role.common"),
 )
 
 # === 就業状況登録
 #
 employment_status_work = EmploymentStatus.create!(
-  status_code: "00001",
-  status_name: "在職",
+  status_code: I18n.t("master_data.employment_status.status_code.work"),
+  status_name: I18n.t("master_data.employment_status.status_name.work"),
 )
-employment_status_leave = EmploymentStatus.create!(
-  status_code: "00002",
-  status_name: "休職",
+employment_status_absences = EmploymentStatus.create!(
+  status_code: I18n.t("master_data.employment_status.status_code.absences"),
+  status_name: I18n.t("master_data.employment_status.status_name.absences"),
 )
 
 employment_status_retirement = EmploymentStatus.create!(
-  status_code: "00003",
-  status_name: "退職",
+  status_code: I18n.t("master_data.employment_status.status_code.retirement"),
+  status_name: I18n.t("master_data.employment_status.status_name.retirement"),
 )
 
 employment_statuses = [
   employment_status_work,
-  employment_status_leave,
+  employment_status_absences,
   employment_status_retirement,
 ]
 

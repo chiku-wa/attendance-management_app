@@ -3,14 +3,14 @@ FactoryBot.define do
   # =======================================================
   # テスト用
   factory :role_admin, class: Role do
-    role_name { "管理者" }
+    role_name { I18n.t("master_data.role.admin") }
   end
 
   factory :role_manager, class: Role do
-    role_name { "マネージャー" }
+    role_name { I18n.t("master_data.role.manager") }
   end
 
   factory :role_common, class: Role do
-    role_name { "一般社員" }
+    role_name { I18n.t("master_data.role.common") }
   end
 end

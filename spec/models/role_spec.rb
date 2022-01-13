@@ -32,7 +32,7 @@ RSpec.describe Role, type: :model do
       valid_unique(
         model: role_admin,
         attribute: :role_name,
-        value: "システム管理者",
+        value: "システム管理者_mod",
         is_case_sensitive: false,
       )
     end
