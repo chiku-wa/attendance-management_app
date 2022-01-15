@@ -21,18 +21,25 @@ body {
 }
 
 header {
+  color: #fff;
+
   a {
     color: #fff;
   }
-
 }
 
 // ========================
 // ===== ヘッダ部分のデザイン
 // システム名を表示するロゴ領域
 .logo {
-  font-size: 1.2em;
+  font-size: 1.6em;
   padding-top: 9px;
+}
+
+// 社員情報を表示する領域
+.emp_info {
+  font-size: 1.0em;
+  text-align: right;
 }
 
 // ================================================

@@ -10,7 +10,7 @@
       <div class="d-flex felx-row justify-content-between">
 
         <%# -------------------------- %>
-        <%# ----- システム名を表示部分 %>
+        <%# ----- アプリ名 %>
         <div class="logo p-2">
           <%= link_to("ポチっと勤怠", main_index_path, id: "logo")%>
         </div>
@@ -18,7 +18,8 @@
         <%# -------------------------- %>
         <%# ----- メニュー表示部 %>
         <div class="nav-menu p-2">
-          <%# モバイルアクセス時に表示するハンバーガーメニュー %>
+          <%# モバイルアクセス時に表示するハンバーガーメニューのボタン(横線3つ) %>
+          <%# ※span内は空文字のままにしておくこと %>
           <div class="nav-button" href="#">
             <span></span>
             <span></span>
@@ -28,20 +29,27 @@
           <div class="nav-wrap">
             <ul class="nav-list">
               <li>
-                <a href="#">項目1</a>
+                <a href="#">
+                  項目1
+                </a>
               </li>
               <li>
-                <a href="#">項目2</a>
-              </li>
-              <li>
-                <a href="#">項目3</a>
+                <%# ログアウトボタン %>
+                <%= link_to(I18n.t("label.devise.sign_out"), logout_path, method: :delete)%>
               </li>
             </ul>
           </div>
         </div>
-
       </div>
-
+    </div>
+  </nav>
+  <nav class="nav bg-info pt-1 pb-1">
+    <div class="col-12">
+      <%# -------------------------- %>
+      <%# ----- ログイン中の社員情報 %>
+      <div class="emp_info">
+        <%= @employee.employee_name%>(<%= I18n.t("activerecord.attributes.employee.employee_code")%>：<%= @employee.employee_code%>)
+      </div>
     </div>
   </nav>
 </header>

@@ -23,6 +23,7 @@ ja:
         age: 年齢
         employment_status: 就業状況
         email: メールアドレス
+        password: パスワード
         reset_password_token: パスワードリセット用トークン
         status_code: 就業状況コード
         status_name: 就業状況
@@ -83,3 +84,9 @@ ja:
         work: 在職
         absences: 休職
         retirement: 退職
+  # =============== Viewなどに使用するラベル名
+  label:
+    # ----- ログイン・ログアウト関連
+    devise:
+      sign_in: ログイン
+      sign_out: ログアウト
