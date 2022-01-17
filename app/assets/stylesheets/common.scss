@@ -39,6 +39,16 @@ header {
 // 社員情報を表示する領域
 .emp_info {
   font-size: 1.0em;
+  height: 100%;
+
+  // 垂直方向似中央寄せするための設定
+  // ※text-alignは効かないため、justify-contentを使用
+  display: flex;
+  align-items: center;
+  justify-content: right;
+}
+
+.logout {
   text-align: right;
 }
 
