@@ -43,13 +43,16 @@
       </div>
     </div>
   </nav>
+  <% if employee_signed_in? %>
   <nav class="nav bg-info pt-1 pb-1">
     <div class="col-12">
       <%# -------------------------- %>
       <%# ----- ログイン中の社員情報 %>
       <div class="emp_info">
+        <%= @employee %>
         <%= @employee.employee_name%>(<%= I18n.t("activerecord.attributes.employee.employee_code")%>：<%= @employee.employee_code%>)
       </div>
     </div>
   </nav>
+  <% end  %>
 </header>
