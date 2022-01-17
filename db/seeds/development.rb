@@ -150,8 +150,14 @@ employees << Employee.new(
     employment_status: employment_statuses[
       rand(0..(employment_statuses.size - 1))
     ],
-    # 10人に1人をマネージャーに割り当てる
-    roles: i % 10 == 0 ? [role_manager] : [role_common],
   )
 end
+
 Employee.import!(employees)
+
+# 社員に権限を付与
+# ※社員の作成と同時だと、Employeeモデルクラス生成時にrolesプロパティが消失するため、ここで処理。
+employees.each_with_index do |employee, i|
+  # 10人に1人をマネージャーに割り当てる
+  employee.roles = i % 10 == 0 ? [role_manager] : [role_common]
+end
