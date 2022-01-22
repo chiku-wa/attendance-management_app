@@ -1,6 +1,15 @@
 Rails.application.routes.draw do
-  # =============== ログイン機構を使用するためのdeviseの設定
-  devise_for :employees
+  # =============== devis(ログイン機構)関連のルーティング設定
+  # ----- ログイン・ログアウト関連(デフォルトのURLではモデル構造が丸見えなのでルーティングをカスタマイズ)
+  # まずはdeviseが内包するsessions(ログイン・ログアウト関連)のルーティングを解除
+  devise_for(:employees, skip: [:sessions])
+
+  # ルーティングを再定義
+  as :employee do
+    get("login", to: "devise/sessions#new", as: :new_employee_session)
+    post("login", to: "devise/sessions#create", as: :employee_session)
+    delete("logout", to: "devise/sessions#destroy", as: :destroy_employee_session)
+  end
 
   # =============== 各種ルーティング設定
   # ----- メイン画面
@@ -9,11 +18,4 @@ Rails.application.routes.draw do
 
   # ----- 社員関連
   get("employee/list")
-
-  # ----- ログイン・ログアウト
-  # devise_scopeには、ログイン情報を保管しているモデルクラス名を指定すること
-  devise_scope :employee do
-    get("login", to: "devise/sessions#create")
-    delete("logout", to: "devise/sessions#destroy")
-  end
 end
