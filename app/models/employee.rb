@@ -1,12 +1,22 @@
 class Employee < ApplicationRecord
   # =============== ログイン機構を使用するためのdeviseの設定
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable,
-         :registerable,
-         :recoverable,
-         :rememberable,
-         :validatable
+  devise(
+    # パスワードを暗号化してDBに登録:有効
+    :database_authenticatable,
+
+    # サインアップ、ユーザ自身が情報を変更することを許可:無効化
+    # ※システム管理者があらかじめ社員を登録していることが前提であり、第三者がサインアップすることは許さない
+    # :registerable,
+
+    # パスワードリセット機能:有効
+    :recoverable,
+
+    # ログイン状態を記憶する機能:有効
+    :rememberable,
+
+    # メールアドレス、パスワードのバリデーション機能:有効
+    :validatable
+  )
 
   # =============== 従属関係
   # 社員-部署

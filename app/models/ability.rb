@@ -32,18 +32,31 @@ class Ability
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
     # -----
+    # ==============ポリシー
+    # ブラックリスト形式とする。一旦すべての機能に対してアクセスを許した上で制限を加える。
+    # [理由]アクセスを許容する`can`メソッドには、コントローラ、アクションは指定できないため
+    #
 
-    # =============== アクセス権限設定
-    if employee.has_role?(I18n.t("master_data.role.admin"))
+    # =============== 共通設定
+    # すべての機能を利用可能にする
+    can(:manage, :all)
+
+    # =============== アクセス制限設定
+    if employee.roles.map(&:role_name).include?(I18n.t("master_data.role.admin"))
       # ----- システム管理者
-      can(:employee, :sign_up)
+      # ※すべての機能を利用可能にするため`cannnot`による制限は行わない
 
+    elsif employee.roles.map(&:role_name).include?(I18n.t("master_data.role.manager"))
       # ----- マネージャ
+      # 社員情報登録画面
 
+    elsif employee.roles.map(&:role_name).include?(I18n.t("master_data.role.common"))
       # ----- 一般社員
-      # ----- その他の権限
+
     else
-      cannnot(:read, :all)
+      # ----- その他の権限(権限を持っていない場合も含む)
+      # すべてのページにアクセスできないようにする
+      cannot(:manage, :all)
     end
   end
 end

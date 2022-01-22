@@ -1,17 +1,12 @@
 class ApplicationController < ActionController::Base
-  # [devise]各Controllerでログイン中の社員情報を取得するための定義
+  # [devise]すべてのコントローラのアクセスには、deviseによる認証を必要とする
   before_action :authenticate_employee!
 
-  # =========== devise関連のアクション
-  # ログイン後のアクション
-  def after_sign_in_path_for(resource)
-    # TOPに遷移する
-    root_url
-  end
-
-  # ログアウト後のアクション
-  def after_sign_out_path_for(resource)
-    # ログイン画面に遷移する
-    login_url
+  # ========== cancancan関連のアクション
+  # ----- 認証に使用するモデルクラス名がデフォルト(User)ではないため、ここで明示
+  # https://github.com/ryanb/cancan/wiki/changing-defaults
+  def current_ability
+    # current_user→current_employeeに変更
+    @current_ability ||= Ability.new(current_employee)
   end
 end
