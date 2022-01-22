@@ -124,7 +124,7 @@ employment_statuses = [
 employees = []
 
 # 管理者
-employees << Employee.new(
+Employee.create!(
   employee_code: "999999",
   employee_name: "システム管理者",
   employee_name_kana: "システムカンリシャ",
