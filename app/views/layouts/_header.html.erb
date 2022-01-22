@@ -54,13 +54,13 @@
         <div class="col-sm-10 col-8">
           <%# ログイン中の社員情報 %>
           <div class="emp_info">
-            <%= @employee.employee_name%>(<%= @employee.employee_code%>)
+            <%= current_employee.employee_name%>(<%= current_employee.employee_code%>)
           </div>
         </div>
         <div class="col-sm-2 col-4">
           <%# ログアウトボタン %>
           <div class="logout">
-            <%= button_to(I18n.t("label.devise.sign_out"), logout_path, method: :delete, class:"btn btn-dark")%>
+            <%= button_to(I18n.t("label.devise.sign_out"), destroy_employee_session_path, method: :delete, class:"btn btn-dark")%>
           </div>
         </div>
       </div>
