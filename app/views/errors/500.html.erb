@@ -1,0 +1,6 @@
+<div class="alert alert-danger">システムエラーが発生しました。管理者にお問い合わせください(<%= Time.now %>)。</div>
+<%= link_to(root_path, {class:"btn btn-outline-secondary"}) do %>
+<%= icon("fas", "chevron-circle-left") %>
+<br>
+<%=I18n.t("label.link.back_to_top") %>
+<% end  %>
