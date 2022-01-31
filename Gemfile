@@ -5,7 +5,7 @@ ruby "2.7.1"
 
 gem "rails", "~> 6.1"
 
-# ===== 各環境で共通のgem
+# =============== 各環境で共通のgem
 # --- Railsの基本gem
 gem "puma", "~> 4.1"
 gem "sass-rails", ">= 6"
@@ -39,7 +39,8 @@ gem "gimei", "~> 0.5.1"
 # 日本語化用
 gem "rails-i18n", "~> 6.0"
 
-# ===== 各種環境用のgem
+# =============== 各種環境用のgem
+# ----- 開発環境
 group :development do
   gem "web-console", ">= 3.3.0"
   gem "listen", "~> 3.2"
@@ -50,6 +51,7 @@ group :development do
   gem "spring-commands-rspec", "~> 1.0"
 end
 
+# ----- 開発・テスト環境
 group :development, :test do
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
 
@@ -66,6 +68,7 @@ group :development, :test do
   gem "factory_bot_rails", "~> 6.1"
 end
 
+# ----- テスト環境
 group :test do
   # テストファイル保存時に自動的にRSpecテストを実行するためのgem
   # ※テスト結果をMacの通知に表示するためのgemも導入する
@@ -74,7 +77,7 @@ group :test do
   gem "terminal-notifier-guard", "~> 1.7"
 
   # 統合テスト用
-  gem "capybara", ">= 2.15"
+  gem "capybara", "~> 3.36"
   gem "selenium-webdriver"
   gem "webdrivers"
 end
