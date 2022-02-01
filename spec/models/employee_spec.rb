@@ -2,6 +2,12 @@ require "rails_helper"
 
 RSpec.describe "社員モデルのテスト", type: :model do
   # ===== テストデータを登録
+  # ----- 権限テーブル ※社員情報に紐付けるために、buildではなくcreateする
+  let(:role_admin) { FactoryBot.create(:role_admin) }
+  let(:role_manager) { FactoryBot.create(:role_manager) }
+  let(:role_common) { FactoryBot.create(:role_common) }
+
+  # ----- 社員テーブル
   let(:employee_work) { FactoryBot.build(:employee) }
 
   context "テストデータの事前確認用テスト" do
@@ -129,8 +135,37 @@ RSpec.describe "社員モデルのテスト", type: :model do
   # * reset_password_token
   # * reset_password_sent_at
   # * remember_created_at
+  context "has_role?メソッドのテスト" do
+    it "権限が付与されていない社員の場合はfalseが変えること" do
+      # 前提として社員に権限が付与されていないこと
+      expect(employee_work.roles.size).to eq 0
 
-  context "その他のテスト" do
+      # 権限がない場合はfalseが返ること
+      expect(employee_work.has_role?(role_admin.role_name)).to be_falsey
+    end
+
+    it "権限が付与されている社員の場合はtrueが返ること" do
+      # ----- 単一の権限が付与されている場合のテスト
+      employee_work.roles << role_admin
+
+      # 権限がある場合はtrueが返ること
+      expect(employee_work.has_role?(role_admin.role_name)).to be_truthy
+
+      # 付与されていない権限の場合はfalseが返ること
+      expect(employee_work.has_role?(role_manager.role_name)).to be_falsey
+      expect(employee_work.has_role?(role_common.role_name)).to be_falsey
+
+      # ----- 複数の権限が付与されている場合のテスト
+      # 権限がある場合はtrueが返ること
+      employee_work.roles << role_manager
+      expect(employee_work.has_role?(role_manager.role_name)).to be_truthy
+
+      employee_work.roles << role_common
+      expect(employee_work.has_role?(role_common.role_name)).to be_truthy
+    end
+  end
+
+  context "formatting_nameメソッドのテスト" do
     it "姓(last name)と名(first name)の間の空白が半角に変換されること" do
       # 全角の名前の場合
       employee_work.employee_name = "山田　太郎"

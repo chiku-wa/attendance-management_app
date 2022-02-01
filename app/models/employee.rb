@@ -82,6 +82,13 @@ class Employee < ApplicationRecord
   )
 end
 
+# =============== パブリックメソッド
+public
+
+def has_role?(role_name)
+  self.roles.map(&:role_name).include?(role_name)
+end
+
 # =============== プライベートメソッド
 private
 
