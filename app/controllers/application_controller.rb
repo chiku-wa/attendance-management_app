@@ -9,8 +9,8 @@ class ApplicationController < ActionController::Base
   rescue_from(Exception, with: :render_to_500)
   # ----- 404:アクセスしようとしたページが存在しない
   rescue_from(ActiveRecord::RecordNotFound, ActionController::RoutingError, with: :render_to_404)
-  # ----- 403:ページにアクセス権限が存在しない
-  rescue_from(CanCan::AccessDenied, with: :render_to_403)
+  # ----- 403:ページにアクセス権限が存在しない(ページの存在を気づかせないようにするため、404に遷移させる)
+  rescue_from(CanCan::AccessDenied, with: :render_to_404)
 
   # ========== 各種汎用アクションメソッド
   # ----- 500ページ
