@@ -27,11 +27,15 @@ class Ability
     # =============== アクセス制限設定
     if employee.has_role?(I18n.t("master_data.role.admin"))
       # ----- システム管理者
-      # 一般社員がアクセス可能な機能を許可
-      can_common
+      # マネージャがアクセス可能な機能を許可
+      can_manager
+
+      # システム管理者のみがアクセス可能な機能を許可
+      # 社員情報
+      can(:list, Employee)
     elsif employee.has_role?(I18n.t("master_data.role.manager"))
       # ----- マネージャ
-      # 一般社員がアクセス可能な機能を許可
+      # マネージャがアクセス可能な機能を許可
       can_manager
     elsif employee.has_role?(I18n.t("master_data.role.common"))
       # ----- 一般社員
