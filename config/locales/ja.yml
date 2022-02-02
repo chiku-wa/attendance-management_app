@@ -65,7 +65,8 @@ ja:
         employment_status: 就業状況
         rank: ランク
         employee_code: 社員コード
-        working_date: 勤務日
+        work_date: 勤務日時
+        leave_date: 退勤日時
         project_code: プロジェクトコード
         status_code: 就業状況コード
         rank_code: ランクコード
