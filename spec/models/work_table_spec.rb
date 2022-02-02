@@ -20,7 +20,8 @@ RSpec.describe "勤務表モデルのテスト", type: :model do
     WorkTable.new(
       employee: employee,
       employee_code: employee.employee_code,
-      working_date: Time.zone.now,
+      work_date: Time.zone.now,
+      leave_date: Time.zone.now,
       project: project,
       project_code: project.project_code,
       employment_status: employee.employment_status,
@@ -72,11 +73,20 @@ RSpec.describe "勤務表モデルのテスト", type: :model do
     end
 
     # ---------------------
-    # --- 勤務日のテスト
-    it "勤務日がスペース、空文字のみの場合はバリデーションエラーとなること" do
+    # --- 出勤日時のテスト
+    it "出勤日時がスペース、空文字のみの場合はバリデーションエラーとなること" do
       valid_presence(
         model: work_table,
-        attribute: :working_date,
+        attribute: :work_date,
+      )
+    end
+
+    # ---------------------
+    # --- 退勤日時のテスト
+    it "退勤日時がスペース、空文字のみの場合はバリデーションエラーとなること" do
+      valid_presence(
+        model: work_table,
+        attribute: :leave_date,
       )
     end
 
