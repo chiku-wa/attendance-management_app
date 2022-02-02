@@ -25,15 +25,15 @@ class Ability
     # ※cancancanのデフォルトなので特に明示しない
 
     # =============== アクセス制限設定
-    if employee.roles.map(&:role_name).include?(I18n.t("master_data.role.admin"))
+    if employee.has_role?(I18n.t("master_data.role.admin"))
       # ----- システム管理者
       # 一般社員がアクセス可能な機能を許可
       can_common
-    elsif employee.roles.map(&:role_name).include?(I18n.t("master_data.role.manager"))
+    elsif employee.has_role?(I18n.t("master_data.role.manager"))
       # ----- マネージャ
       # 一般社員がアクセス可能な機能を許可
       can_manager
-    elsif employee.roles.map(&:role_name).include?(I18n.t("master_data.role.common"))
+    elsif employee.has_role?(I18n.t("master_data.role.common"))
       # ----- 一般社員
       # 一般社員がアクセス可能な機能を許可
       can_common

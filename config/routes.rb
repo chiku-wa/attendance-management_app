@@ -13,8 +13,8 @@ Rails.application.routes.draw do
 
   # =============== 各種ルーティング設定
   # ----- メイン画面
-  root("main#index")
-  get("main/index")
+  root("main#work_input")
+  get("main/work_input")
 
   # ----- 社員関連
   get("employee/list")

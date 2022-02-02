@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_03_061700) do
+ActiveRecord::Schema.define(version: 2022_02_02_231240) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -116,7 +116,7 @@ ActiveRecord::Schema.define(version: 2022_01_03_061700) do
 
   create_table "work_tables", comment: "勤務表", force: :cascade do |t|
     t.string "employee_code", limit: 6, null: false, comment: "社員コード"
-    t.datetime "working_date", null: false, comment: "勤務日"
+    t.datetime "work_date", precision: 6, null: false, comment: "出勤日時"
     t.string "project_code", limit: 7, null: false, comment: "プロジェクトコード"
     t.string "rank_code", limit: 2, null: false, comment: "ランクコード"
     t.datetime "created_at", precision: 6, null: false
@@ -127,6 +127,7 @@ ActiveRecord::Schema.define(version: 2022_01_03_061700) do
     t.bigint "employment_status_id", null: false, comment: "就業状況ID"
     t.bigint "rank_id", null: false, comment: "ランクID"
     t.string "status_code", limit: 5, null: false, comment: "就業状況コード"
+    t.datetime "leave_date", precision: 6, null: false, comment: "退勤日時"
     t.index ["employee_id"], name: "index_work_tables_on_employee_id"
     t.index ["employment_status_id"], name: "index_work_tables_on_employment_status_id"
     t.index ["project_id"], name: "index_work_tables_on_project_id"
