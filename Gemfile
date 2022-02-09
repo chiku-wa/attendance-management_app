@@ -79,7 +79,6 @@ group :test do
   # 統合テスト用
   gem "capybara", "~> 3.36"
   gem "selenium-webdriver"
-  gem "webdrivers"
 end
 
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
