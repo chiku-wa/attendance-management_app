@@ -85,8 +85,50 @@ end
 # =============== パブリックメソッド
 public
 
+# ----------------------------------------------------
+# # 概要
+# 引数として渡した文字列と同名の権限を、社員が有しているかを判定するメソッド。
+#
+# # 引数
+# * role_name
+# 権限の有無を確認したい権限の「権限名」を指定する
+#
+# # 戻り値
+# 権限有り : true
+# 権限無し : false
+#
 def has_role?(role_name)
   self.roles.map(&:role_name).include?(role_name)
+end
+
+# ----------------------------------------------------
+# # 概要
+# 引数として渡した文字列と同名の権限を社員に付与するメソッド。
+#
+# # 引数
+# * role_name
+# 付与したい権限の「権限名」を指定する
+#
+# # 戻り値
+# 権限の付与に成功 : true
+# 権限の付与に失敗 : false
+#
+def add_role(role_name)
+  # すでに権限が付与済みならfalseを返す
+  if self.has_role?(role_name)
+    return false
+  end
+
+  # 権限を抽出し、存在する権限なら付与を行う
+  role = Role.find_by(role_name: role_name)
+
+  # 権限が抽出できた場合は付与する
+  if role
+    self.roles << role
+    return true
+  else
+    return false
+  end
 end
 
 # =============== プライベートメソッド

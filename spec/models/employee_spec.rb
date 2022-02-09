@@ -136,7 +136,7 @@ RSpec.describe "社員モデルのテスト", type: :model do
   # * reset_password_sent_at
   # * remember_created_at
   context "has_role?メソッドのテスト" do
-    it "権限が付与されていない社員の場合はfalseが変えること" do
+    it "権限が付与されていない社員の場合はfalseが返ること" do
       # 前提として社員に権限が付与されていないこと
       expect(employee_work.roles.size).to eq 0
 
@@ -188,6 +188,26 @@ RSpec.describe "社員モデルのテスト", type: :model do
       employee_work.save
       expect(employee_work.employee_name).to eq "鈴木 次郎"
       expect(employee_work.employee_name_kana).to eq "スズキ ジロウ"
+    end
+  end
+
+  context "add_roleメソッドのテスト" do
+    it "権限テーブルに存在する権限を引数に指定した場合は、権限の付与に成功し、trueが返ること" do
+      # 前提として社員に権限が付与されていないこと
+      expect(employee_work.roles.size).to eq 0
+
+      # trueが返り、権限が付与されること
+      expect(employee_work.add_role(role_admin.role_name)).to be_truthy
+      expect(employee_work.roles.size).to eq 1
+    end
+
+    it "権限テーブルに存在【しない】権限を引数に指定した場合は、権限の付与が行われず、falseが返ること" do
+      # 前提として社員に権限が付与されていないこと
+      expect(employee_work.roles.size).to eq 0
+
+      # 権限テーブルに存在しない権限を付与しようとした場合はfalseが返り、権限が付与されないこと
+      expect(employee_work.add_role("not exist role name")).to be_falsey
+      expect(employee_work.roles.size).to eq 0
     end
   end
 end
