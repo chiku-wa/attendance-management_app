@@ -76,9 +76,10 @@ group :test do
   gem "guard-rspec"
   gem "terminal-notifier-guard", "~> 1.7"
 
-  # 統合テスト用
+  # システムテスト用
   gem "capybara", "~> 3.36"
   gem "selenium-webdriver"
+  gem "webdrivers"
 end
 
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]

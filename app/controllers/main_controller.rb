@@ -10,7 +10,7 @@ class MainController < ApplicationController
     if current_employee.has_role?(I18n.t("master_data.role.admin"))
       render("main/index_admin", formats: [:html])
     elsif current_employee.has_role?(I18n.t("master_data.role.manager"))
-      render("main/index_common", formats: [:html])
+      render("main/index_manager", formats: [:html])
     elsif current_employee.has_role?(I18n.t("master_data.role.common"))
       render("main/index_common", formats: [:html])
     end
