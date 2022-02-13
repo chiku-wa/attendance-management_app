@@ -1,4 +1,4 @@
-class EmployeeController < ApplicationController
+class EmployeesController < ApplicationController
   # [cancancan]でアクセス制御を行うための定義
   authorize_resource
 

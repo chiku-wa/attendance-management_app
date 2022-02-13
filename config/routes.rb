@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   get("main/index")
 
   # ----- 社員関連
-  get("employee/list")
+  get("employees/list")
 
   # ----- 404ページ(これを定義しないとapplication_controllerのrescue_fromでハンドリングできない)
   # すべてのメソッドを対象とする(via: all)。
