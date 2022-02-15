@@ -12,7 +12,6 @@ gem "sass-rails", ">= 6"
 gem "webpacker", "~> 5.4", ">= 5.4.3"
 gem "turbolinks", "~> 5"
 gem "jbuilder", "~> 2.7"
-gem "faker", "~> 1.6", ">= 1.6.3"
 
 # --- DB関連
 # PostgreSQL
@@ -39,6 +38,9 @@ gem "activerecord-import", "~> 1.0", ">= 1.0.8"
 
 # 日本人の氏名テストデータ登録用
 gem "gimei", "~> 0.5.1"
+
+# テストデータ登録用(英語のみ)
+gem "faker", "~> 1.6", ">= 1.6.3"
 
 # 日本語化用
 gem "rails-i18n", "~> 6.0"
