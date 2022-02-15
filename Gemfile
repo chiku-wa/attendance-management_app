@@ -9,7 +9,7 @@ gem "rails", "~> 6.1"
 # --- Railsの基本gem
 gem "puma", "~> 4.1"
 gem "sass-rails", ">= 6"
-gem "webpacker", "~> 4.0"
+gem "webpacker", "~> 5.4", ">= 5.4.3"
 gem "turbolinks", "~> 5"
 gem "jbuilder", "~> 2.7"
 gem "faker", "~> 1.6", ">= 1.6.3"
@@ -23,6 +23,10 @@ gem "bootstrap", "~> 4.5", ">= 4.5.2"
 gem "bootsnap", ">= 1.4.2", require: false
 # アイコン(アイコンと対応するHTMLタグは「https://fontawesome.com/icons?d=gallery」より検索できる)
 gem "font-awesome-sass"
+
+# --- JavaScript
+# RailsでReactを使用する場合に必要なgem
+gem "react-rails", "~> 2.6", ">= 2.6.1"
 
 # --- ログイン機能用
 gem "bcrypt", "~> 3.1", ">= 3.1.16"
