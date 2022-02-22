@@ -96,3 +96,11 @@ ja:
     # ----- リンク、ボタンのラベル
     link:
       back_to_top: トップページへ戻る
+  views:
+    # `kaminari`gemのページネーションを日本語化
+    pagination:
+      first: "&laquo; 最初"
+      last: "最後 &raquo;"
+      previous: "&lsaquo; 前"
+      next: "次 &rsaquo;"
+      truncate: "..."
