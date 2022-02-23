@@ -12,8 +12,8 @@ module SystemCommonMacros
   #
   def login_macro(employee:)
     visit(root_path)
-    fill_in(:employee_email, with: @employee.email)
-    fill_in(:employee_password, with: @employee.password)
+    fill_in(:employee_email, with: employee.email)
+    fill_in(:employee_password, with: employee.password)
     click_button("Log in")
   end
 end
