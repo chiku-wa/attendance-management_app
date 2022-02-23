@@ -4,7 +4,12 @@ class EmployeesController < ApplicationController
 
   # 社員情報一覧画面に遷移するアクション
   def list
+    # 以下の条件で社員情報一覧を取得
+    # * ログインしているユーザは除外する
+    # * N+1問題を回避するため、Viewで必要なテーブルを事前に結合しておく
+    # * `kaminari`gemのページネーションを考慮する
     @employees = Employee
+      .where.not(id: current_employee.id)
       .includes(:roles)
       .page(params[:page])
   end
