@@ -1,12 +1,13 @@
 <%#
   社員情報一覧から呼び出される社員情報出力用View。
 %>
-<tr>
+<%# trには社員情報を一意に識別でき、かつ閲覧者に見えても問題のない情報をidに指定する %>
+<tr id="<%= employee.employee_code %>">
   <%# 社員コード %>
-  <td><%= employee.employee_code %></td>
+  <td name="employee_code"><%= employee.employee_code %></td>
 
   <%# 権限 %>
-  <td>
+  <td name="roles">
     <% employee.roles.each do |r| %>
     <%# 権限名によってラベルのデザインを切り替える %>
     <%
@@ -30,8 +31,8 @@
   </td>
 
   <%# 氏名 %>
-  <td><%= employee.employee_name %></td>
+  <td name="employee_name"><%= employee.employee_name %></td>
 
   <%# メールアドレス %>
-  <td><%= mail_to(employee.email, employee.email ,{ target: '_blank' }) %></td>
+  <td name="email"><%= mail_to(employee.email, employee.email ,{ target: '_blank' }) %></td>
 </tr>
