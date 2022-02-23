@@ -33,5 +33,5 @@
   <td><%= employee.employee_name %></td>
 
   <%# メールアドレス %>
-  <td><%= employee.email %></td>
+  <td><%= mail_to(employee.email, employee.email ,{ target: '_blank' }) %></td>
 </tr>
