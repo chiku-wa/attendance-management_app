@@ -4,6 +4,8 @@ class EmployeesController < ApplicationController
 
   # 社員情報一覧画面に遷移するアクション
   def list
-    @employees = Employee.all.page(params[:page])
+    @employees = Employee
+      .includes(:roles)
+      .page(params[:page])
   end
 end

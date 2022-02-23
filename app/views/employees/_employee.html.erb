@@ -1,5 +1,37 @@
+<%#
+  社員情報一覧から呼び出される社員情報出力用View。
+%>
 <tr>
+  <%# 社員コード %>
   <td><%= employee.employee_code %></td>
+
+  <%# 権限 %>
+  <td>
+    <% employee.roles.each do |r| %>
+    <%# 権限名によってラベルのデザインを切り替える %>
+    <%
+     label_classes = ["btn"]
+     case r.role_name
+      # システム管理者
+     when I18n.t("master_data.role.admin") then
+      label_classes << "btn-danger"
+      # マネージャ
+     when I18n.t("master_data.role.manager") then
+      label_classes << "btn-success"
+      # 一般社員
+     when I18n.t("master_data.role.common") then
+      label_classes << "btn-dark"
+     end
+    %>
+    <div class="<%= label_classes.join(" ") %>">
+      <%= r.role_name  %>
+      <% end %>
+    </div>
+  </td>
+
+  <%# 氏名 %>
   <td><%= employee.employee_name %></td>
+
+  <%# メールアドレス %>
   <td><%= employee.email %></td>
 </tr>
