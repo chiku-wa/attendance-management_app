@@ -1,4 +1,8 @@
-<h1>社員情報一覧</h1>
+<%# HTMLのtitle定義部 %>
+<% provide(:title, I18n.t("label.title.employee_list")) %>
+
+<%# 本体出力部 %>
+<h1><%= I18n.t("label.title.employee_list") %></h1>
 
 <%# ページネーションバー %>
 <%= paginate(@employees) %>

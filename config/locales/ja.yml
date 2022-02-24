@@ -96,6 +96,9 @@ ja:
     # ----- リンク、ボタンのラベル
     link:
       back_to_top: トップページへ戻る
+    # ----- タイトル、見出し
+    title:
+      employee_list: 社員情報一覧
   views:
     # `kaminari`gemのページネーションを日本語化
     pagination:
