@@ -31,6 +31,8 @@ ja:
         status_name: 就業状況
         project_code: プロジェクトコード
         rank_code: ランクコード
+      role:
+        role_name: 権限名
       department:
         department_code: 部署コード
         establishment_date: 設立日

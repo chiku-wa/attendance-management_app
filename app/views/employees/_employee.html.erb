@@ -35,4 +35,7 @@
 
   <%# メールアドレス %>
   <td name="email"><%= mail_to(employee.email, employee.email ,{ target: '_blank' }) %></td>
+
+  <%# 就業状況 %>
+  <td name="employment_status"><%= employee.employment_status.status_name %></td>
 </tr>

@@ -10,7 +10,7 @@ class EmployeesController < ApplicationController
     # * `kaminari`gemのページネーションを考慮する
     @employees = Employee
       .where.not(id: current_employee.id)
-      .includes(:roles)
+      .includes([:roles, :employment_status])
       .page(params[:page])
   end
 end

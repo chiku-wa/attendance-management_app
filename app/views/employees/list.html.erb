@@ -10,10 +10,11 @@
 <table name="employees" class="table table-striped table-hover">
 
   <thead>
-    <th scope="col">社員番号</th>
-    <th scope="col">権限</th>
-    <th scope="col">氏名</th>
-    <th scope="col">メールアドレス</th>
+    <th scope="col"><%= t("activerecord.attributes.employee.employee_code") %></th>
+    <th scope="col"><%= t("activerecord.models.role") %></th>
+    <th scope="col"><%= t("activerecord.attributes.employee.employee_name") %></th>
+    <th scope="col"><%= t("activerecord.attributes.employee.email") %></th>
+    <th scope="col"><%= t("activerecord.models.employment_status") %></th>
   </thead>
   <tbody>
 
