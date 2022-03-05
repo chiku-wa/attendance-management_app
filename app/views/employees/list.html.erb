@@ -20,7 +20,8 @@
     </th>
     <%# 社員名 %>
     <th scope="col">
-      <%= generate_sort_link(column: :employee_name, label: t("activerecord.attributes.employee.employee_name")) %>
+      <%# ヨミガナでソートする %>
+      <%= generate_sort_link(column: :employee_name_kana, label: t("activerecord.attributes.employee.employee_name")) %>
     </th>
     <%# メールアドレス %>
     <th scope="col">
@@ -28,7 +29,7 @@
     </th>
     <%# 就業状況 %>
     <th scope="col">
-      <%# 照準でソートした際に「在職」が先頭になるように、就業状況コードでソートする %>
+      <%# 昇順でソートした際に「在職」が先頭になるように、就業状況コードでソートする %>
       <%= generate_sort_link(column: :status_code, label: t("activerecord.models.employment_status")) %>
     </th>
   </thead>

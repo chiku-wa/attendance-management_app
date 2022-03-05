@@ -15,8 +15,9 @@ class EmployeesController < ApplicationController
       Role,
       EmploymentStatus,
     ].each do |model_class|
+      # 社員情報一覧に必要な情報がパラメータとして指定されている場合はソートキーとする。
       if model_class.column_names.include?(params[:sort_column])
-        # 結合テーブルのカラム名でもソートできるようにテーブル名を修飾する
+        # 結合テーブルのカラム名でもソートできるようにテーブル名を修飾する。
         sort_column = "#{model_class.table_name}.#{params[:sort_column]}"
       end
     end
