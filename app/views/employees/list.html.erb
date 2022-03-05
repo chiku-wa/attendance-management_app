@@ -10,11 +10,27 @@
 <table name="employees" class="table table-striped table-hover">
 
   <thead>
-    <th scope="col"><%= t("activerecord.attributes.employee.employee_code") %></th>
-    <th scope="col"><%= t("activerecord.models.role") %></th>
-    <th scope="col"><%= t("activerecord.attributes.employee.employee_name") %></th>
-    <th scope="col"><%= t("activerecord.attributes.employee.email") %></th>
-    <th scope="col"><%= t("activerecord.models.employment_status") %></th>
+    <%# 社員コード %>
+    <th scope="col">
+      <%= generate_sort_link(column: :employee_code, label: t("activerecord.attributes.employee.employee_code")) %>
+    </th>
+    <%# 権限 %>
+    <th scope="col">
+      <%= generate_sort_link(column: :role_name, label: t("activerecord.models.role")) %>
+    </th>
+    <%# 社員名 %>
+    <th scope="col">
+      <%= generate_sort_link(column: :employee_name, label: t("activerecord.attributes.employee.employee_name")) %>
+    </th>
+    <%# メールアドレス %>
+    <th scope="col">
+      <%= generate_sort_link(column: :email, label: t("activerecord.attributes.employee.email")) %>
+    </th>
+    <%# 就業状況 %>
+    <th scope="col">
+      <%# 照準でソートした際に「在職」が先頭になるように、就業状況コードでソートする %>
+      <%= generate_sort_link(column: :status_code, label: t("activerecord.models.employment_status")) %>
+    </th>
   </thead>
   <tbody>
 
