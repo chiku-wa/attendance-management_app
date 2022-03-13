@@ -28,11 +28,11 @@ module EmployeeHelper
 
     if column.to_s == params[:sort_column].to_s
       # 現在ソートされているカラムなら、現在の並び順とは逆の並び順をリンクのパラメータとして指定する。
-      # 不正なパラメータ値が設定されている場合は昇順を設定する
+      # 不正なパラメータ値が設定されている場合は昇順を設定する。
       sort_direction = params[:sort_direction] == "asc" ? "desc" : "asc"
 
-      # アイコンには現在の並び順に準拠した並び順を設定する
-      # 不正なパラメータ値が設定されているならデフォルト値を使用する
+      # アイコンには現在の並び順に準拠したアイコンを設定する。
+      # 不正なパラメータ値が設定されているならデフォルト値を使用する。
       sort_icon = case params[:sort_direction]
         when "asc"
           icon("fas", "sort-up")
