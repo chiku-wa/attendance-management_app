@@ -8,25 +8,39 @@ module EmployeeHelper
 
   # -----------------------------------------------------
   # # 概要
-  # 社員一覧画面において、ソート処理のトリガとなるリンクを生成するためのメソッド
+  # 社員一覧画面において、ソート処理のトリガとなるリンクを生成するためのメソッド。
+  # リンクのURLには以下のパラメータを付与する。
+  # * ソートのキーとなるカラム名：引数のカラム名をそのまま付与する
+  # * ソートの順序(昇順、降順)：現在ソートされている順序とは逆の順序文字列(asc,desc)を付与する。
+  #   ただし、現在ソートされているカラムとは別のカラムのリンクボタンを生成する場合は、デフォルトの並び順(昇順)を設定する。
   #
   # # 引数
-  # * リンクボタンに埋め込む、ソートキーとなるカラム名
-  # テスト対象のモデルインスタンスを指定する
+  # * column
+  # リンクボタンに埋め込む、ソートキーとなるカラム名
   # --
   # * label
   # リンクボタンのラベル名
   def generate_sort_link(column:, label:)
-    # ----- リンクに埋め込むソートの昇順・降順を定義する
-    # 昇順にソートされた場合は降順のリンクを、降順にソートされた場合は昇順のリンクを生成する
-    # ※asc,desc以外の値の場合は明示的にascを設定する
-    sort_direction = params[:sort_direction] == "asc" ? "desc" : "asc"
-
-    # ----- 現在のソート状況を指し示すアイコンを生成する
+    # デフォルトの並び順
+    sort_direction = "asc"
+    # デフォルトのアイコン(↕)
     sort_icon = icon("fas", "sort")
-    # 現在ソートされているカラムなら対応する矢印のアイコンに変更する
+
     if column.to_s == params[:sort_column].to_s
-      sort_icon = sort_direction == "asc" ? icon("fas", "sort-up") : icon("fas", "sort-down")
+      # 現在ソートされているカラムなら、現在の並び順とは逆の並び順をリンクのパラメータとして指定する。
+      # 不正なパラメータ値が設定されている場合は昇順を設定する
+      sort_direction = params[:sort_direction] == "asc" ? "desc" : "asc"
+
+      # アイコンには現在の並び順に準拠した並び順を設定する
+      # 不正なパラメータ値が設定されているならデフォルト値を使用する
+      sort_icon = case params[:sort_direction]
+        when "asc"
+          icon("fas", "sort-up")
+        when "desc"
+          icon("fas", "sort-down")
+        else
+          sort_icon
+        end
     end
 
     sort_icon + link_to(label, employees_list_path(sort_column: column, sort_direction: sort_direction))
