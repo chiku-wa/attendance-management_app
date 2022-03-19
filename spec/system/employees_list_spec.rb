@@ -4,7 +4,7 @@ RSpec.describe "社員情報に関連する画面のテスト", type: :system do
   before do
     # ----- 各テストで使用する共通変数
     # 一度に表示する社員情報の件数
-    PER_PAGE = 30
+    @PER_PAGE = 30
 
     # ----- テストデータを登録する
     load(Rails.root.join("db", "seeds.rb"))
@@ -37,11 +37,11 @@ RSpec.describe "社員情報に関連する画面のテスト", type: :system do
     login_macro_with_emplpoyee_list(employee: @employee_admin)
 
     # ----- 登録されている社員数が30件を超えている場合は、一度に表示される社員数は30件であること
-    expect(Employee.count).to be > PER_PAGE
+    expect(Employee.count).to be > @PER_PAGE
     expect(page).to(
       have_xpath(
         "//html/body/div/table/tbody/tr",
-        count: PER_PAGE,
+        count: @PER_PAGE,
       )
     )
 
@@ -49,14 +49,13 @@ RSpec.describe "社員情報に関連する画面のテスト", type: :system do
     # * 想定したページ数であること(一度に表示される件数は30件であること前提)
     # * ログインユーザの情報が含まれていないこと
 
-    # ページネーションボタンが想定通りの数になっていることを確認する
-    # ※ログインしているユーザ自身は除くため-1
+    # [想定したページ数であること]
+    # 社員数の合計を割り出す(ログインしているユーザ自身は除くため-1)
     total_employees_exclude_own = Employee.count - 1
 
     # 「次へ」「最後」の2つのボタンが存在するため+2
-    num_of_page = ((total_employees_exclude_own / PER_PAGE) + (total_employees_exclude_own % PER_PAGE == 0 ? 0 : 1)) + 2
+    num_of_page = ((total_employees_exclude_own / @PER_PAGE) + (total_employees_exclude_own % @PER_PAGE == 0 ? 0 : 1)) + 2
 
-    # ページネーションのボタン数が想定どおりであること
     expect(page).to(
       have_xpath(
         "/html/body/div/nav[1]/ul/li/a",
@@ -64,7 +63,8 @@ RSpec.describe "社員情報に関連する画面のテスト", type: :system do
       )
     )
 
-    # 登録した社員(ログインユーザ以外)が想定通り登録されていること(一意の値である社員コードをもとに期待値を確認する)
+    # [ログインユーザの情報が含まれていないこと]
+    # 一意の値である社員コードをもとに期待値を確認する
     [
       @employee_manager,
       @employee_common,
@@ -78,5 +78,67 @@ RSpec.describe "社員情報に関連する画面のテスト", type: :system do
   scenario "ヘッダをクリックすると、昇順・降順にソートされること" do
     # ログインし、社員情報一覧に遷移する
     login_macro_with_emplpoyee_list(employee: @employee_admin)
+
+    # ========== 前提の確認：30件表示されており、かつ初期表示時は社員コードの昇順になっていること
+    # 画面に表示されるであろう状態と同じソート条件で社員を取得する
+    employees_order_by_employee_code = Employee
+      .where.not(id: @employee_admin.id) # ログインしているユーザを除外する
+      .order(:employee_code) # 社員コードの昇順
+      .limit(@PER_PAGE) # 一度に表示される社員数
+
+    expect_same_order_of_employee_list(employees_order_by_employee_code)
+
+    # ========== ソートボタン押下時の確認
+    # 各項目ででソートして想定通りの挙動になることを確認する
+    # ソートキーが外部テーブルに存在する場合、テーブル結合が必要となるため、以下の二次元配列を定義する
+    # [<includesメソッドで指定するプロパティ名>, <カラム名>]
+    [
+      ["roles", "role_name"], #権限
+      ["employees", "employee_name_kana"], # 氏名 ※画面上では氏名(漢字)だが、内部的にはカナでソートしているため、期待値の確認はカナを基準とする
+      ["employees", "email"], #メールアドレス
+    # ["employment_status", "status_code"], #就業状況 ※画面上では就業状況(名称)だが、内部的にはコードでソートしているため、期待値の確認はコードを基準とする
+    ].each do |table_name, sort_column|
+      puts "ソートキー:#{sort_column}"
+
+      # ----- 昇順のテスト
+      # ソートボタンを押下する
+      click_link("sort_#{sort_column}")
+
+      File.open("debug_#{sort_column}.html", "w") do |text|
+        text.puts page.html
+      end
+
+      # 画面に表示されるであろう状態と同じソート条件で社員を取得する
+      # ソートキーが外部テーブル(社員情報テーブルではない)の場合、includesの引数として設定する
+      include_table = table_name == "employees" ? [] : [table_name]
+
+      employees = Employee
+        .where.not(id: @employee_admin.id) # ログインしているユーザを除外する
+        .includes(include_table)
+        .order("#{table_name.pluralize}.#{sort_column}")
+        .limit(@PER_PAGE)
+
+      expect_same_order_of_employee_list(employees)
+
+      # ----- 降順のテスト
+      # 昇順でソートされた状態で、再度ソートボタンを押下して降順にソートする
+      click_link("sort_#{sort_column}")
+
+      File.open("debug_#{sort_column}.html", "w") do |text|
+        text.puts page.html
+      end
+
+      # 画面に表示されるであろう状態と同じソート条件で社員を取得する
+      # ソートキーが外部テーブル(社員情報テーブルではない)の場合、includesの引数として設定する
+      include_table = table_name == "employees" ? [] : [table_name]
+
+      employees = Employee
+        .where.not(id: @employee_admin.id) # ログインしているユーザを除外する
+        .includes(include_table)
+        .order("#{table_name.pluralize}.#{sort_column} desc")
+        .limit(@PER_PAGE)
+
+      expect_same_order_of_employee_list(employees)
+    end
   end
 end
