@@ -2,6 +2,13 @@ require "rails_helper"
 require "font-awesome-sass"
 
 RSpec.describe "社員機能のヘルパーに関するテスト", type: :helper do
+  before do
+    # リンクボタンの期待値を確認するためのProcオブジェクトを生成する
+    @expect_sort_link_proc = Proc.new do |sort_icon, column, direction, label|
+      "#{sort_icon}<a id=\"sort_#{column}\" href=\"/employees/list?sort_column=#{column}&amp;sort_direction=#{direction}\">#{label}</a>"
+    end
+  end
+
   context "generate_sort_link(社員情報一覧のソートボタン生成)のテスト" do
     it "ソートキー=前回ソートした時と同じ、並び順=未指定、の場合は昇順が設定されること" do
       # ========== パラメータ設定(現在ソートされているカラム、順序)
@@ -19,7 +26,7 @@ RSpec.describe "社員機能のヘルパーに関するテスト", type: :helper
 
       expect(
         helper.generate_sort_link(column: sort_column, label: label)
-      ).to include "#{expect_sort_icon}<a href=\"/employees/list?sort_column=#{sort_column}&amp;sort_direction=#{expect_sort_direction}\">#{label}</a>"
+      ).to include @expect_sort_link_proc.call(expect_sort_icon, sort_column, expect_sort_direction, label)
     end
 
     it "ソートキー=前回ソートした時と同じ、並び順=降順、の場合、昇順(指定された並び順とは逆の順序)が設定されること" do
@@ -37,7 +44,7 @@ RSpec.describe "社員機能のヘルパーに関するテスト", type: :helper
 
       expect(
         helper.generate_sort_link(column: sort_column, label: label)
-      ).to include "#{expect_sort_icon}<a href=\"/employees/list?sort_column=#{sort_column}&amp;sort_direction=#{expect_sort_direction}\">#{label}</a>"
+      ).to include @expect_sort_link_proc.call(expect_sort_icon, sort_column, expect_sort_direction, label)
     end
 
     it "ソートしてないカラムのリンクのパラメータには、強制的に昇順が設定されること" do
@@ -58,7 +65,7 @@ RSpec.describe "社員機能のヘルパーに関するテスト", type: :helper
 
       expect(
         helper.generate_sort_link(column: sort_column, label: label)
-      ).to include "#{expect_sort_icon}<a href=\"/employees/list?sort_column=#{sort_column}&amp;sort_direction=#{expect_sort_direction}\">#{label}</a>"
+      ).to include @expect_sort_link_proc.call(expect_sort_icon, sort_column, expect_sort_direction, label)
 
       # ----- ソートキーとして指定されていないカラムの場合
       sort_column = "email"
@@ -74,7 +81,7 @@ RSpec.describe "社員機能のヘルパーに関するテスト", type: :helper
 
       expect(
         helper.generate_sort_link(column: sort_column, label: label)
-      ).to include "#{expect_sort_icon}<a href=\"/employees/list?sort_column=#{sort_column}&amp;sort_direction=#{expect_sort_direction}\">#{label}</a>"
+      ).to include @expect_sort_link_proc.call(expect_sort_icon, sort_column, expect_sort_direction, label)
     end
   end
 end

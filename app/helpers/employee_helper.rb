@@ -43,6 +43,6 @@ module EmployeeHelper
         end
     end
 
-    sort_icon + link_to(label, employees_list_path(sort_column: column, sort_direction: sort_direction))
+    sort_icon + link_to(label, employees_list_path(sort_column: column, sort_direction: sort_direction), { id: "sort_#{column}" })
   end
 end
