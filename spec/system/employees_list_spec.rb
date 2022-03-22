@@ -89,53 +89,42 @@ RSpec.describe "社員情報に関連する画面のテスト", type: :system do
     expect_same_order_of_employee_list(employees_order_by_employee_code)
 
     # ========== ソートボタン押下時の確認
-    # 各項目ででソートして想定通りの挙動になることを確認する
+    # 各項目でソートして想定通りの挙動になることを確認する
     # ソートキーが外部テーブルに存在する場合、テーブル結合が必要となるため、以下の二次元配列を定義する
     # [<includesメソッドで指定するプロパティ名>, <カラム名>]
     [
       ["roles", "role_name"], #権限
       ["employees", "employee_name_kana"], # 氏名 ※画面上では氏名(漢字)だが、内部的にはカナでソートしているため、期待値の確認はカナを基準とする
       ["employees", "email"], #メールアドレス
-    # ["employment_status", "status_code"], #就業状況 ※画面上では就業状況(名称)だが、内部的にはコードでソートしているため、期待値の確認はコードを基準とする
+      ["employment_status", "status_code"], #就業状況 ※画面上では就業状況(名称)だが、内部的にはコードでソートしているため、期待値の確認はコードを基準とする
     ].each do |table_name, sort_column|
-      puts "ソートキー:#{sort_column}"
-
-      # ----- 昇順のテスト
-      # ソートボタンを押下する
-      click_link("sort_#{sort_column}")
-
-      File.open("debug_#{sort_column}.html", "w") do |text|
-        text.puts page.html
-      end
-
       # 画面に表示されるであろう状態と同じソート条件で社員を取得する
       # ソートキーが外部テーブル(社員情報テーブルではない)の場合、includesの引数として設定する
       include_table = table_name == "employees" ? [] : [table_name]
 
+      # ----- 昇順のテスト
+      # 1回目のソートボタン押下(昇順)
+      click_link("sort_#{sort_column}")
+
+      # 期待値確認用に、社員情報一覧の出力条件と同じ条件で社員情報を抽出
       employees = Employee
         .where.not(id: @employee_admin.id) # ログインしているユーザを除外する
         .includes(include_table)
         .order("#{table_name.pluralize}.#{sort_column}")
+        .order("employee_code asc")
         .limit(@PER_PAGE)
 
       expect_same_order_of_employee_list(employees)
 
       # ----- 降順のテスト
-      # 昇順でソートされた状態で、再度ソートボタンを押下して降順にソートする
+      # 2回目のソートボタン押下(降順)
       click_link("sort_#{sort_column}")
-
-      File.open("debug_#{sort_column}.html", "w") do |text|
-        text.puts page.html
-      end
-
-      # 画面に表示されるであろう状態と同じソート条件で社員を取得する
-      # ソートキーが外部テーブル(社員情報テーブルではない)の場合、includesの引数として設定する
-      include_table = table_name == "employees" ? [] : [table_name]
 
       employees = Employee
         .where.not(id: @employee_admin.id) # ログインしているユーザを除外する
         .includes(include_table)
         .order("#{table_name.pluralize}.#{sort_column} desc")
+        .order("employee_code asc")
         .limit(@PER_PAGE)
 
       expect_same_order_of_employee_list(employees)

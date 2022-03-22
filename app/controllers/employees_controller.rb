@@ -29,12 +29,15 @@ class EmployeesController < ApplicationController
     # ----- 以下の条件で社員情報一覧を取得
     # * ログインしているユーザは除外する
     # * N+1問題を回避するため、Viewで必要なテーブルを事前に結合しておく
-    # * 受け取ったソート情報をもとにソートする
+    # * 受け取ったソート情報をもとにソートする、なお冗長性のあるカラム(権限、就業状況などの
+    #   外部のマスタテーブルの外部キーなど)でソートした場合にも並び順が保証されるように、
+    #   order byの2つめには社員コード(昇順)を固定で指定する
     # * `kaminari`gemのページネーションを考慮する
     @employees = Employee
       .where.not(id: current_employee.id)
       .includes([:roles, :employment_status])
       .order("#{sort_column} #{sort_direction}")
+      .order("employee_code asc")
       .page(params[:page])
   end
 end
