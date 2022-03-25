@@ -116,3 +116,16 @@ employment_status_retirement = EmploymentStatus.create!(
   status_code: I18n.t("master_data.employment_status.status_code.retirement"),
   status_name: I18n.t("master_data.employment_status.status_name.retirement"),
 )
+
+# ===== 社員情報を登録
+# 管理者
+Employee.create!(
+  employee_code: "999999",
+  employee_name: "システム管理者",
+  employee_name_kana: "システムカンリシャ",
+  age: 0,
+  email: ENV["ADMINISTRATOR_MAIL_ADDRESS"],
+  password: ENV["ADMINISTRATOR_PASSWORD"],
+  employment_status: employment_status_work,
+  roles: [role_admin],
+)

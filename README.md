@@ -9,6 +9,27 @@ https://docs.google.com/spreadsheets/d/1CBhZUgEMrRyd-Trv4FnO5cIrsOcu-ithNDEERFCk
 なお、本アプリでは`閉包テーブルモデル`の実装にあたり`closure_tree`gemは使用していません。
 
 # 前提条件
+## 環境変数の扱い方
+開発(`development`)環境では`dotenv`gemを用いて`.env`ファイルで管理することを推奨します。
+`.env`ファイルのサンプルを以下に示します。
+
+例：<プロジェクトのルートディレクトリ>/`.env`
+```bash
+DATABASE_NAME = kintai
+DATABASE_USERNAME = kintai_user
+DATABASE_PASSWORD = hoge
+```
+
+なお、本番環境(`production`)では、各々のOSに対して直接環境変数を定義するようにしてください。
+
+## システム管理者情報
+システム管理者の情報は環境変数に定義する必要があります。下記の環境変数を定義するようにしてください。
+
+| 環境変数                       | 説明                                     |
+| -------------------------- | -------------------------------------- |
+| ADMINISTRATOR_MAIL_ADDRESS | システム管理者のメールアドレス。ログインや、パスワードリセット時に使用する。 |
+| ADMINISTRATOR_PASSWORD     | システム管理者のログインパスワード。                     |
+
 ## DB関連
 DBはPostgreSQLを前提としています。
 以下の環境を準備してください。
@@ -34,34 +55,12 @@ DB名、ユーザ名、パスワード、ホスト名(test環境のみ)は環境
 
 * 試験環境(test)
 
-| 種別       | 環境変数名             | 備考                                                                                           |
-| ---------- | ---------------------- | ---------------------------------------------------------------------------------------------- |
-| ホスト名   | DATABASE_TEST_HOST     | 開発環境PC上ではほぼ`localhost`固定、GithubActions上ではPostgreSQLのコンテナのホスト名を指定。 |
-| DB名       | DATABASE_TEST_NAME     |                                                                                                |
-| ユーザ名   | DATABASE_TEST_USERNAME |                                                                                                |
-| パスワード | DATABASE_TEST_PASSWORD |                                                                                                |
-
-なお、ローカルの開発環境では`dotenv`gemを用いて`.env`ファイルで管理することを推奨します。
-`.env`ファイルのサンプルを以下に示します。
-
-<プロジェクトのルートディレクトリ>/`.env`
-```bash
-# 本番用
-DATABASE_NAME = kintai
-DATABASE_USERNAME = kintai_user
-DATABASE_PASSWORD = hoge
-
-# 開発用
-DATABASE_DEV_NAME = kintai_development
-DATABASE_DEV_USERNAME = kintai_development_user
-DATABASE_DEV_PASSWORD = hoge_dev
-
-# テスト用
-DATABASE_TEST_HOST = localhost
-DATABASE_TEST_NAME = kintai_test
-DATABASE_TEST_USERNAME = kintai_test_user
-DATABASE_TEST_PASSWORD = hoge_test
-```
+| 種別    | 環境変数名                  | 備考                                                                |
+| ----- | ---------------------- | ----------------------------------------------------------------- |
+| ホスト名  | DATABASE_TEST_HOST     | 開発環境PC上ではほぼ`localhost`固定、GithubActions上ではPostgreSQLのコンテナのホスト名を指定。 |
+| DB名   | DATABASE_TEST_NAME     |                                                                   |
+| ユーザ名  | DATABASE_TEST_USERNAME |                                                                   |
+| パスワード | DATABASE_TEST_PASSWORD |                                                                   |
 
 ### PostgreSQL環境の構築
 前述の`環境変数`で定義した構成でPostgreSQL上にDB、ユーザを定義してください。
@@ -96,6 +95,22 @@ db/seeds
 ### PostgreSQLの設定情報
 下記資料の`PostgreSQL設定情報`シートをご覧ください。
 https://docs.google.com/spreadsheets/d/16DTE2wg3ElNfrV1qs4X9JZwdrkx3qFS1tYo4NKYuVgE/edit?usp=sharing
+
+## メール送信
+### 環境変数
+SMTP、システム管理者のメールアドレスは環境変数に定義する必要があります。下記の環境変数を定義するようにしてください。
+
+| 環境変数                   | 説明                                |
+| ---------------------- | --------------------------------- |
+| SMTP_ADDRESS           | SMTPサーバのアドレス                      |
+| SMTP_PORT              | SMTPサーバのポート番号                     |
+| SMTP_DOMAIN            | SMTPサーバのHELOドメイン                  |
+| SMTP_USER_NAME         | SMTPサーバのログイン用ユーザ名                 |
+| SMTP_PASSWORD          | SMTPサーバのログイン用パスワード                |
+| ACTION_MAILER_URL      | deviseが送信するメールの本文内のURLのFQDN名。本番用。 |
+| ACTION_MAILER_DEV_URL  | 同上。開発環境用。                         |
+| ACTION_MAILER_TEST_URL | 同上。テスト環境用。                        |
+
 
 ## CI情報
 GithubActionsを使ってCIを設定しています。CIの方針は以下の通りとしています。

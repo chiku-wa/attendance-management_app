@@ -16,19 +16,6 @@ role_admin = Role.find_by(role_name: I18n.t("master_data.role.admin"))
 role_manager = Role.find_by(role_name: I18n.t("master_data.role.manager"))
 role_common = Role.find_by(role_name: I18n.t("master_data.role.common"))
 
-# ----- 社員情報を登録
-# 管理者
-Employee.create!(
-  employee_code: "999999",
-  employee_name: "システム管理者",
-  employee_name_kana: "システムカンリシャ",
-  age: 0,
-  email: "test_admin@example.com",
-  password: "administrator",
-  employment_status: employment_status_work,
-  roles: [role_admin],
-)
-
 # 一般社員、マネージャー
 employees = []
 (1..100).each do |i|
