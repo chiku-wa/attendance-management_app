@@ -91,6 +91,8 @@ ja:
         retirement: 退職
   # =============== Viewなどに使用するラベル名
   label:
+    # -----
+    app_name: ポチっと勤怠
     # ----- ログイン・ログアウト関連
     devise:
       sign_in: ログイン

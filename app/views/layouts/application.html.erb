@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>ポチっと勤怠 - <%= yield(:title)%></title>
+  <title><%= I18n.t("label.app_name") %> - <%= yield(:title)%></title>
 
   <%# クロスサイトスクリプティング防止のためのタグ %>
   <%= csrf_meta_tags %>
