@@ -97,6 +97,7 @@ ja:
     devise:
       sign_in: ログイン
       sign_out: ログアウト
+      password_reset: パスワードリセット
     # ----- リンク、ボタンのラベル
     link:
       back_to_top: トップページへ戻る

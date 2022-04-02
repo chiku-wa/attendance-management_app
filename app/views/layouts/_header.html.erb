@@ -12,7 +12,9 @@
         <%# -------------------------- %>
         <%# ----- アプリ名 %>
         <div class="logo p-2">
-          <%= link_to(I18n.t("label.app_name"), main_index_path, id: "logo")%>
+          <%= link_to(main_index_path, {id: "logo",class:"btn btn-outline-secondary"}) do %>
+          <%= I18n.t("label.app_name") %>
+          <% end  %>
         </div>
 
         <%# -------------------------- %>

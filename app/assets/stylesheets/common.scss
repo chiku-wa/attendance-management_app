@@ -34,6 +34,11 @@ header {
 .logo {
   font-size: 1.6em;
   padding-top: 9px;
+
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
 }
 
 // 社員情報を表示する領域
@@ -201,4 +206,17 @@ header {
     -webkit-transform: translateY(-16px) rotate(45deg);
     transform: translateY(-16px) rotate(45deg);
   }
+}
+
+// ================================================
+// ===== deviseの設定
+// -----各入力フォーム、ボタンのサイズと間隔の設定
+.devise-form {
+  margin: 5px;
+  width: 300px;
+}
+
+// ----- 「_links.html.erb」の設定
+.devise-links {
+  margin-top: 10px;
 }
