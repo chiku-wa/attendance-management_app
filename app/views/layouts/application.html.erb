@@ -32,6 +32,17 @@
   <div class="container-fluid">
 
     <%# ================================================================= %>
+    <%# ===== deivseのフラッシュメッセージ %>
+    <%# 通知メッセージ %>
+    <% if(!notice.blank?)  %>
+    <p class="notice alert alert-info"><%= notice %></p>
+    <% end  %>
+
+    <%# 警告メッセージ %>
+    <% if(!alert.blank?)  %>
+    <p class="alert alert-danger"><%= alert %></p>
+    <% end  %>
+
     <%# ===== メインコンテンツ部分 %>
     <%= yield %>
 
