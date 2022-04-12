@@ -16,7 +16,7 @@ module SystemCommonMacros
     fill_in(:employee_email, with: employee.email)
     fill_in(:employee_password, with: employee.password)
 
-    click_button("Log in")
+    click_button(I18n.t("label.devise.sign_in"))
   end
 
   # ----------------------------------------------------
@@ -43,7 +43,7 @@ module SystemCommonMacros
   # 社員情報一覧において、画面上に表示された社員情報一覧と、引数として渡された社員情報インスタンス
   # の配列の並びが一致していることを確認する。
   # 並び順の一致確認は以下を基準とする。
-  # * 画面上に標示された社員情報一覧 → trタグのid要素に埋め込まれた社員コード
+  # * 画面上に表示された社員情報一覧 → trタグのid要素に埋め込まれた社員コード
   # * 引数として渡された社員情報インスタンスの配列 → employee_code要素
   #
   # # 引数
@@ -51,7 +51,7 @@ module SystemCommonMacros
   # 期待値を確認したい社員情報インスタンスの配列
   #
   def expect_same_order_of_employee_list(employees)
-    # 画面に標示されている社員一覧を取得する
+    # 画面に表示されている社員一覧を取得する
     employees_for_per_page = all(:xpath, "//html/body/div/table/tbody/tr")
 
     # 画面上に一度表示される件数と、引数の社員数が一致すること

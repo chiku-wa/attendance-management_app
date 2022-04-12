@@ -18,7 +18,7 @@ RSpec.describe "メイン画面のシステムテスト", type: :system do
     # ログインする
     login_macro(employee: @employee)
 
-    # その権限でしか利用できない機能のリンクが標示されていること
+    # その権限でしか利用できない機能のリンクが表示されていること
     expect(page).to(
       have_link("社員一覧", href: employees_list_path)
     )
@@ -38,7 +38,7 @@ RSpec.describe "メイン画面のシステムテスト", type: :system do
     # ログインする
     login_macro(employee: @employee)
 
-    # その権限でしか利用できない機能のリンクが標示されていること
+    # その権限でしか利用できない機能のリンクが表示されていること
     # TODO:第２引数にhrefを追加し、リンクの妥当性も確認すること
     expect(page).to(
       have_link("出勤")
