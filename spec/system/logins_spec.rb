@@ -4,8 +4,6 @@ RSpec.describe "ログイン機能に関するシステムテスト", type: :sys
   before do
     # 権限を登録する
     @role_admin = FactoryBot.create(:role_admin)
-    @role_manager = FactoryBot.create(:role_manager)
-    @role_common = FactoryBot.create(:role_common)
 
     # 社員情報を登録する
     @employee = FactoryBot.create(:employee)
@@ -34,8 +32,8 @@ RSpec.describe "ログイン機能に関するシステムテスト", type: :sys
       login_macro(employee: @employee)
 
       expect(
-        find(:xpath, "//p[@id='message_alert']")
-      ).to have_content("メールアドレスまたはパスワードが違います。")
+        find(:xpath, "//p[@id='error_explanation']")
+      ).to have_content("メールアドレスを入力してください")
 
       # 未入力にした情報をもとに戻す
       @employee.reload
