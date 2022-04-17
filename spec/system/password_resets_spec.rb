@@ -36,8 +36,12 @@ RSpec.describe "パスワードリセット機能に関するシステムテス�
     expect(mail.from).to eq(["noreply.attendance.mng@gmail.com"])
     # 宛先は社員のメールアドレスであること
     expect(mail.to).to eq([@employee.email])
+    # 件名が期待どおりであること
+    expect(mail.subject).to eq("パスワードの再設定をお願い致します")
     # Ccは存在しないこと
     expect(mail.cc).to be_nil
+    # 本文にパスワードリセット用のURLが含まれていること
+    expect(mail.body.encoded).to match(/#{edit_employee_password_path}.+/)
   end
 
   scenario "存在しないメールアドレスの場合はエラーが表示されること" do
