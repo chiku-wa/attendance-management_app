@@ -32,8 +32,8 @@ RSpec.describe "ログイン機能に関するシステムテスト", type: :sys
       login_macro(employee: @employee)
 
       expect(
-        find(:xpath, "//p[@id='error_explanation']")
-      ).to have_content("メールアドレスを入力してください")
+        find(:xpath, "//p[@id='message_alert']")
+      ).to have_content("メールアドレスまたはパスワードが違います。")
 
       # 未入力にした情報をもとに戻す
       @employee.reload
