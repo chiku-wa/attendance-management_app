@@ -24,11 +24,23 @@ Devise.setup do |config|
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
+
+  # -----デフォルトの差出人
   # 差出人は、本番・開発環境と同様になるように、SMTPユーザを指定する
   config.mailer_sender = ENV["SMTP_USER_NAME"]
 
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
+
+  # ----- deviseが送信するメールをカスタマイズするためのクラス名(件名のカスタマイズなどで使用する)
+  #       ※「app/mailers/XXX.rb」に対応
+  config.mailer = "DeviseMailer"
+
+  # ----- deviseが送信するメールのヘッダレイアウトのView名
+  #       ※「app/views/layouts/XXX.html.erb」に対応
+  Rails.application.config.to_prepare do
+    Devise::Mailer.layout "mailer"
+  end
 
   # Configure the parent class responsible to send e-mails.
   # config.parent_mailer = 'ActionMailer::Base'
