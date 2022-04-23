@@ -34,10 +34,16 @@ header {
 .logo {
   font-size: 1.6em;
   padding-top: 9px;
+  text-align: left;
 
   a {
     color: #fff;
     text-decoration: none;
+  }
+  .logo_image {
+    width:50%;
+    max-width: 50%;
+    height: auto;
   }
 }
 

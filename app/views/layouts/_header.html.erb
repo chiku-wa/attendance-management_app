@@ -11,9 +11,9 @@
 
         <%# -------------------------- %>
         <%# ----- アプリ名 %>
-        <div class="logo p-2">
-          <%= link_to(main_index_path, {id: "logo",class:"btn btn-outline-secondary"}) do %>
-          <%= I18n.t("app_name") %>
+        <div class="logo">
+          <%= link_to(main_index_path, {id: "logo"}) do %>
+          <%= image_tag('logo.png', {class: "logo_image"}) %>
           <% end  %>
         </div>
 
