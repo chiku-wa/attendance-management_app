@@ -20,7 +20,7 @@ gem "pg"
 # --- 画面デザイン用
 gem "bootstrap", "~> 4.5", ">= 4.5.2"
 gem "bootsnap", ">= 1.4.2", require: false
-gem "font-awesome-sass" # アイコン(アイコンと対応するHTMLタグは「https://fontawesome.com/icons?d=gallery」より検索できる)
+gem "font-awesome-sass", "~>5.15" # アイコン(アイコンと対応するHTMLタグは「https://fontawesome.com/icons?d=gallery」より検索できる)
 gem "kaminari", "~> 1.1" # ページネーション用
 
 # --- JavaScript
