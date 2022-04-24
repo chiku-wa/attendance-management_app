@@ -6,18 +6,75 @@
 // ===== 共通の設定
 // ----- HTMLタグの設定
 body {
-  font-size: 2.0em;
+  font-size: 1.5em;
+  font-family: "\006e38\0030b4\0030b7\0030c3\0030af\004f53", YuGothic, "\006e38\0030b4\0030b7\0030c3\0030af",
+    "Yu Gothic", sans-serif;
+
+  // 中央に寄せるための設定
+  width: 700px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
-// ========================
-// ===== ヘッダ部分のデザイン
-// システム名を表示するロゴ領域
+// ----- ヘッダ部のデザイン
 a {
   text-decoration: none;
 }
 
-.logo_image {
-  width:10%;
-  max-width: 10%;
-  height: auto;
+// 文頭のロゴやタイトル部のデザイン
+.title_header {
+  padding: 3px;
+
+  // ロゴ画像
+  .logo_image {
+    width: 80px;
+    height: 40px;
+  }
+
+  table {
+    width: 100%;
+    tr {
+      td {
+        text-align: center;
+      }
+    }
+  }
+}
+
+// ----- フッタの注意書きのデザイン
+.notice {
+  // 本文との間に隙間を開ける
+  padding-top: 80px;
+
+  // 注意書きのデザイン
+  table {
+    // ヘッダ部のデザイン
+    thead {
+      tr {
+        td {
+          color: #fff;
+          background-color: #fb5555;
+          text-align: center;
+          font-weight: bold;
+          border-radius: 5px;
+        }
+      }
+    }
+  }
+}
+
+// ==========
+// ===== パスワードリセットのデザイン
+// ----- パスワードリセットボタンのデザイン
+.btn-password-reset {
+  background-color: #fccf00;
+  border-radius: 10px;
+  color: #141414;
+  display: inline-block;
+  font-size: 22px;
+  font-weight: bold;
+  line-height: 60px;
+  text-align: center;
+  text-decoration: none;
+  width: 560px;
 }

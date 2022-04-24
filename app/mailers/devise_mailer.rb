@@ -25,7 +25,7 @@ class DeviseMailer < Devise::Mailer
   def add_inline_attachment!
     image_names = [
       # ロゴ
-      "logo.png",
+      "logo_mailer.png",
     ]
 
     image_names.each do |image_name|

@@ -23,6 +23,10 @@ gem "bootsnap", ">= 1.4.2", require: false
 gem "font-awesome-sass", "~>5.15" # アイコン(アイコンと対応するHTMLタグは「https://fontawesome.com/icons?d=gallery」より検索できる)
 gem "kaminari", "~> 1.1" # ページネーション用
 
+# ----- メールデザイン用
+# カスタムCSSをメール本文に適用するためのgem
+gem "premailer-rails", "~> 1.10"
+
 # --- JavaScript
 # RailsでReactを使用する場合に必要なgem
 gem "react-rails", "~> 2.6", ">= 2.6.1"

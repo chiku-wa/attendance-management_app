@@ -32,7 +32,6 @@ header {
 // システム名を表示するロゴ領域
 .logo {
   font-size: 1.6em;
-  padding-top: 9px;
   text-align: left;
 
   a {
@@ -40,15 +39,15 @@ header {
     text-decoration: none;
   }
   .logo_image {
-    width:50%;
-    max-width: 50%;
+    width: 30%;
+    max-width: 30%;
     height: auto;
   }
 }
 
 // 社員情報を表示する領域
 .emp_info {
-  font-size: 1.0em;
+  font-size: 1em;
   height: 100%;
 
   // 垂直方向似中央寄せするための設定
