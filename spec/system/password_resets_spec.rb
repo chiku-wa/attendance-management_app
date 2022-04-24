@@ -1,5 +1,9 @@
 require "rails_helper"
 
+RSpec.configure do |config|
+  config.include Mail::Matchers, type: :mailer
+end
+
 RSpec.describe "パスワードリセット機能に関するシステムテスト", type: :system do
   scenario "想定通りの件名、本文のパスワードリセットメールが送信されること" do
 
@@ -37,11 +41,16 @@ RSpec.describe "パスワードリセット機能に関するシステムテス�
     # 宛先は社員のメールアドレスであること
     expect(mail.to).to eq([@employee.email])
     # 件名が期待どおりであること
-    expect(mail.subject).to eq("パスワードの再設定をお願い致します")
+    expect(mail.subject).to eq("【#{I18n.t("app_name")}】パスワードの再設定をお願い致します")
     # Ccは存在しないこと
     expect(mail.cc).to be_nil
-    # 本文にパスワードリセット用のURLが含まれていること
-    expect(mail.body.encoded).to match(/#{edit_employee_password_path}.+/)
+    # HTML、プレーンテキストのメール本文にパスワードリセット用のURLが含まれていること
+    [
+      mail.html_part.body.to_s,
+      mail.text_part.body.to_s,
+    ].each do |body|
+      expect(body).to match(/.+#{edit_employee_password_path}.+/)
+    end
   end
 
   scenario "存在しないメールアドレスの場合はエラーが表示されること" do
