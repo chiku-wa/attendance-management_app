@@ -49,6 +49,11 @@ jobs:
       env:
         # Railsの実行環境
         RAILS_ENV: test
+        # システム管理者のアカウント情報
+        ADMINISTRATOR_MAIL_ADDRESS: admin@example.com
+        ADMINISTRATOR_PASSWORD: Admin@2022
+        # deviseが送信するメールの本文内のURLのFQDN名
+        ACTION_MAILER_TEST_URL: localhost
         # 前述の設定で定義した「services -> postgres」を参照させるための設定
         POSTGRES_HOST: postgres
         # database.ymlで使用している環境変数を定義
