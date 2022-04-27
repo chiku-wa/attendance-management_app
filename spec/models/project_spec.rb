@@ -32,7 +32,7 @@ RSpec.describe "プロジェクトモデルのテスト", type: :model do
       valid_unique(
         model: project,
         attribute: :project_code,
-        value: "AB00001",
+        value: "CD00002",
         is_case_sensitive: false,
       )
     end

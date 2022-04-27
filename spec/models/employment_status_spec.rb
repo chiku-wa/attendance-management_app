@@ -29,13 +29,15 @@ RSpec.describe "就業状況モデルのテスト", type: :model do
       end
 
       it "重複した就業状況コードを登録しようとした場合はバリデーションエラーとなること(大文字小文字区別なし)" do
-        employment_status_work.status_code = "a0001"
-        duplicate_employment_status = employment_status_work.dup
-
-        # 大文字に変換しても、区別されず、一意制約エラーが発生すること
-        duplicate_employment_status.status_code = employment_status_work.status_code.upcase
-        employment_status_work.save
-        expect(duplicate_employment_status).not_to be_valid
+        valid_unique(
+          model: employment_status_work,
+          attribute: :status_code,
+          value: "a0001",
+          is_case_sensitive: false,
+          other_unique_attributes: {
+            status_name: "兼務b",
+          },
+        )
       end
 
       # ---------------------
@@ -56,13 +58,15 @@ RSpec.describe "就業状況モデルのテスト", type: :model do
       end
 
       it "重複した就業状況を登録しようとした場合はバリデーションエラーとなること(大文字小文字区別なし)" do
-        employment_status_work.status_name = "本務a"
-        duplicate_employment_status = employment_status_work.dup
-
-        # 大文字に変換しても、区別されず、一意制約エラーが発生すること
-        duplicate_employment_status.status_name = employment_status_work.status_name.upcase
-        employment_status_work.save
-        expect(duplicate_employment_status).not_to be_valid
+        valid_unique(
+          model: employment_status_work,
+          attribute: :status_name,
+          value: "本務a",
+          is_case_sensitive: false,
+          other_unique_attributes: {
+            status_code: "b0002",
+          },
+        )
       end
     end
   end

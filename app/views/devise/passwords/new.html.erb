@@ -1,0 +1,20 @@
+<%# HTMLのtitle定義部 %>
+<% provide(:title, I18n.t("label.devise.password_reset")) %>
+
+<%= render "devise/shared/error_messages", resource: resource %>
+
+<%# 本体出力部 %>
+<h1><%= I18n.t("label.devise.password_reset") %></h1>
+
+<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+
+<div class="field">
+  <%= f.email_field :email, placeholder: Employee.human_attribute_name(:email), autofocus: true, autocomplete: "email", class: "devise-form" %>
+</div>
+
+<div class="actions">
+  <%= f.submit "パスワードをリセットする", id: "submit_password_reset", class: "btn btn-primary devise-form" %>
+</div>
+<% end %>
+
+<%= render "devise/shared/links" %>

@@ -10,9 +10,17 @@ class WorkTable < ApplicationRecord
   # 社員コード
   include EmployeeCodeValidators
 
-  # 勤務日
+  # 出勤日
   validates(
-    :working_date,
+    :work_date,
+    {
+      presence: true,
+    }
+  )
+
+  # 退勤日
+  validates(
+    :leave_date,
     {
       presence: true,
     }
@@ -27,7 +35,7 @@ class WorkTable < ApplicationRecord
   # ランクコード
   include RankCodeValidators
 
-  # 勤務日
+  # 締めフラグ
   validates(
     :closed,
     {

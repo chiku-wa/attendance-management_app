@@ -4,7 +4,6 @@
 
 // ========================
 // ===== 共通の設定
-// ----- 共通の変数
 // モバイルアクセスの基準となる最大ピクセル数
 // ※ここで定義したピクセルに収まる場合はモバイル用のCSSに切り替える
 $mobile_max_pixel: 480px;
@@ -17,22 +16,49 @@ $pc_min_pixel: 481px;
 body {
   // メインコンテンツが、fixed-topで固定したヘッダに被らないないようにするための設定
   // ヘッダ領域のサイズとほぼ同等の余白を設定すること
-  padding-top: 6rem;
+  padding-top: 8rem;
 }
 
 header {
+  color: #fff;
+
   a {
     color: #fff;
   }
-
 }
 
 // ========================
 // ===== ヘッダ部分のデザイン
 // システム名を表示するロゴ領域
 .logo {
-  font-size: 1.2em;
-  padding-top: 9px;
+  font-size: 1.6em;
+  text-align: left;
+
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .logo_image {
+    width: 30%;
+    max-width: 30%;
+    height: auto;
+  }
+}
+
+// 社員情報を表示する領域
+.emp_info {
+  font-size: 1em;
+  height: 100%;
+
+  // 垂直方向似中央寄せするための設定
+  // ※text-alignは効かないため、justify-contentを使用
+  display: flex;
+  align-items: center;
+  justify-content: right;
+}
+
+.logout {
+  text-align: right;
 }
 
 // ================================================
@@ -184,4 +210,17 @@ header {
     -webkit-transform: translateY(-16px) rotate(45deg);
     transform: translateY(-16px) rotate(45deg);
   }
+}
+
+// ================================================
+// ===== deviseの設定
+// -----各入力フォーム、ボタンのサイズと間隔の設定
+.devise-form {
+  margin: 5px;
+  width: 300px;
+}
+
+// ----- 「_links.html.erb」の設定
+.devise-links {
+  margin-top: 10px;
 }

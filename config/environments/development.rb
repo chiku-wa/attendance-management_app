@@ -14,13 +14,13 @@ Rails.application.configure do
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
-  if Rails.root.join('tmp', 'caching-dev.txt').exist?
+  if Rails.root.join("tmp", "caching-dev.txt").exist?
     config.action_controller.perform_caching = true
     config.action_controller.enable_fragment_cache_logging = true
 
     config.cache_store = :memory_store
     config.public_file_server.headers = {
-      'Cache-Control' => "public, max-age=#{2.days.to_i}"
+      "Cache-Control" => "public, max-age=#{2.days.to_i}",
     }
   else
     config.action_controller.perform_caching = false
@@ -31,10 +31,42 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  # ========== メール設定
+  # ----- deviseが送信するメールの本文内のURLのFQDN名
+  config.action_mailer.default_url_options = {
+    host: ENV["ACTION_MAILER_DEV_URL"],
+    port: 3000,
+  }
 
-  config.action_mailer.perform_caching = false
+  # ----- SMTP設定
+  # メール送信時にエラーが発生した場合は例外を発生させる
+  config.action_mailer.raise_delivery_errors = true
+
+  # SMTPサーバの接続設定
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    # TLS認証を使用するか
+    enable_starttls_auto: true,
+
+    # SMTPサーバのアドレス
+    address: ENV["SMTP_ADDRESS"],
+
+    # SMTPサーバのポート番号
+    port: ENV["SMTP_PORT"],
+
+    # SMTPサーバのドメイン
+    # ※SMTPと通信を開始する際に使用するHELOドメイン、メールの中継ログ情報としてメールのヘッダに追加され
+    domain: ENV["SMTP_DOMAIN"],
+
+    # SMTPサーバのユーザ名
+    user_name: ENV["SMTP_USER_NAME"],
+
+    # SMTPサーバのパスワード
+    password: ENV["SMTP_PASSWORD"],
+
+    # SMTPサーバの認証方法
+    authentication: "plain",
+  }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

@@ -1,3 +1,5 @@
+# ランクコードのバリデーション定義
+# ※複数のテーブルで使用する属性であるため、共通定義
 module RankCodeValidators
   extend ActiveSupport::Concern
 

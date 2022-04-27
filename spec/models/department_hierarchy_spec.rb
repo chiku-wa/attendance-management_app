@@ -347,7 +347,7 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
         child_department: department_A_sales_department1,
       )
 
-      # NOTE: remove_relationの妥当性は別のメソッドでテスト済みのため、ここではテストしない
+      # NOTICE: remove_relationの妥当性は別のメソッドでテスト済みのため、ここではテストしない
 
       # --- 部署がつけ変わっていることを確認する
       # 付け替え対象になっている部署の一覧(add_childの引数の子部署と、その子部署配下の部署の一覧)
@@ -460,7 +460,7 @@ RSpec.describe "部署階層モデルのテスト", type: :model do
         child_department: department_test_1,
       )
 
-      # NOTE: remove_relationの妥当性は別のメソッドでテスト済みのため、ここではテストしない
+      # NOTICE: remove_relationの妥当性は別のメソッドでテスト済みのため、ここではテストしない
 
       # --- 部署がつけ変わっていることを確認する
       # 対象になっている部署の一覧(add_childの引数の子部署と、その子部署配下の部署の一覧)

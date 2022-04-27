@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>ポチっと勤怠</title>
+  <title><%= I18n.t("app_name") %> - <%= yield(:title)%></title>
 
   <%# クロスサイトスクリプティング防止のためのタグ %>
   <%= csrf_meta_tags %>
@@ -22,7 +22,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
 
-<body>
+<body class="text-center">
   <%# ================================================================= %>
   <%# ===== ヘッダ部分 %>
   <%# ===== ※fixed-topを用いるとcontainer,row,colが機能しないため、あえて定義しない %>
@@ -32,6 +32,17 @@
   <div class="container-fluid">
 
     <%# ================================================================= %>
+    <%# ===== deivseのフラッシュメッセージ %>
+    <%# 通知メッセージ %>
+    <% if(!notice.blank?)  %>
+    <p id="message_notice" class="notice alert alert-info"><%= notice %></p>
+    <% end  %>
+
+    <%# 警告メッセージ %>
+    <% if(!alert.blank?)  %>
+    <p id="message_alert" class="alert alert-danger"><%= alert %></p>
+    <% end  %>
+
     <%# ===== メインコンテンツ部分 %>
     <%= yield %>
 

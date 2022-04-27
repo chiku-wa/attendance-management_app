@@ -1,0 +1,7 @@
+<% if resource.errors.any? %>
+<div id="error_explanation" class="notice alert alert-danger">
+  <% resource.errors.full_messages.each do |message| %>
+  ・<%= message %><br />
+  <% end %>
+</div>
+<% end %>

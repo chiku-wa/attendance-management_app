@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_19_040809) do
+ActiveRecord::Schema.define(version: 2022_02_02_231240) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,16 @@ ActiveRecord::Schema.define(version: 2021_08_19_040809) do
     t.datetime "end_date", precision: 6, null: false, comment: "離任日"
   end
 
+  create_table "employee_roles", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "employee_id", null: false
+    t.bigint "role_id", null: false
+    t.index ["employee_id", "role_id"], name: "unique_employee_roles_on_employee_id_role_id", unique: true
+    t.index ["employee_id"], name: "index_employee_roles_on_employee_id"
+    t.index ["role_id"], name: "index_employee_roles_on_role_id"
+  end
+
   create_table "employees", comment: "社員", force: :cascade do |t|
     t.string "employee_code", limit: 6, null: false, comment: "社員コード"
     t.string "employee_name", limit: 110, null: false, comment: "社員名"
@@ -60,7 +70,14 @@ ActiveRecord::Schema.define(version: 2021_08_19_040809) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "employment_status_id", null: false, comment: "就業状況ID"
+    t.string "email", limit: 255, default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.index ["email"], name: "unique_employees_on_email", unique: true
     t.index ["employee_code"], name: "unique_employees_on_employee_code", unique: true
+    t.index ["reset_password_token"], name: "unique_employees_on_reset_password_token", unique: true
   end
 
   create_table "employment_statuses", comment: "就業状況", force: :cascade do |t|
@@ -90,9 +107,16 @@ ActiveRecord::Schema.define(version: 2021_08_19_040809) do
     t.index ["rank_code"], name: "index_ranks_on_rank_code", unique: true
   end
 
+  create_table "roles", force: :cascade do |t|
+    t.string "role_name", limit: 20, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["role_name"], name: "unique_roles_on_role_name", unique: true
+  end
+
   create_table "work_tables", comment: "勤務表", force: :cascade do |t|
     t.string "employee_code", limit: 6, null: false, comment: "社員コード"
-    t.datetime "working_date", null: false, comment: "勤務日"
+    t.datetime "work_date", precision: 6, null: false, comment: "出勤日時"
     t.string "project_code", limit: 7, null: false, comment: "プロジェクトコード"
     t.string "rank_code", limit: 2, null: false, comment: "ランクコード"
     t.datetime "created_at", precision: 6, null: false
@@ -103,6 +127,7 @@ ActiveRecord::Schema.define(version: 2021_08_19_040809) do
     t.bigint "employment_status_id", null: false, comment: "就業状況ID"
     t.bigint "rank_id", null: false, comment: "ランクID"
     t.string "status_code", limit: 5, null: false, comment: "就業状況コード"
+    t.datetime "leave_date", precision: 6, null: false, comment: "退勤日時"
     t.index ["employee_id"], name: "index_work_tables_on_employee_id"
     t.index ["employment_status_id"], name: "index_work_tables_on_employment_status_id"
     t.index ["project_id"], name: "index_work_tables_on_project_id"
@@ -114,9 +139,11 @@ ActiveRecord::Schema.define(version: 2021_08_19_040809) do
   add_foreign_key "employee_departments", "affilitation_types", name: "fk_affilitation_type_id"
   add_foreign_key "employee_departments", "departments", name: "fk_department_id"
   add_foreign_key "employee_departments", "employees", name: "fk_employee_id"
+  add_foreign_key "employee_roles", "employees", name: "fk_employee_id"
+  add_foreign_key "employee_roles", "roles", name: "fk_role_id"
   add_foreign_key "employees", "employment_statuses", name: "fk_employment_status_id"
-  add_foreign_key "work_tables", "work_tables", column: "employee_id", name: "fk_employee_id"
-  add_foreign_key "work_tables", "work_tables", column: "employment_status_id", name: "fk_employment_status_id"
-  add_foreign_key "work_tables", "work_tables", column: "project_id", name: "fk_project_id"
-  add_foreign_key "work_tables", "work_tables", column: "rank_id", name: "fk_rank_id"
+  add_foreign_key "work_tables", "employees", name: "fk_employee_id"
+  add_foreign_key "work_tables", "employment_statuses", name: "fk_employment_status_id"
+  add_foreign_key "work_tables", "projects", name: "fk_project_id"
+  add_foreign_key "work_tables", "ranks", name: "fk_rank_id"
 end

@@ -1,0 +1,45 @@
+<%# HTMLのtitle定義部 %>
+<% provide(:title, I18n.t("label.title.employee_list")) %>
+
+<%# 本体出力部 %>
+<h1><%= I18n.t("label.title.employee_list") %></h1>
+
+<%# ページネーションバー %>
+<%= paginate(@employees) %>
+
+<table name="employees" class="table table-striped table-hover">
+
+  <thead>
+    <%# 社員コード %>
+    <th scope="col">
+      <%= generate_sort_link(column: :employee_code, label: t("activerecord.attributes.employee.employee_code")) %>
+    </th>
+    <%# 権限 %>
+    <th scope="col">
+      <%= generate_sort_link(column: :role_name, label: t("activerecord.models.role")) %>
+    </th>
+    <%# 社員名 %>
+    <th scope="col">
+      <%# ヨミガナでソートする %>
+      <%= generate_sort_link(column: :employee_name_kana, label: t("activerecord.attributes.employee.employee_name")) %>
+    </th>
+    <%# メールアドレス %>
+    <th scope="col">
+      <%= generate_sort_link(column: :email, label: t("activerecord.attributes.employee.email")) %>
+    </th>
+    <%# 就業状況 %>
+    <th scope="col">
+      <%# 昇順でソートした際に「在職」が先頭になるように、就業状況コードでソートする %>
+      <%= generate_sort_link(column: :status_code, label: t("activerecord.models.employment_status")) %>
+    </th>
+  </thead>
+  <tbody>
+
+    <%# 社員情報一覧出力 %>
+    <%= render(@employees) %>
+
+  </tbody>
+</table>
+
+<%# ページネーションバー %>
+<%= paginate(@employees) %>

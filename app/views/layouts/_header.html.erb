@@ -10,15 +10,18 @@
       <div class="d-flex felx-row justify-content-between">
 
         <%# -------------------------- %>
-        <%# ----- システム名を表示部分 %>
-        <div class="logo p-2">
-          <%= link_to("ポチっと勤怠", main_index_path, id: "logo")%>
+        <%# ----- アプリ名 %>
+        <div class="logo">
+          <%= link_to(main_index_path, {id: "logo"}) do %>
+          <%= image_tag('logo.png', {class: "logo_image"}) %>
+          <% end  %>
         </div>
 
         <%# -------------------------- %>
         <%# ----- メニュー表示部 %>
         <div class="nav-menu p-2">
-          <%# モバイルアクセス時に表示するハンバーガーメニュー %>
+          <%# モバイルアクセス時に表示するハンバーガーメニューのボタン(横線3つ) %>
+          <%# ※span内は空文字のままにしておくこと %>
           <div class="nav-button" href="#">
             <span></span>
             <span></span>
@@ -28,20 +31,42 @@
           <div class="nav-wrap">
             <ul class="nav-list">
               <li>
-                <a href="#">項目1</a>
+                <a href="#">
+                  項目1
+                </a>
               </li>
               <li>
-                <a href="#">項目2</a>
-              </li>
-              <li>
-                <a href="#">項目3</a>
+                <a href="#">
+                  項目2
+                </a>
               </li>
             </ul>
           </div>
         </div>
-
       </div>
-
     </div>
   </nav>
+
+  <%# -------------------------- %>
+  <%# ----- 社員情報・ログアウトボタン %>
+  <% if employee_signed_in? %>
+  <div class="bg-info pt-1 pb-1">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-10 col-8">
+          <%# ログイン中の社員情報 %>
+          <div class="emp_info">
+            <%= current_employee.employee_name%>(<%= current_employee.employee_code%>)
+          </div>
+        </div>
+        <div class="col-sm-2 col-4">
+          <%# ログアウトボタン %>
+          <div class="logout">
+            <%= button_to(I18n.t("label.devise.sign_out"), destroy_employee_session_path, method: :delete, class:"btn btn-dark")%>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% end %>
 </header>
