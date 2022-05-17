@@ -17,6 +17,10 @@ https://docs.google.com/spreadsheets/d/16DTE2wg3ElNfrV1qs4X9JZwdrkx3qFS1tYo4NKYu
 
       <img src="readme_images/README_2022-05-17-19-31-34.png" width="50%">
 
+      表示する際に、`Show comments`にチェックを入れておくと、論理名も一緒に出力される。
+
+      <img src="readme_images/README_2022-05-17-19-41-45.png" width="50%">
+
 # 前提条件
 ## 環境変数の扱い方
 開発(`development`)環境では`dotenv`gemを用いて`.env`ファイルで管理することを推奨します。
