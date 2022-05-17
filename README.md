@@ -15,7 +15,7 @@ https://docs.google.com/spreadsheets/d/16DTE2wg3ElNfrV1qs4X9JZwdrkx3qFS1tYo4NKYu
 
       例:
 
-      <img src="readme_images/README_2022-05-17-19-31-34.png" width="70%">
+      <img src="readme_images/README_2022-05-17-19-31-34.png" width="50%">
 
 # 前提条件
 ## 環境変数の扱い方
