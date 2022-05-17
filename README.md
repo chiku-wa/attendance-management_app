@@ -3,10 +3,19 @@
 DB設計書はGoogleスプレッドシート上で作成しています。詳しくは下記をご覧ください。
 https://docs.google.com/spreadsheets/d/16DTE2wg3ElNfrV1qs4X9JZwdrkx3qFS1tYo4NKYuVgE/edit?usp=sharing
 
-なお、階層構造は`閉包テーブルモデル`を使用しています。実装が複雑なため、必要に応じて以下の参考資料を御覧ください。
-https://docs.google.com/spreadsheets/d/1CBhZUgEMrRyd-Trv4FnO5cIrsOcu-ithNDEERFCkMUg/edit?usp=sharing
+* 留意点
 
-なお、本アプリでは`閉包テーブルモデル`の実装にあたり`closure_tree`gemは使用していません。
+  1. 階層構造は`閉包テーブルモデル`を使用しています。実装が複雑なため、必要に応じて以下の参考資料を御覧ください。
+
+      https://docs.google.com/spreadsheets/d/1CBhZUgEMrRyd-Trv4FnO5cIrsOcu-ithNDEERFCkMUg/edit?usp=sharing
+
+  2. 本アプリでは`閉包テーブルモデル`の実装にあたり`closure_tree`gemは使用していません。
+
+  3. 上記のGoogleスプレッドシートのDB設計書に記載しているER図については、[DBeaver](https://formulae.brew.sh/cask/dbeaver-community)を用いて出力している。
+
+      例:
+
+      ![DBEaverからER図をエクスポート](readme_images/README_2022-05-17-19-28-35.png)
 
 # 前提条件
 ## 環境変数の扱い方
