@@ -1,7 +1,7 @@
 RSpec.configure do |config|
   # ===== 通常のドライバ設定
   config.before(:each, type: :system) do
-    driven_by(:rack_test)
+    driven_by(:selenium_chrome_headless)
   end
 
   # ===== JavaScriptを用いたテストで使用するドライバ設定
