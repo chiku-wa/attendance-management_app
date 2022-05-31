@@ -1,12 +1,7 @@
 require "rails_helper"
 
-RSpec.configure do |config|
-  config.include Mail::Matchers, type: :mailer
-end
-
 RSpec.describe "パスワードリセット機能に関するシステムテスト", type: :system do
   scenario "想定通りの件名、本文のパスワードリセットメールが送信されること" do
-
     # ----- 事前準備
     # ログインする社員情報を登録する
     @role_common = FactoryBot.create(:role_common)
