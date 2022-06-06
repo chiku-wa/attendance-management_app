@@ -19,6 +19,7 @@ RSpec.describe "パスワードリセット機能に関するシステムテス�
     fill_in("employee_email", with: @employee.email)
     click_button("パスワードをリセットする")
 
+    sleep 1
     # ----- 画面上に想定通りのメッセージが表示されること
     # ログイン画面に遷移し、メッセージが表示されること
     expect(page).to(
