@@ -54,6 +54,8 @@ jobs:
         ADMINISTRATOR_PASSWORD: Admin@2022
         # deviseが送信するメールの本文内のURLのFQDN名
         ACTION_MAILER_TEST_URL: localhost
+        # deviseのメール送信時に使用する差出人のアドレス
+        SMTP_USER_NAME: noreply.attendance.mng@gmail.com
         # 前述の設定で定義した「services -> postgres」を参照させるための設定
         POSTGRES_HOST: postgres
         # database.ymlで使用している環境変数を定義
