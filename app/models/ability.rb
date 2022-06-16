@@ -25,22 +25,32 @@ class Ability
     # ※cancancanのデフォルトなので特に明示しない
 
     # =============== アクセス制限設定
+    # ----- システム管理者
     if employee.has_role?(I18n.t("master_data.role.admin"))
-      # ----- システム管理者
       # マネージャがアクセス可能な機能を許可
       can_manager
 
       # システム管理者のみがアクセス可能な機能を許可
-      # 社員情報
+      # 社員情報一覧
       can(:list, Employee)
-    elsif employee.has_role?(I18n.t("master_data.role.manager"))
-      # ----- マネージャ
+
+      return
+    end
+
+    # ----- マネージャ
+    if employee.has_role?(I18n.t("master_data.role.manager"))
       # マネージャがアクセス可能な機能を許可
       can_manager
-    elsif employee.has_role?(I18n.t("master_data.role.common"))
+
+      return
+    end
+
+    if employee.has_role?(I18n.t("master_data.role.common"))
       # ----- 一般社員
       # 一般社員がアクセス可能な機能を許可
       can_common
+
+      return
     end
   end
 
