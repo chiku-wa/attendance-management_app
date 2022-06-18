@@ -1,4 +1,7 @@
-<div class="alert alert-danger">システムエラーが発生しました。管理者にお問い合わせください(<%= Time.now %>)。</div>
+<%# HTMLのtitle定義部 %>
+<% provide(:title, I18n.t("label.title.error_500")) %>
+
+<div class="alert alert-danger"><%= I18n.t("label.title.error_500") %>(<%= Time.now %>)</div>
 <%= link_to(root_path, {class:"btn btn-outline-secondary"}) do %>
 <%= icon("fas", "chevron-circle-left") %>
 <br>

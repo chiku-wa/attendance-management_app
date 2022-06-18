@@ -1,4 +1,7 @@
-<div class="alert alert-warning">お探しのページは見つかりませんでした。</div>
+<%# HTMLのtitle定義部 %>
+<% provide(:title, I18n.t("label.title.error_404")) %>
+
+<div class="alert alert-warning"><%= I18n.t("label.title.error_404") %></div>
 <%= link_to(root_path, {class:"btn btn-outline-secondary"}) do %>
 <%= icon("fas", "chevron-circle-left") %>
 <br>

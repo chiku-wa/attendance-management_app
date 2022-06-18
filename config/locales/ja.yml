@@ -114,8 +114,9 @@ ja:
         retirement: 退職
   # =============== Viewなどに使用するラベル名
   label:
-    # ----- ログイン・ログアウト関連
+    # ----- devise関連
     devise:
+      #  ログイン・ログアウト関連
       sign_in: ログイン
       sign_out: ログアウト
       password_reset: パスワードリセット
@@ -125,6 +126,9 @@ ja:
     # ----- タイトル、見出し
     title:
       employee_list: 社員情報一覧
+      employee_register: 社員新規登録
+      error_404: お探しのページは見つかりませんでした。
+      error_500: システムエラーが発生しました。管理者にお問い合わせください。
   views:
     # `kaminari`gemのページネーションを日本語化
     pagination:
