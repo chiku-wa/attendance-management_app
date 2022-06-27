@@ -10,11 +10,13 @@ Rails.application.routes.draw do
       # ログイン・ログアウト機能
       :sessions,
 
-      # パスワードリセット機能
-      :passwords,
+    # TODO:後述のルーティング設定を正常化できたらコメントアウトを外すこと
+    # パスワードリセット機能
+    # :passwords,
 
-      # 新規登録、変更、削除機能
-      :registrations,
+    # TODO:後述のルーティング設定を正常化できたらコメントアウトを外すこと
+    # 新規登録、変更、削除機能
+    # :registrations,
     ],
 
     # 新規登録機能は独自クラスで定義しているため、ルーティングを変更する。
@@ -34,35 +36,37 @@ Rails.application.routes.draw do
     # ログアウト
     delete("logout", to: "devise/sessions#destroy", as: :destroy_employee_session)
 
+    # TODO:ルーティングを適切なものに変更する(以下のままだとパスワードリセットがうまく機能しない)
     # ----- パスワードリセット機能
-    # パスワードリセットのリクエスト
-    get("password_reset", to: "devise/passwords#new", as: :new_employee_password)
-    post("password_reset", to: "devise/passwords#create", as: :employee_password)
-    # パスワード変更
-    get("password_edit", to: "devise/passwords#edit", as: :edit_employee_password)
-    match(
-      "password_update",
-      to: "devise/passwords#update",
-      via: [:patch, :put],
-      as: :update_employee_password,
-    )
+    # # パスワードリセットのリクエスト
+    # get("password_reset", to: "devise/passwords#new", as: :new_employee_password)
+    # post("password_reset", to: "devise/passwords#create", as: :employee_password)
+    # # パスワード変更
+    # get("password_edit", to: "devise/passwords#edit", as: :edit_employee_password)
+    # match(
+    #   "password_update",
+    #   to: "devise/passwords#update",
+    #   via: [:patch, :put],
+    #   as: :update_employee_password,
+    # )
 
+    # TODO:ルーティングを適切なものに変更する(以下のままだとパスワードリセットがうまく機能しない)
     # ----- 新規登録、変更、削除機能
-    # 社員の新規登録
-    get("sign_up", to: "devise/registrations#new", as: :new_employee_registration)
-    post("sign_up", to: "devise/registrations#create", as: :employee_registration)
-    # 社員の変更
-    get("edit", to: "devise/registrations#edit", as: :edit_employee_registration)
-    match(
-      "update",
-      to: "devise/registrations#update",
-      via: [:patch, :put],
-      as: :update_employee_registration,
-    )
-    # 社員の削除
-    delete("destroy", to: "devise/registrations#destroy", as: :destroy_employee_registration)
-    # キャンセル
-    get("cancel", to: "devise/registrations#cancel", as: :cancel_employee_registration)
+    # # 社員の新規登録
+    # get("sign_up", to: "devise/registrations#new", as: :new_employee_registration)
+    # post("sign_up", to: "devise/registrations#create", as: :employee_registration)
+    # # 社員の変更
+    # get("edit", to: "devise/registrations#edit", as: :edit_employee_registration)
+    # match(
+    #   "update",
+    #   to: "devise/registrations#update",
+    #   via: [:patch, :put],
+    #   as: :update_employee_registration,
+    # )
+    # # 社員の削除
+    # delete("destroy", to: "devise/registrations#destroy", as: :destroy_employee_registration)
+    # # キャンセル
+    # get("cancel", to: "devise/registrations#cancel", as: :cancel_employee_registration)
   end
 
   # =============== 各種ルーティング設定
