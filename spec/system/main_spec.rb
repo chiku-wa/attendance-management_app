@@ -36,19 +36,7 @@ RSpec.describe "メイン画面のシステムテスト", type: :system do
     @employee.roles << @role_common
 
     # ログインする
-    login_macro(employee: @employee)
-
-    # その権限でしか利用できない機能のリンクが表示されていること
-    # TODO:第２引数にhrefを追加し、リンクの妥当性も確認すること
-    expect(page).to(
-      have_link("出勤")
-    )
-    expect(page).to(
-      have_link("退社")
-    )
-    expect(page).to(
-      have_link("休憩")
-    )
+    login_macro_with_common(employee: @employee)
 
     # ----- テスト後の後処理
     # ログアウト

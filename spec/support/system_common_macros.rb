@@ -16,26 +16,86 @@ module SystemCommonMacros
     fill_in(:employee_email, with: employee.email)
     fill_in(:employee_password, with: employee.password)
 
-    click_button(I18n.t("label.devise.sign_in"))
+    click_button("ログイン")
   end
 
   # ----------------------------------------------------
   # # 概要
-  # 引数として渡した社員インスタンスをもとにログイン処理を行い、社員情報一覧画面に遷移することの確認を行う。
+  # 引数として渡したシステム管理者の社員インスタンスをもとにログイン処理を行い、
+  # システム管理者しか閲覧できない画面が正常に表示されることを確認する。
   #
   # # 引数
   # * emoloyee
-  # ログインしたい社員モデルクラスのインスタンス
+  # ログインしたいシステム管理者の社員モデルクラスのインスタンス
   #
-  def login_macro_with_emplpoyee_list(employee:)
+  def login_macro_with_admin(employee:)
     # ログインを行う
     login_macro(employee: employee)
 
-    # 社員情報一覧に遷移し、遷移していることを確認
+    # 社員情報一覧に遷移していることを確認
     visit(employees_list_path)
     expect(page).to(
       have_title("社員情報一覧")
     )
+  end
+
+  # ----------------------------------------------------
+  # # 概要
+  # 引数として渡した一般社員の社員インスタンスをもとにログイン処理を行い、
+  # 一般社員しか閲覧できない画面が正常に表示されることを確認する。
+  #
+  # # 引数
+  # * emoloyee
+  # ログインしたい一般社員の社員モデルクラスのインスタンス
+  #
+  def login_macro_with_common(employee:)
+    # ログインを行う
+    login_macro(employee: employee)
+
+    # 勤怠登録画面に遷移していることを確認
+    expect(page).to(
+      have_link("出勤")
+    )
+    expect(page).to(
+      have_link("退社")
+    )
+    expect(page).to(
+      have_link("休憩")
+    )
+  end
+
+  # ----------------------------------------------------
+  # # 概要
+  # パスワードリセット画面に遷移し、メールアドレスを入力して想定通りの画面が表示されることを確認する。
+  #
+  # # 引数
+  # * emoloyee
+  # パスワードリセットしたい社員モデルクラスのインスタンス
+  #
+  def reset_password_macro(employee:)
+    # ----- パスワードリセット操作を実施
+    # TOP画面(=ログイン画面)に遷移する
+    visit(root_path)
+
+    # パスワードリセット画面に遷移する
+    click_link("パスワードをお忘れの方はこちらをクリック")
+
+    # メールアドレスを入力してパスワードをリセットを実施
+    fill_in("employee_email", with: employee.email)
+    click_button("パスワードをリセットする")
+
+    # ----- 画面上に想定通りのメッセージが表示されること
+    # ログイン画面に遷移し、メッセージが表示されること
+    expect(page).to(
+      have_title("ログイン")
+    )
+
+    expect(
+      find(:xpath, "//p[@id='message_notice']")
+    ).to have_content("パスワードの再設定を受け付けました。メールボックスをご確認ください。")
+
+    # ----- 発行されたトークンをインスタンスに読み込ませるためにreloadする
+    @employee.reload
   end
 
   # ----------------------------------------------------

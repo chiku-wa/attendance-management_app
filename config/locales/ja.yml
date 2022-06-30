@@ -190,7 +190,7 @@ ja:
       edit:
         change_my_password: パスワードを変更する
         change_your_password: パスワードを変更
-        confirm_new_password: 確認用新しいパスワード
+        confirm_new_password: 確認用パスワード
         new_password: 新しいパスワード
       new:
         forgot_your_password: パスワードを忘れましたか？
