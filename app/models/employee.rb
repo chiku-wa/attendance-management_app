@@ -98,6 +98,7 @@ public
 # 権限無し : false
 #
 def has_role?(role_name)
+  return false if self.blank?
   self.roles.map(&:role_name).include?(role_name)
 end
 

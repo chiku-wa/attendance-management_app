@@ -144,6 +144,12 @@ RSpec.describe "社員モデルのテスト", type: :model do
       expect(employee_work.has_role?(role_admin.role_name)).to be_falsey
     end
 
+    it "社員インスタンスがnilの場合はfalseが返ること" do
+      # 権限がない場合はfalseが返ること
+      employee_work = nil
+      expect(employee_work.has_role?(role_admin.role_name)).to be_falsey
+    end
+
     it "権限が付与されている社員の場合はtrueが返ること" do
       # ----- 単一の権限が付与されている場合のテスト
       employee_work.roles << role_admin
