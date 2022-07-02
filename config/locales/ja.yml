@@ -114,12 +114,6 @@ ja:
         retirement: 退職
   # =============== Viewなどに使用するラベル名
   label:
-    # ----- devise関連
-    devise:
-      #  ログイン・ログアウト関連
-      sign_in: ログイン
-      sign_out: ログアウト
-      password_reset: パスワードリセット
     # ----- リンク、ボタンのラベル
     link:
       back_to_top: トップページへ戻る
@@ -224,6 +218,8 @@ ja:
       already_signed_out: 既にログアウト済みです。
       new:
         sign_in: ログイン
+      destroy:
+        sign_out: ログアウト
       signed_in: ""
       signed_out: ログアウトしました。
     shared:

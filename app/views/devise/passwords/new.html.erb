@@ -1,10 +1,10 @@
 <%# HTMLのtitle定義部 %>
-<% provide(:title, I18n.t("label.title.employee_register")) %>
+<% provide(:title, I18n.t("devise.passwords.edit.change_my_password")) %>
 
 <%= render "devise/shared/error_messages", resource: resource %>
 
 <%# 本体出力部 %>
-<h1><%= I18n.t("label.devise.password_reset") %></h1>
+<h1><%= I18n.t("devise.passwords.edit.change_my_password") %></h1>
 
 <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
 
@@ -13,7 +13,7 @@
 </div>
 
 <div class="actions">
-  <%= f.submit "パスワードをリセットする", id: "submit_password_reset", class: "btn btn-primary devise-form" %>
+  <%= f.submit I18n.t("devise.passwords.edit.change_my_password"), id: "submit_password_reset", class: "btn btn-primary devise-form" %>
 </div>
 <% end %>
 

@@ -82,7 +82,7 @@ module SystemCommonMacros
 
     # メールアドレスを入力してパスワードをリセットを実施
     fill_in("employee_email", with: employee.email)
-    click_button("パスワードをリセットする")
+    click_button("パスワードを変更する")
 
     # ----- 画面上に想定通りのメッセージが表示されること
     # ログイン画面に遷移し、メッセージが表示されること

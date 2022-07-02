@@ -73,7 +73,7 @@ RSpec.describe "パスワードリセット機能に関するシステムテス�
 
     # 何も入力せずにパスワードをリセットを実施
     fill_in("employee_email", with: "invalid_address@example.com")
-    click_button("パスワードをリセットする")
+    click_button("パスワードを変更する")
 
     expect(
       find(:xpath, "//div[@id='error_explanation']")
@@ -88,7 +88,7 @@ RSpec.describe "パスワードリセット機能に関するシステムテス�
     click_link("パスワードをお忘れの方はこちらをクリック")
 
     # 何も入力せずにパスワードをリセットを実施
-    click_button("パスワードをリセットする")
+    click_button("パスワードを変更する")
 
     expect(
       find(:xpath, "//div[@id='error_explanation']")
