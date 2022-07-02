@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "deviseのメール機能に関するテスト", type: :mailer do
+RSpec.describe "deviseのメール機能(主に件名や本文といったメールそのもの)に関するテスト", type: :mailer do
   before do
     # ----- テストデータを登録する
     load(Rails.root.join("db", "seeds.rb"))
@@ -13,7 +13,7 @@ RSpec.describe "deviseのメール機能に関するテスト", type: :mailer do
     @employee.save
   end
 
-  scenario "パスワードリセットメールが想定通りであること" do
+  scenario "パスワードリセットメールが送信され、受信メールの内容が想定通りであること" do
     # ----- メールを送信する
     @employee.send_reset_password_instructions
 
