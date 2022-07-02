@@ -34,6 +34,9 @@ class Ability
       # 社員情報一覧
       can(:list, Employee)
 
+      # 社員登録
+      can(:manage, :registration)
+
       return
     end
 

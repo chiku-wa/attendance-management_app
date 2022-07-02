@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class Employees::RegistrationsController < Devise::RegistrationsController
-  # [devise]すべてのコントローラのアクセスには、deviseによる認証を必要とする
-  before_action :authenticate_employee!
-
-  # [cancancan]でアクセス制御を行うための定義
-  load_and_authorize_resource
-
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
+
+  # ログイン済みであっても、新規登録画面にアクセスできるようにする
+  skip_before_action :require_no_authentication, only: [:new, :create]
+
+  # [cancancan]でアクセス制御を行うための定義
+  authorize_resource(class: false)
 
   # GET /resource/sign_up
   # def new
