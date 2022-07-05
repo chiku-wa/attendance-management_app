@@ -12,6 +12,7 @@
     <%# 権限名によってラベルのデザインを切り替える %>
     <%
      label_classes = ["btn"]
+
      case r.role_name
       # システム管理者
      when I18n.t("master_data.role.admin") then
@@ -34,7 +35,7 @@
   <td name="employee_name"><%= employee.employee_name %></td>
 
   <%# メールアドレス %>
-  <td name="email"><%= mail_to(employee.email, employee.email ,{ target: '_blank' }) %></td>
+  <td name="email"><%= employee.email %></td>
 
   <%# 就業状況 %>
   <td name="employment_status"><%= employee.employment_status.status_name %></td>
