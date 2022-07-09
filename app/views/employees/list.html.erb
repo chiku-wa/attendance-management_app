@@ -1,45 +1,67 @@
+<%#
+社員情報の一覧画面。
+%>
+
 <%# HTMLのtitle定義部 %>
 <% provide(:title, I18n.t("label.title.employee_list")) %>
 
-<%# 本体出力部 %>
-<h1><%= I18n.t("label.title.employee_list") %></h1>
+<div class="row">
+  <%# 本体出力部 %>
+  <div class="col-sm-12">
+    <h1><%= I18n.t("label.title.employee_list") %></h1>
+  </div>
 
-<%# ページネーションバー %>
-<%= paginate(@employees) %>
+  <div class="col-sm-12">
+    <%# 社員の新規登録ボタン(個別登録) %>
+    <%= link_to(new_employee_registration_path, {class:"col-6 btn btn-outline-primary employee_register_button"}) do %>
+    新規登録
+    <% end %>
 
-<table name="employees" class="table table-striped table-hover">
+    <%# 社員の新規登録ボタン(一括登録) %>
+    <%= link_to("#", {class:"col-6 btn btn-outline-primary employee_register_button"}) do %>
+    一括登録
+    <% end %>
+  </div>
 
-  <thead>
-    <%# 社員コード %>
-    <th scope="col">
-      <%= generate_sort_link(column: :employee_code, label: t("activerecord.attributes.employee.employee_code")) %>
-    </th>
-    <%# 権限 %>
-    <th scope="col">
-      <%= generate_sort_link(column: :role_name, label: t("activerecord.models.role")) %>
-    </th>
-    <%# 社員名 %>
-    <th scope="col">
-      <%# ヨミガナでソートする %>
-      <%= generate_sort_link(column: :employee_name_kana, label: t("activerecord.attributes.employee.employee_name")) %>
-    </th>
-    <%# メールアドレス %>
-    <th scope="col">
-      <%= generate_sort_link(column: :email, label: t("activerecord.attributes.employee.email")) %>
-    </th>
-    <%# 就業状況 %>
-    <th scope="col">
-      <%# 昇順でソートした際に「在職」が先頭になるように、就業状況コードでソートする %>
-      <%= generate_sort_link(column: :status_code, label: t("activerecord.models.employment_status")) %>
-    </th>
-  </thead>
-  <tbody>
+  <div class="col-sm-12">
+    <%# ページネーションバー %>
+    <%= paginate(@employees) %>
 
-    <%# 社員情報一覧出力 %>
-    <%= render(@employees) %>
+    <table name="employees" class="table table-striped table-hover">
 
-  </tbody>
-</table>
+      <thead>
+        <%# 社員コード %>
+        <th scope="col">
+          <%= generate_sort_link(column: :employee_code, label: t("activerecord.attributes.employee.employee_code")) %>
+        </th>
+        <%# 権限 %>
+        <th scope="col">
+          <%= generate_sort_link(column: :role_name, label: t("activerecord.models.role")) %>
+        </th>
+        <%# 社員名 %>
+        <th scope="col">
+          <%# ヨミガナでソートする %>
+          <%= generate_sort_link(column: :employee_name_kana, label: t("activerecord.attributes.employee.employee_name")) %>
+        </th>
+        <%# メールアドレス %>
+        <th scope="col">
+          <%= generate_sort_link(column: :email, label: t("activerecord.attributes.employee.email")) %>
+        </th>
+        <%# 就業状況 %>
+        <th scope="col">
+          <%# 昇順でソートした際に「在職」が先頭になるように、就業状況コードでソートする %>
+          <%= generate_sort_link(column: :status_code, label: t("activerecord.models.employment_status")) %>
+        </th>
+      </thead>
+      <tbody>
 
-<%# ページネーションバー %>
-<%= paginate(@employees) %>
+        <%# 社員情報一覧出力 %>
+        <%= render(@employees) %>
+
+      </tbody>
+    </table>
+
+    <%# ページネーションバー %>
+    <%= paginate(@employees) %>
+  </div>
+</div>

@@ -1,26 +1,30 @@
 <%#
 社員が出勤と退勤を入力するための画面。
-
 %>
-<div class="stamping">
-  <div class="row">
 
+<div class="row stamping">
+
+  <%# 1行に表示するボタンは最大2つまで、モバイルの場合はすべて縦に並ぶようにする %>
+  <div class="col-xs-12 col-md-6">
     <%# 出勤ボタン %>
-    <%= link_to(root_path, {class:"col-6 btn btn-outline-success panel"}) do %>
+    <%= link_to(root_path, {class:"btn btn-outline-success panel"}) do %>
     <%= icon("fas", "sign-in-alt") %>
     <br>
     出勤
     <% end  %>
 
     <%# 退勤ボタン %>
-    <%= link_to(root_path, {class:"col-6 btn btn-outline-primary panel"}) do %>
+    <%= link_to(root_path, {class:"btn btn-outline-primary panel"}) do %>
     <%= icon("fas", "sign-out-alt") %>
     <br>
     退社
     <% end  %>
+  </div>
 
+  <%# 1行に表示するボタンは最大2つまで、モバイルの場合はすべて縦に並ぶようにする %>
+  <div class="col-xs-12 col-md-6">
     <%# 休憩ボタン %>
-    <%= link_to(root_path, {class:"col-6 btn btn-outline-warning panel"}) do %>
+    <%= link_to(root_path, {class:"btn btn-outline-warning panel"}) do %>
     <%= icon("fas", "sign-out-alt") %>
     <br>
     休憩

@@ -1,14 +1,35 @@
+// ========================
+// ===== 共通の設定
 // メインメニュー全体のデザイン
 .stamping {
   padding: 30px;
 }
 
-// 出退勤1つ1つのパネルのデザイン
+// メインメニュー上のボタンのパネルデザイン
 .panel {
-  background-color: white;
-  font-size: 30px;
-  text-align: center;
+  margin-bottom: 10px;
 
+  // 横幅をカスタマイズ(aタグの幅を調整できるようにするため、inline-blockを追加)
+  display: inline-block;
+  width: 100%;
+
+  // アイコンのデザイン
+  i {
+    font-size: 30px;
+  }
+}
+
+// ========================
+// ===== システム管理者の設定
+// 新規登録ボタン
+.employee_register_button {
+  margin-bottom: 5px;
+
+  // 横幅をカスタマイズ(aタグの幅を調整できるようにするため、inline-blockを追加)
+  display: inline-block;
+  width: 80%;
+
+  float: left;
   // アイコンのデザイン
   i {
     font-size: 50px;
