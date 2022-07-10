@@ -8,20 +8,18 @@
 <div class="row">
   <%# 本体出力部 %>
   <div class="col-sm-12">
-    <h1><%= I18n.t("label.title.employee_list") %></h1>
-  </div>
-
-  <div class="col-sm-12">
     <%# 社員の新規登録ボタン(個別登録) %>
-    <%= link_to(new_employee_registration_path, {class:"col-6 btn btn-outline-primary employee_register_button"}) do %>
+    <%= link_to(new_employee_registration_path, {class:"col-6 btn btn-outline-secondary employee_register_button"}) do %>
     新規登録
     <% end %>
 
     <%# 社員の新規登録ボタン(一括登録) %>
-    <%= link_to("#", {class:"col-6 btn btn-outline-primary employee_register_button"}) do %>
+    <%= link_to("#", {class:"col-6 btn btn-outline-secondary employee_register_button"}) do %>
     一括登録
     <% end %>
   </div>
+
+  <hr>
 
   <div class="col-sm-12">
     <%# ページネーションバー %>

@@ -2,6 +2,9 @@
 システム管理者用の管理画面。
 %>
 
+<%# HTMLのtitle定義部 %>
+<% provide(:title, I18n.t("label.title.main")) %>
+
 <div class="row stamping">
   <%# 1行に表示するボタンは最大2つまで、モバイルの場合はすべて縦に並ぶようにする %>
   <div class="col-xs-12 col-md-6">

@@ -119,6 +119,7 @@ ja:
       back_to_top: トップページへ戻る
     # ----- タイトル、見出し
     title:
+      main: メインメニュー
       employee_list: 社員情報一覧
       employee_register: 社員新規登録
       error_404: お探しのページは見つかりませんでした。

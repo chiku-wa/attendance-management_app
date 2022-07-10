@@ -2,6 +2,9 @@
 社員が出勤と退勤を入力するための画面。
 %>
 
+<%# HTMLのtitle定義部 %>
+<% provide(:title, I18n.t("label.title.main")) %>
+
 <div class="row stamping">
 
   <%# 1行に表示するボタンは最大2つまで、モバイルの場合はすべて縦に並ぶようにする %>
