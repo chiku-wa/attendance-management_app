@@ -6,8 +6,12 @@
 <%# 本体出力部 %>
 <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
 
-<div class="field">
-  <%= f.email_field :email, placeholder: Employee.human_attribute_name(:email), autofocus: true, autocomplete: "email", class: "devise-form" %>
+<div class="form-group row">
+  <div class="col">
+    <div class="field">
+      <%= f.email_field :email, placeholder: Employee.human_attribute_name(:email), autofocus: true, autocomplete: "email", class: "devise-form form-control" %>
+    </div>
+  </div>
 </div>
 
 <div class="actions">
