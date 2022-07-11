@@ -18,7 +18,7 @@ class ChangeWorkTableColumnsForWorkAndLeave < ActiveRecord::Migration[6.1]
     change_column(:work_tables, :working_date, :datetime, precision: nil)
     change_column_comment(:work_tables, :working_date, from: "出勤日時", to: "勤務日")
 
-    # 退勤日時を追加
+    # 退勤日時を削除
     remove_column(:work_tables, :leave_date)
   end
 end
