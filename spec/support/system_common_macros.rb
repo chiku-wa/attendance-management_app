@@ -112,7 +112,7 @@ module SystemCommonMacros
   #
   def expect_same_order_of_employee_list(employees)
     # 画面に表示されている社員一覧を取得する
-    employees_for_per_page = all(:xpath, "//html/body/div/table/tbody/tr")
+    employees_for_per_page = all(:xpath, "//table[@name='employees']/tbody/tr")
 
     # 画面上に一度表示される件数と、引数の社員数が一致すること
     expect(employees.size).to eq employees_for_per_page.size

@@ -47,36 +47,104 @@ RSpec.describe "社員モデルのテスト", type: :model do
     end
 
     # ---------------------
-    # --- 社員名のテスト
-    it "社員名がスペース、空文字のみの場合はバリデーションエラーとなること" do
+    # --- 社員名(姓)のテスト
+    it "社員名(姓)がスペース、空文字のみの場合はバリデーションエラーとなること" do
       valid_presence(
         model: employee_work,
-        attribute: :employee_name,
+        attribute: :employee_last_name,
       )
     end
 
-    it "社員名が規定の最大文字数(全角、半角区別なし)を超えている場合はバリデーションエラーとなること" do
+    it "社員名(姓)が規定の最大文字数(全角、半角区別なし)を超えている場合はバリデーションエラーとなること" do
       valid_maximum_num_of_char(
         model: employee_work,
-        attribute: :employee_name,
-        valid_number_of_characters: 110,
+        attribute: :employee_last_name,
+        valid_number_of_characters: 100,
       )
     end
 
     # ---------------------
-    # --- 社員名(フリガナ)のテスト
-    it "社員名(フリガナ)がスペース、空文字のみの場合はバリデーションエラーとなること" do
+    # --- 社員名(名)のテスト
+    it "社員名(名)がスペース、空文字のみの場合はバリデーションエラーとなること" do
       valid_presence(
         model: employee_work,
-        attribute: :employee_name_kana,
+        attribute: :employee_first_name,
       )
     end
 
-    it "社員名(フリガナ)が規定の最大文字数(全角、半角区別なし)を超えている場合はバリデーションエラーとなること" do
+    it "社員名(名)が規定の最大文字数(全角、半角区別なし)を超えている場合はバリデーションエラーとなること" do
       valid_maximum_num_of_char(
         model: employee_work,
-        attribute: :employee_name_kana,
-        valid_number_of_characters: 220,
+        attribute: :employee_first_name,
+        valid_number_of_characters: 100,
+      )
+    end
+
+    # ---------------------
+    # --- 社員名(姓：名)のテスト
+    it "社員名(姓：名)にスペースや空文字が登録された場合でも、バリデーションエラーとならず、値が自動的に設定されること" do
+      valid_presence_for_before_validation(
+        model: employee_work,
+        attribute: :employee_full_name,
+      )
+    end
+
+    it "社員名(姓：名)が規定の最大文字数(全角、半角区別なし)を超えている場合はバリデーションエラーとなること" do
+      valid_maximum_num_of_char_for_before_validation(
+        model: employee_work,
+        attribute: :employee_full_name,
+        valid_number_of_characters: 201,
+      )
+    end
+
+    # ---------------------
+    # --- 社員名カナ(姓)のテスト
+    it "社員名カナ(姓)がスペース、空文字のみの場合はバリデーションエラーとなること" do
+      valid_presence(
+        model: employee_work,
+        attribute: :employee_last_name_kana,
+      )
+    end
+
+    it "社員名カナ(姓)が規定の最大文字数(全角、半角区別なし)を超えている場合はバリデーションエラーとなること" do
+      valid_maximum_num_of_char(
+        model: employee_work,
+        attribute: :employee_last_name_kana,
+        valid_number_of_characters: 200,
+      )
+    end
+
+    # ---------------------
+    # --- 社員名カナ(名)のテスト
+    it "社員名カナ(名)がスペース、空文字のみの場合はバリデーションエラーとなること" do
+      valid_presence(
+        model: employee_work,
+        attribute: :employee_first_name_kana,
+      )
+    end
+
+    it "社員名カナ(名)が規定の最大文字数(全角、半角区別なし)を超えている場合はバリデーションエラーとなること" do
+      valid_maximum_num_of_char(
+        model: employee_work,
+        attribute: :employee_first_name_kana,
+        valid_number_of_characters: 200,
+      )
+    end
+
+    # ---------------------
+    # --- 社員名カナ(姓・名)のテスト
+    it "社員名カナ(姓：名)がスペース、空文字のみの場合はバリデーションエラーとなること" do
+      valid_presence_for_before_validation(
+        model: employee_work,
+        attribute: :employee_full_name_kana,
+      )
+    end
+
+    it "社員名カナ(姓：名)が規定の最大文字数(全角、半角区別なし)を超えている場合はバリデーションエラーとなること" do
+      valid_maximum_num_of_char_for_before_validation(
+        model: employee_work,
+        attribute: :employee_full_name_kana,
+        valid_number_of_characters: 401,
       )
     end
 
@@ -168,32 +236,6 @@ RSpec.describe "社員モデルのテスト", type: :model do
 
       employee_work.roles << role_common
       expect(employee_work.has_role?(role_common.role_name)).to be_truthy
-    end
-  end
-
-  context "formatting_nameメソッドのテスト" do
-    it "姓(last name)と名(first name)の間の空白が半角に変換されること" do
-      # 全角の名前の場合
-      employee_work.employee_name = "山田　太郎"
-      employee_work.employee_name_kana = "ヤマダ　タロウ"
-      employee_work.save
-      expect(employee_work.employee_name).to eq "山田 太郎"
-      expect(employee_work.employee_name_kana).to eq "ヤマダ タロウ"
-
-      # 半角の名前の場合
-      employee_work.employee_name = "Kory　Green"
-      employee_work.employee_name_kana = "コリー　グリーン"
-      employee_work.save
-      expect(employee_work.employee_name).to eq "Kory Green"
-      expect(employee_work.employee_name_kana).to eq "コリー グリーン"
-    end
-
-    it "文字列先頭・末尾の空白は取り除かれること" do
-      employee_work.employee_name = "　鈴木 次郎 "
-      employee_work.employee_name_kana = " スズキ ジロウ　"
-      employee_work.save
-      expect(employee_work.employee_name).to eq "鈴木 次郎"
-      expect(employee_work.employee_name_kana).to eq "スズキ ジロウ"
     end
   end
 

@@ -121,8 +121,10 @@ employment_status_retirement = EmploymentStatus.create!(
 # 管理者
 Employee.create!(
   employee_code: "999999",
-  employee_name: "システム管理者",
-  employee_name_kana: "システムカンリシャ",
+  employee_last_name: "システム",
+  employee_first_name: "管理者",
+  employee_last_name_kana: "システム",
+  employee_first_name_kana: "カンリシャ",
   age: 0,
   email: ENV["ADMINISTRATOR_MAIL_ADDRESS"],
   password: ENV["ADMINISTRATOR_PASSWORD"],

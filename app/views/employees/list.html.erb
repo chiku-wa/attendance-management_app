@@ -38,8 +38,8 @@
         </th>
         <%# 社員名 %>
         <th scope="col">
-          <%# ヨミガナでソートする %>
-          <%= generate_sort_link(column: :employee_name_kana, label: t("activerecord.attributes.employee.employee_name")) %>
+          <%# ヨミガナでソートする(漢字の場合は想定通りにソートされないため) %>
+          <%= generate_sort_link(column: :employee_full_name_kana, label: t("activerecord.attributes.employee.employee_full_name")) %>
         </th>
         <%# メールアドレス %>
         <th scope="col">

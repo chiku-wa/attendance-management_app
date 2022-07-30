@@ -22,8 +22,12 @@ ja:
     attributes:
       employee:
         employee_code: 社員コード
-        employee_name: 社員名
-        employee_name_kana: 社員名(フリガナ)
+        employee_last_name: 社員名(姓)
+        employee_first_name: 社員名(名)
+        employee_full_name: 社員名
+        employee_last_name_kana: 社員名カナ(姓)
+        employee_first_name_kana: 社員名カナ(名)
+        employee_full_name_kana: 社員名(カナ)
         age: 年齢
         employment_status: 就業状況
         email: メールアドレス

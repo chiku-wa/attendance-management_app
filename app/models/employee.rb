@@ -1,4 +1,7 @@
 class Employee < ApplicationRecord
+  # =============== コールバック
+  before_validation(:merge_first_name_and_last_name)
+
   # =============== ログイン機構を使用するためのdeviseの設定
   devise(
     # パスワードを暗号化してDBに登録:有効
@@ -32,28 +35,61 @@ class Employee < ApplicationRecord
   has_many :employee_roles
   has_many :roles, through: :employee_roles
 
-  # =============== フィルタリング
-  before_save :formatting_name
-
   # =============== バリデーション
   # 社員コード
   include EmployeeCodeValidators
 
-  # 社員名
+  # 社員名(姓)
   validates(
-    :employee_name,
+    :employee_last_name,
     {
       presence: true,
-      length: { maximum: 110 },
+      length: { maximum: 100 },
     }
   )
 
-  # 社員名(フリガナ)
+  # 社員名(名)
   validates(
-    :employee_name_kana,
+    :employee_first_name,
     {
       presence: true,
-      length: { maximum: 220 },
+      length: { maximum: 100 },
+    }
+  )
+
+  # 社員名(姓・名)
+  validates(
+    :employee_full_name,
+    {
+      presence: true,
+      length: { maximum: 201 },
+    }
+  )
+
+  # 社員名カナ(姓)
+  validates(
+    :employee_last_name_kana,
+    {
+      presence: true,
+      length: { maximum: 200 },
+    }
+  )
+
+  # 社員名カナ(名)
+  validates(
+    :employee_first_name_kana,
+    {
+      presence: true,
+      length: { maximum: 200 },
+    }
+  )
+
+  # 社員名カナ(姓・名)
+  validates(
+    :employee_full_name_kana,
+    {
+      presence: true,
+      length: { maximum: 401 },
     }
   )
 
@@ -135,16 +171,22 @@ end
 # =============== プライベートメソッド
 private
 
-# 社員名、社員名(フリガナ)の前後の空白を除去し、姓と名の間の空白を半角に変換する
-def formatting_name
-  [
-    "employee_name",
-    "employee_name_kana",
-  ].each do |attribute|
-    # 前後の空白除去
-    self.send(attribute)&.gsub!(/^[[:space:]]|[[:space:]]$/, "")
+# ----------------------------------------------------
+# # 概要
+# 以下の処理を行う。
+# * 社員名(姓)と社員名(名)を全角文字で区切って結合し、社員名(姓・名)プロパティに格納
+# * 社員名カナ(姓)と社員名カナ(名)を全角文字で区切って結合し、社員名カナ(姓・名)プロパティに格納
+#
+# # 引数
+# なし
+#
+# # 戻り値
+# なし
+#
+def merge_first_name_and_last_name
+  # 社員名(姓)と社員名(名)を結合
+  self.employee_full_name = "#{employee_last_name}　#{employee_first_name}"
 
-    # 全角スペースを半角スペースに置換
-    self.send(attribute)&.gsub!(/　/, " ")
-  end
+  # 社員名カナ(姓)と社員名カナ(名)を結合
+  self.employee_full_name_kana = "#{employee_last_name_kana}　#{employee_first_name_kana}"
 end

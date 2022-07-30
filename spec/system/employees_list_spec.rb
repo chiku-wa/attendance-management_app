@@ -38,9 +38,10 @@ RSpec.describe "社員情報に関連する画面のテスト", type: :system do
 
     # ----- 登録されている社員数が30件を超えている場合は、一度に表示される社員数は30件であること
     expect(Employee.count).to be > @PER_PAGE
+
     expect(page).to(
       have_xpath(
-        "//html/body/div/table/tbody/tr",
+        "//table[@name='employees']/tbody/tr",
         count: @PER_PAGE,
       )
     )
@@ -49,19 +50,22 @@ RSpec.describe "社員情報に関連する画面のテスト", type: :system do
     # * 想定したページ数であること(一度に表示される件数は30件であること前提)
     # * ログインユーザの情報が含まれていないこと
 
-    # [想定したページ数であること]
+    # [ページネーションバーが想定したページ数であること]
     # 社員数の合計を割り出す(ログインしているユーザ自身は除くため-1)
     total_employees_exclude_own = Employee.count - 1
 
     # 「次へ」「最後」の2つのボタンが存在するため+2
     num_of_page = ((total_employees_exclude_own / @PER_PAGE) + (total_employees_exclude_own % @PER_PAGE == 0 ? 0 : 1)) + 2
 
-    expect(page).to(
-      have_xpath(
-        "/html/body/div/nav[1]/ul/li/a",
-        count: num_of_page,
+    # 画面上部・下部のページネーション数をそれぞれ確認する
+    (1..2).each do |i|
+      expect(page).to(
+        have_xpath(
+          "(//ul[@class='pagination'])[#{i}]/li/a",
+          count: num_of_page,
+        )
       )
-    )
+    end
 
     # [ログインユーザの情報が含まれていないこと]
     # 一意の値である社員コードをもとに期待値を確認する
@@ -70,7 +74,7 @@ RSpec.describe "社員情報に関連する画面のテスト", type: :system do
       @employee_common,
     ].each do |emp|
       expect(
-        find(:xpath, "//html/body/div/table/tbody/tr[@id='#{emp.employee_code}']")
+        find(:xpath, "//table[@name='employees']/tbody/tr[@id='#{emp.employee_code}']")
       ).to have_content(emp.employee_code)
     end
   end
@@ -94,7 +98,7 @@ RSpec.describe "社員情報に関連する画面のテスト", type: :system do
     # [<includesメソッドで指定するプロパティ名>, <カラム名>]
     [
       ["roles", "role_name"], #権限
-      ["employees", "employee_name_kana"], # 氏名 ※画面上では氏名(漢字)だが、内部的にはカナでソートしているため、期待値の確認はカナを基準とする
+      ["employees", "employee_full_name_kana"], # 氏名 ※画面上では氏名(漢字)だが、内部的にはカナでソートしているため、期待値の確認はカナを基準とする
       ["employees", "email"], #メールアドレス
       ["employment_status", "status_code"], #就業状況 ※画面上では就業状況(名称)だが、内部的にはコードでソートしているため、期待値の確認はコードを基準とする
     ].each do |table_name, sort_column|

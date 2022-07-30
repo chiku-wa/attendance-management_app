@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_02_231240) do
+ActiveRecord::Schema.define(version: 2022_07_17_060643) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,8 +64,6 @@ ActiveRecord::Schema.define(version: 2022_02_02_231240) do
 
   create_table "employees", comment: "社員", force: :cascade do |t|
     t.string "employee_code", limit: 6, null: false, comment: "社員コード"
-    t.string "employee_name", limit: 110, null: false, comment: "社員名"
-    t.string "employee_name_kana", limit: 220, null: false, comment: "社員名(フリガナ)"
     t.integer "age", limit: 2, null: false, comment: "年齢"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -75,6 +73,12 @@ ActiveRecord::Schema.define(version: 2022_02_02_231240) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
+    t.string "employee_last_name", limit: 100, null: false, comment: "社員名(姓)"
+    t.string "employee_first_name", limit: 100, null: false, comment: "社員名(名)"
+    t.string "employee_last_name_kana", limit: 200, null: false, comment: "社員名カナ(姓)"
+    t.string "employee_first_name_kana", limit: 200, null: false, comment: "社員名カナ(名)"
+    t.string "employee_full_name", limit: 201, null: false, comment: "社員名(姓・名)"
+    t.string "employee_full_name_kana", limit: 401, null: false, comment: "社員名カナ(姓・名)"
     t.index ["email"], name: "unique_employees_on_email", unique: true
     t.index ["employee_code"], name: "unique_employees_on_employee_code", unique: true
     t.index ["reset_password_token"], name: "unique_employees_on_reset_password_token", unique: true

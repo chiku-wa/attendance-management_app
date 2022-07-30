@@ -8,31 +8,34 @@ module ModelHelper
 
   # ----------------------------------------------------
   # # 概要
-  # 引数として渡したモデルインスタンスと、属性名をもとに、空文字かどうかのバリデーションチェックを行う
+  # 引数として渡したモデルインスタンスと、属性名をもとに、空文字を許容しないバリデーションエラー
+  # (presence)が想定通り発生するかをチェックを行う。
   #
   # # 引数
   # * model
   # テスト対象のモデルインスタンスを指定する
   # --
   # * attribute
-  # テスト対象のプロパティ名を指定する
+  # テスト対象の属性名を指定する
   #
   def valid_presence(model:, attribute:)
     # ===== String型の場合のみ、空文字・スペースのテストを実行する
     #       ※TrueClass or FalseClassだと、文字列を代入した時点でtrueが格納されるため、
     #        バリデーションを通過してしまう。
     if model[attribute].class == String
-      # --- 半角スペース
-      model.send("#{attribute}=", " ")
-      expect(model).not_to be_valid
+      [
+        # 半角スペース
+        " ",
 
-      # --- 全角スペース
-      model.send("#{attribute}=", "　")
-      expect(model).not_to be_valid
+        #全角スペース
+        "　",
 
-      # --- 空文字
-      model.send("#{attribute}=", "")
-      expect(model).not_to be_valid
+        # 空文字
+        "",
+      ].each do |val|
+        model.send("#{attribute}=", val)
+        expect(model).not_to be_valid
+      end
     end
 
     # ===== nilのテストはすべてのデータ型に対して実施する
@@ -45,9 +48,64 @@ module ModelHelper
       model.errors.messages[attribute].join
     ).to match(/入力してください|一覧にありません/)
 
+    # DBの制約違反が発生すること
     expect {
       model.save(validate: false)
     }.to raise_error(ActiveRecord::NotNullViolation)
+  end
+
+  # ----------------------------------------------------
+  # # 概要
+  # 引数として渡したモデルインスタンスと、before_validationで内部的に値が自動設定される属性名を
+  # もとに、presenceのバリデーションチェックを行う。
+  # コールバック関数(before_validation)により値が自動設定されるため、presenceに起因するエラーが
+  # 発生しないことを確認する。
+  #
+  # # 引数
+  # * model
+  # テスト対象のモデルインスタンスを指定する
+  # --
+  # * attribute
+  # before_validationにより値が自動設定される、テスト対象の属性名を指定する
+  #
+  def valid_presence_for_before_validation(model:, attribute:)
+    # ===== String型の場合のみ、空文字・スペースのテストを実行する
+    #       ※TrueClass or FalseClassだと、文字列を代入した時点でtrueが格納されるため、
+    #        バリデーションを通過してしまう。
+    if model[attribute].class == String
+      [
+        # 半角スペース
+        " ",
+
+        #全角スペース
+        "　",
+
+        # 空文字
+        "",
+      ].each do |val|
+        model.send("#{attribute}=", val)
+        expect(model.send("#{attribute}")).to eq val
+
+        # バリデーション通過後は値が自動的に設定されていること
+        expect(model).to be_valid
+        expect(model.send("#{attribute}")).not_to eq val
+      end
+    end
+
+    # ===== nilのテストはすべてのデータ型に対して実施する
+    # --- nil
+    # nilの場合のみ、DBの制約違反テストを行う(スペースや空文字は登録できてしまうため)
+    # boolean型の場合はエラーメッセージが異なるため、includeではなくmatchを用いて期待値を確認する
+    model.send("#{attribute}=", nil)
+    expect(model.send("#{attribute}")).to eq nil
+
+    expect(model).to be_valid
+    expect(model.send("#{attribute}")).not_to eq nil
+
+    # DBの制約違反が発生しないこと
+    expect {
+      model.save(validate: false)
+    }.not_to raise_error
   end
 
   # -----------------------------------------------------
@@ -57,48 +115,93 @@ module ModelHelper
   # # 引数
   # * model                       テスト対象のモデルインスタンスを指定する
   # --
-  # * attribute                   テスト対象のプロパティ名を指定する
+  # * attribute                   テスト対象の属性名を指定する
   # --
   # * valid_number_of_characters  テスト対象のプロパティで許容されている文字数を指定する
   #
   def valid_maximum_num_of_char(model:, attribute:, valid_number_of_characters:)
-    # --- 半角文字のテスト
-    # Modelクラスのバリデーションエラーテスト
-    model.send(
-      "#{attribute}=",
-      "a" * valid_number_of_characters,
-    )
-    expect(model).to be_valid
+    half_angle_text = "a"
+    full_angle_text = "あ"
 
-    model.send(
-      "#{attribute}=",
-      "a" * (valid_number_of_characters + 1),
-    )
-    expect(model).not_to be_valid
+    [
+      # 半角文字のテスト
+      [
+        (half_angle_text * valid_number_of_characters),
+        (half_angle_text * (valid_number_of_characters + 1)),
+      ],
 
-    # DBの制約違反テスト
-    expect {
-      model.save(validate: false)
-    }.to raise_error(ActiveRecord::ValueTooLong)
+      # 全角文字のテスト
+      [
+        (full_angle_text * valid_number_of_characters),
+        (full_angle_text * (valid_number_of_characters + 1)),
+      ],
 
-    # --- 全角文字のテスト
-    # Modelクラスのバリデーションエラーテスト
-    model.send(
-      "#{attribute}=",
-      "あ" * valid_number_of_characters,
-    )
-    expect(model).to be_valid
+    ].each do |valid_val, invalid_val|
+      # バリデーションエラー、DB制約違反が発生しないこと
+      model.send(
+        "#{attribute}=",
+        valid_val,
+      )
+      expect(model).to be_valid
 
-    model.send(
-      "#{attribute}=",
-      "あ" * (valid_number_of_characters + 1),
-    )
-    expect(model).not_to be_valid
+      expect {
+        model.save(validate: false)
+      }.not_to raise_error
 
-    # DBの制約違反テスト
-    expect {
-      model.save(validate: false)
-    }.to raise_error(ActiveRecord::ValueTooLong)
+      # バリデーションエラー、DB制約違反が発生すること
+      model.send(
+        "#{attribute}=",
+        invalid_val,
+      )
+      expect(model).not_to be_valid
+
+      expect {
+        model.save(validate: false)
+      }.to raise_error(ActiveRecord::ValueTooLong)
+    end
+  end
+
+  # -----------------------------------------------------
+  # # 概要
+  # 引数として渡したモデルインスタンスと、before_validationで内部的に値が自動設定される属性名を
+  # もとに、maximumのバリデーションチェックを行う。
+  # コールバック関数(before_validation)により値が自動設定されるため、maximumに起因するエラーが
+  # 発生しないことを確認する。
+  #
+  # # 引数
+  # * model                       テスト対象のモデルインスタンスを指定する
+  # --
+  # * attribute                   テスト対象の属性名を指定する
+  # --
+  # * valid_number_of_characters  テスト対象のプロパティで許容されている文字数を指定する
+  #
+  def valid_maximum_num_of_char_for_before_validation(model:, attribute:, valid_number_of_characters:)
+    half_angle_text = "a"
+    full_angle_text = "あ"
+
+    [
+      # 半角文字のテスト
+      (half_angle_text * (valid_number_of_characters + 1)),
+
+      # 全角文字のテスト
+      (full_angle_text * (valid_number_of_characters + 1)),
+
+    ].each do |invalid_val|
+      # 超過文字数を設定しても、バリデーションエラー、DB制約違反が発生しないこと
+      model.send(
+        "#{attribute}=",
+        invalid_val,
+      )
+      expect(model.send("#{attribute}")).to eq invalid_val
+
+      # バリデーション通過後は値が自動的に設定されていること
+      expect(model).to be_valid
+      expect(model.send("#{attribute}")).not_to eq invalid_val
+
+      expect {
+        model.save(validate: false)
+      }.not_to raise_error(ActiveRecord::ValueTooLong)
+    end
   end
 
   # -----------------------------------------------------
@@ -109,7 +212,7 @@ module ModelHelper
   # # 引数
   # * model                       テスト対象のモデルインスタンスを指定する
   # --
-  # * attribute                   テスト対象のプロパティ名を指定する
+  # * attribute                   テスト対象の属性名を指定する
   # --
   # * valid_number_of_characters  テスト対象のプロパティで許容されている文字数を指定する
   #
@@ -132,7 +235,7 @@ module ModelHelper
     )
     expect(model).not_to be_valid
 
-    # DBの制約違反テスト
+    # DBの制約違反が発生すること
     expect {
       model.save(validate: false)
     }.to raise_error(ActiveRecord::ValueTooLong)
@@ -147,7 +250,7 @@ module ModelHelper
   # テスト対象のモデルインスタンスを指定する
   # --
   # * attribute
-  # テスト対象のプロパティ名を指定する
+  # テスト対象の属性名を指定する
   # --
   # * value
   # テスト対象のプロパティに設定する値を指定する
@@ -157,7 +260,7 @@ module ModelHelper
   # ※モデルクラスで指定しているis_sensitiveと同じ真偽値を指定すること
   # --
   # * other_unique_attributes
-  # 同一モデルクラス内で、テスト対象のプロパティ以外に一意制約が付与されている場合、それらのプロパティ名
+  # 同一モデルクラス内で、テスト対象のプロパティ以外に一意制約が付与されている場合、それらの属性名
   # と、引数`model`で指定した値**以外**の値をマップ形式で指定する。
   # ※複数の一意制約違反が検知されると正しくテストが実行できないため
   # [例]
@@ -209,7 +312,7 @@ module ModelHelper
     ).to include("すでに存在します")
 
     # DBの制約違反テスト
-    # 例外メッセージに、評価するプロパティ名が含まれていることを確認する。
+    # 例外メッセージに、評価する属性名が含まれていることを確認する。
     # ※一意性制約が付与されている他のプロパティのバリデーションエラーが誤検知されていないことを確認するため
     expect {
       model_dup.save(validate: false)
@@ -223,7 +326,7 @@ module ModelHelper
     if (is_case_sensitive && value.class == String)
       if (value =~ /[a-zA-Z]/) == nil
         raise <<~MSG
-                                                          #{attribute}(値：#{value})はアルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
+                                                                                        #{attribute}(値：#{value})はアルファベットが存在しないテストケースのため、case_sensitiveのバリデーションテストは意味をなしません。
               テストデータにアルファベットを含めるか、大文字小文字を区別しない場合は、is_case_sensitiveをfalseにしてください。
               MSG
       end
@@ -259,7 +362,7 @@ module ModelHelper
       # 大文字小文字を区別して「いる」場合、変換するとバリデーションエラーに「ならない」こと
       expect(model_lower).to be_valid
 
-      # DBの制約違反テスト
+      # DBの制約違反が発生しないこと
       expect {
         model_lower.save(validate: false)
       }.not_to raise_error
@@ -282,14 +385,14 @@ module ModelHelper
   # --
   # * attribute_and_value_hash
   #
-  # 複合キーとして設定しているプロパティ名と、テストに使用する値のハッシュを指定する。
+  # 複合キーとして設定している属性名と、テストに使用する値のハッシュを指定する。
   # 【注意点】
   # １．第1引数のmodelの属性値に設定されている値とは異なる値を指定すること
   # ２．文字列はString型、日付型はActiveSupport::TimeWithZone型を指定すること
   # 例：
-  # プロパティ名`department_code`&値=`A01000000000`
-  # プロパティ名`establishment_date`&値='2021/05/25 18:30'
-  # プロパティ名`abolished_date`&値='9999/12/31 23:59:59'
+  # 属性名`department_code`&値=`A01000000000`
+  # 属性名`establishment_date`&値='2021/05/25 18:30'
+  # 属性名`abolished_date`&値='9999/12/31 23:59:59'
   # ```ruby
   # {
   #   department_code: "A01000000000",
@@ -431,7 +534,7 @@ module ModelHelper
             # 大文字小文字を区別して「いる」場合、変換するとバリデーションエラーに「ならない」こと
             expect(model_lower).to be_valid
 
-            # DBの制約違反テスト
+            # DBの制約違反が発生しないこと
             expect {
               model_lower.save(validate: false)
             }.not_to raise_error
@@ -458,14 +561,14 @@ module ModelHelper
   # --
   # * attribute_and_value_hash
   #
-  # 複合キーとして設定しているプロパティ名と、テストに使用する値のハッシュを指定する。
+  # 複合キーとして設定している属性名と、テストに使用する値のハッシュを指定する。
   # 【注意点】
   # １．第1引数のmodelの属性値に設定されている値とは異なる値を指定すること
   # ２．文字列はString型、日付型はActiveSupport::TimeWithZone型を指定すること
   # 例：
-  # プロパティ名`department_code`&値=`A01000000000`
-  # プロパティ名`establishment_date`&値='2021/05/25 18:30'
-  # プロパティ名`abolished_date`&値='9999/12/31 23:59:59'
+  # 属性名`department_code`&値=`A01000000000`
+  # 属性名`establishment_date`&値='2021/05/25 18:30'
+  # 属性名`abolished_date`&値='9999/12/31 23:59:59'
   # ```ruby
   # {
   #   department_code: "A01000000000",
