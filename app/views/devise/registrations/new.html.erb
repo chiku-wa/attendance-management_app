@@ -16,11 +16,6 @@
     <%# メールアドレス %>
     <%= f.label :email %>
     <%= f.email_field(:email, placeholder: Employee.human_attribute_name(:email), autofocus: true, autocomplete: "email", class: "form-control")%>
-  </div>
-</div>
-
-<div class="form-row text-left">
-  <div class="form-group col-md-12">
 
     <%# 社員コード %>
     <%= f.label :employee_code %>
@@ -31,14 +26,11 @@
           class: "form-control",
         )
     %>
-  </div>
-</div>
 
-<div class="form-row text-left">
-  <div class="form-group col-md-12">
+    <%# 社員名(姓・名) %>
+    <%= f.label :employee_full_name %>
 
     <%# 社員名(姓) %>
-    <%= f.label :employee_full_name %>
     <%= f.text_field(
           :employee_last_name,
           placeholder: Employee.human_attribute_name(:employee_last_name),
@@ -53,11 +45,8 @@
           class: "form-control",
         )
     %>
-  </div>
-</div>
 
-<div class="form-row text-left">
-  <div class="form-group col-md-12">
+    <%# 社員名カナ(姓・名) %>
     <%= f.label :employee_full_name_kana %>
 
     <%# 社員名カナ(姓) %>
@@ -76,18 +65,23 @@
         )
     %>
 
-  </div>
-</div>
-
-<div class="form-row text-left">
-  <div class="form-group col-md-12">
+    <%# パスワード設定 %>
     <%= f.label :password %>
 
     <%# パスワード %>
     <%= f.password_field(
           :password,
           autocomplete: "new-password",
-          placeholder: I18n.t("devise.password.edit.new_password"),
+          placeholder: I18n.t("devise.passwords.edit.new_password"),
+          class: "form-control",
+        )
+    %>
+
+    <%# パスワード(確認用) %>
+    <%= f.password_field(
+          :password_confirmation,
+          autocomplete: "new-password",
+          placeholder: I18n.t("devise.passwords.edit.confirm_new_password"),
           class: "form-control",
         )
     %>
@@ -96,14 +90,8 @@
 </div>
 
 
-
-<div class="field">
-  <%= f.label :password_confirmation %><br />
-  <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-</div>
-
 <div class="actions">
-  <%= f.submit "Sign up" %>
+  <%= f.submit I18n.t("devise.registrations.new.sign_up"), {class: "btn btn-primary devise-form"} %>
 </div>
 <% end %>
 
