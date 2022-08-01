@@ -1,6 +1,11 @@
 class ApplicationController < ActionController::Base
-  # [devise]すべてのコントローラのアクセスには、deviseによる認証を必要とする
-  before_action :authenticate_employee!
+  before_action(
+    # [devise]すべてのコントローラのアクセスには、deviseによる認証を必要とする
+    :authenticate_employee!,
+
+    # [devise]メールアドレス、パスワード以外のフォームによるパラメータ受信を許可する
+    :configure_permitted_parameters
+  )
 
   # ========== エラーページのハンドリング処理
   # 【注意】rescue_fromは**後に記述したものから処理**されるため、500のハンドリング処理は先頭に記述すること
@@ -29,6 +34,40 @@ class ApplicationController < ActionController::Base
   def render_to_403(e = nil)
     logger.error([e, *e.backtrace].join("\n")) if e
     render("errors/403", status: 403, formats: [:html])
+  end
+
+  # ========== devise関連のアクション
+  # ----- メールアドレス、パスワード以外のフォームによるパラメータ受信を許可する
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(
+      # 社員登録画面の処理で許可する
+      :sign_up,
+
+      # 許可するパラメータを指定
+      # ※メールアドレス、パスワードはdeviseでデフォルトで許可されているため指定不要
+      keys: [
+        # 社員コード
+        :employee_code,
+
+        # 社員名(姓)
+        :employee_last_name,
+
+        # 社員名(名)
+        :employee_first_name,
+
+        # 社員名カナ(姓)
+        :employee_last_name_kana,
+
+        # 社員名カナ(名)
+        :employee_first_name_kana,
+
+        # 年齢
+        :age,
+
+        # 就業状況
+        :employment_status,
+      ],
+    )
   end
 
   # ========== cancancan関連のアクション

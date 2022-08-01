@@ -12,11 +12,18 @@
 <div class="form-row text-left">
   <div class="form-group col-md-12">
 
-    <%# メールアドレス %>
+    <%# ----- メールアドレス %>
     <%= f.label :email %>
-    <%= f.email_field(:email, placeholder: Employee.human_attribute_name(:email), autofocus: true, autocomplete: "email", class: "form-control")%>
+    <%= f.email_field(
+          :email,
+          placeholder: Employee.human_attribute_name(:email),
+          autofocus: true,
+          autocomplete: "email",
+          class: "form-control",
+        )
+      %>
 
-    <%# 社員コード %>
+    <%# ----- 社員コード %>
     <%= f.label :employee_code %>
     <%= f.text_field(
           :employee_code,
@@ -26,7 +33,7 @@
         )
     %>
 
-    <%# 社員名(姓・名) %>
+    <%# ----- 社員名(姓・名) %>
     <%= f.label :employee_full_name %>
 
     <%# 社員名(姓) %>
@@ -45,7 +52,7 @@
         )
     %>
 
-    <%# 社員名カナ(姓・名) %>
+    <%# ----- 社員名カナ(姓・名) %>
     <%= f.label :employee_full_name_kana %>
 
     <%# 社員名カナ(姓) %>
@@ -64,7 +71,28 @@
         )
     %>
 
-    <%# パスワード設定 %>
+    <%# ----- 年齢 %>
+    <%= f.label :age %>
+    <%= f.text_field(
+          :age,
+          placeholder: Employee.human_attribute_name(:age),
+          class: "form-control",
+        )
+    %>
+
+    <%# ----- 就業状況 %>
+    <%= f.label :employment_status %>
+    <%= f.collection_select(
+          :employment_status,
+          EmploymentStatus.all,
+          :id,
+          :status_name,
+          {prompt: false}, # ドロップダウンリストの初期値は「在職」とする(後述の`class`を反映させるためのおまじないも兼ねる)
+          {class: "form-control"},
+        )
+    %>
+
+    <%# ----- パスワード設定 %>
     <%= f.label :password %>
 
     <%# パスワード %>
