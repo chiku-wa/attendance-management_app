@@ -1,3 +1,7 @@
+<%#
+ログイン画面
+%>
+
 <%# HTMLのtitle定義部 %>
 <% provide(:title, I18n.t("devise.sessions.new.sign_in")) %>
 
@@ -5,13 +9,25 @@
 <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
 <div class="row">
   <div class="col">
-    <%= f.email_field :email, placeholder: Employee.human_attribute_name(:email), autofocus: true, autocomplete: "email", class: "devise-form form-control" %>
+    <%= f.email_field(
+          :email,
+          placeholder: Employee.human_attribute_name(:email),
+          autofocus: true, autocomplete: "email",
+          class: "devise-form form-control",
+        )
+    %>
   </div>
 </div>
 
 <div class="row">
   <div class="col">
-    <%= f.password_field :password, placeholder: Employee.human_attribute_name(:password), autocomplete: "current-password", class: "devise-form form-control" %>
+    <%= f.password_field(
+          :password,
+          placeholder: Employee.human_attribute_name(:password),
+          autocomplete: "current-password",
+          class: "devise-form form-control",
+        )
+    %>
   </div>
 </div>
 

@@ -1,3 +1,7 @@
+<%#
+パスワードの変更画面
+%>
+
 <%# HTMLのtitle定義部 %>
 <% provide(:title, I18n.t("devise.passwords.edit.change_your_password")) %>
 
@@ -11,7 +15,14 @@
 <div class="row">
   <div class="col">
     <div class="field">
-      <%= f.password_field :password, placeholder: I18n.t("devise.passwords.edit.new_password"), autofocus: true, autocomplete: "new-password", class: "devise-form form-control" %>
+      <%= f.password_field(
+              :password,
+              placeholder: I18n.t("devise.passwords.edit.new_password"),
+              autofocus: true,
+              autocomplete: "new-password",
+              class: "devise-form form-control",
+          )
+      %>
     </div>
   </div>
 </div>
@@ -19,7 +30,13 @@
 <div class="row">
   <div class="col">
     <div class="field">
-      <%= f.password_field :password_confirmation, placeholder: I18n.t("devise.passwords.edit.confirm_new_password"), autocomplete: "new-password", class: "devise-form form-control" %>
+      <%= f.password_field(
+            :password_confirmation,
+            placeholder: I18n.t("devise.passwords.edit.confirm_new_password"),
+            autocomplete: "new-password",
+            class: "devise-form form-control",
+          )
+      %>
     </div>
   </div>
 </div>

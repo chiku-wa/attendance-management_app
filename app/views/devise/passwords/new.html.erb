@@ -1,3 +1,7 @@
+<%#
+パスワードリセットのリクエスト画面
+%>
+
 <%# HTMLのtitle定義部 %>
 <% provide(:title, I18n.t("devise.passwords.edit.change_my_password")) %>
 
@@ -9,7 +13,13 @@
 <div class="row">
   <div class="col">
     <div class="field">
-      <%= f.email_field :email, placeholder: Employee.human_attribute_name(:email), autofocus: true, autocomplete: "email", class: "devise-form form-control" %>
+      <%= f.email_field(
+            :email,
+            placeholder: Employee.human_attribute_name(:email),
+            autofocus: true, autocomplete: "email",
+            class: "devise-form form-control",
+          )
+      %>
     </div>
   </div>
 </div>

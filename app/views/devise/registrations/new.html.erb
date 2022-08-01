@@ -1,3 +1,7 @@
+<%#
+社員情報の登録画面
+%>
+
 <%# HTMLのtitle定義部 %>
 <% provide(:title, I18n.t("devise.registrations.new.sign_up")) %>
 
@@ -8,29 +12,86 @@
 
 <div class="form-row text-left">
   <div class="form-group col-md-12">
-    <%= f.label :email%>
-    <%= f.email_field :email, placeholder: Employee.human_attribute_name(:email), autofocus: true, autocomplete: "email", class: "form-control" %>
+
+    <%# メールアドレス %>
+    <%= f.label :email %>
+    <%= f.email_field(:email, placeholder: Employee.human_attribute_name(:email), autofocus: true, autocomplete: "email", class: "form-control")%>
   </div>
 </div>
 
 <div class="form-row text-left">
   <div class="form-group col-md-12">
-    <%= f.label :employee_full_name%>
-    <%= f.text_field :employee_last_name, placeholder: Employee.human_attribute_name(:employee_last_name), autofocus: true, class: "form-control" %>
-    <%= f.text_field :employee_first_name, placeholder: Employee.human_attribute_name(:employee_first_name), autofocus: true, class: "form-control" %>
+
+    <%# 社員コード %>
+    <%= f.label :employee_code %>
+    <%= f.email_field(
+          :employee_code,
+          placeholder: Employee.human_attribute_name(:employee_code),
+          autocomplete: "employee_code",
+          class: "form-control",
+        )
+    %>
   </div>
 </div>
 
+<div class="form-row text-left">
+  <div class="form-group col-md-12">
 
-<div class="row">
-  <div class="col">
-    <div class="field">
-      <%= f.label :password %>
-      <% if @minimum_password_length %>
-      <em>(<%= @minimum_password_length %> characters minimum)</em>
-      <% end %><br />
-      <%= f.password_field :password, autocomplete: "new-password" %>
-    </div>
+    <%# 社員名(姓) %>
+    <%= f.label :employee_full_name %>
+    <%= f.text_field(
+          :employee_last_name,
+          placeholder: Employee.human_attribute_name(:employee_last_name),
+          class: "form-control",
+        )
+    %>
+
+    <%# 社員名(名) %>
+    <%= f.text_field(
+          :employee_first_name,
+          placeholder: Employee.human_attribute_name(:employee_first_name),
+          class: "form-control",
+        )
+    %>
+  </div>
+</div>
+
+<div class="form-row text-left">
+  <div class="form-group col-md-12">
+    <%= f.label :employee_full_name_kana %>
+
+    <%# 社員名カナ(姓) %>
+    <%= f.text_field(
+          :employee_last_name_kana,
+          placeholder: Employee.human_attribute_name(:employee_last_name_kana),
+          class: "form-control",
+        )
+    %>
+
+    <%# 社員名カナ(名) %>
+    <%= f.text_field(
+          :employee_first_name_kana,
+          placeholder: Employee.human_attribute_name(:employee_first_name_kana),
+          class: "form-control",
+        )
+    %>
+
+  </div>
+</div>
+
+<div class="form-row text-left">
+  <div class="form-group col-md-12">
+    <%= f.label :password %>
+
+    <%# パスワード %>
+    <%= f.password_field(
+          :password,
+          autocomplete: "new-password",
+          placeholder: I18n.t("devise.password.edit.new_password"),
+          class: "form-control",
+        )
+    %>
+
   </div>
 </div>
 
@@ -39,12 +100,6 @@
 <div class="field">
   <%= f.label :password_confirmation %><br />
   <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-</div>
-
-<div class="field">
-  <%= f.label :employee_full_name %><br />
-  <%= f.text_field :employee_last_name, placeholder: Employee.human_attribute_name(:employee_first_name) %>
-  <%= f.text_field :employee_first_name, placeholder: Employee.human_attribute_name(:employee_last_name) %>
 </div>
 
 <div class="actions">

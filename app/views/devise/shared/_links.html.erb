@@ -1,3 +1,7 @@
+<%#
+deviseの各種リンク生成用パーティション
+%>
+
 <div class="devise-links">
   <%- if controller_name != 'sessions' %>
   <%= link_to "#{I18n.t('devise.sessions.new.sign_in')}に戻る", new_session_path(resource_name) %><br />
