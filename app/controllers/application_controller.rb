@@ -1,11 +1,10 @@
 class ApplicationController < ActionController::Base
-  before_action(
-    # [devise]すべてのコントローラのアクセスには、deviseによる認証を必要とする
-    :authenticate_employee!,
+  # [devise]すべてのコントローラのアクセスには、deviseによる認証を必要とする
+  before_action(:authenticate_employee!)
 
-    # [devise]メールアドレス、パスワード以外のフォームによるパラメータ受信を許可する
-    :configure_permitted_parameters
-  )
+  # [devise]メールアドレス、パスワード以外のフォームによるパラメータ受信を許可する
+  # ※devise関連のController処理でのみコールバック関数を実行する
+  before_action(:configure_permitted_parameters, if: :devise_controller?)
 
   # ========== エラーページのハンドリング処理
   # 【注意】rescue_fromは**後に記述したものから処理**されるため、500のハンドリング処理は先頭に記述すること
