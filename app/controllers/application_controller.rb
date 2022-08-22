@@ -35,8 +35,11 @@ class ApplicationController < ActionController::Base
     render("errors/403", status: 403, formats: [:html])
   end
 
+  # =============== プロテクテッドメソッド
+  protected
+
   # ========== devise関連のアクション
-  # ----- メールアドレス、パスワード以外のフォームによるパラメータ受信を許可する
+  # ----- 社員登録時に、メールアドレス、パスワード以外のフォームによるパラメータ受信を許可する
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(
       # 社員登録画面の処理で許可する
@@ -64,7 +67,8 @@ class ApplicationController < ActionController::Base
         :age,
 
         # 就業状況
-        :employment_status,
+        # :employment_status,
+        :employment_status_id,
       ],
     )
   end
