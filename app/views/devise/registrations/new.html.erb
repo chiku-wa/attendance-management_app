@@ -81,6 +81,7 @@
     %>
 
     <%# ----- 就業状況 %>
+    <%= f.label :employment_status %>
     <%= f.collection_select(
           :employment_status_id,
           EmploymentStatus.all,
