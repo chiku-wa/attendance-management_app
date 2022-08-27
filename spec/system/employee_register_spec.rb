@@ -80,16 +80,23 @@ RSpec.describe "社員の新規登録に関する画面のテスト", type: :sys
     )
   end
 
-  # scenario"[社員個別登録]ドロップダウンのデフォルト値が想定どおりであること" do
-  #   # ----- システム管理者でログインし、社員登録画面に遷移
-  #   login_macro(employee: @employee_admin)
-  #   visit(new_employee_registration_path)
+  scenario "[社員個別登録]ドロップダウンのデフォルト値が想定どおりであること" do
+    # ----- システム管理者でログインし、社員登録画面に遷移
+    login_macro(employee: @employee_admin)
+    visit(new_employee_registration_path)
 
-  #   # ----- ドロップダウンの値が想定どおりであること
-  #   # 権限
+    sleep 1
+    puts page.html
 
-  #   # 就業状況
-  # end
+    # ----- ドロップダウンの値が想定どおりであること
+    # 「権限」の初期値が「一般社員」であること
+    expect(page).to have_select(
+      "employee_role_ids",
+      selected: I18n.t("master_data.role.common"),
+    )
+
+    # 「就業状況」の初期値が「在職」であること
+  end
 
   scenario "[社員個別登録]社員が正常に登録できること" do
     # ----- システム管理者でログインし、社員登録画面に遷移
