@@ -32,10 +32,9 @@ module SystemCommonMacros
     # ログインを行う
     login_macro(employee: employee)
 
-    # 社員情報一覧に遷移していることを確認
-    visit(employees_list_path)
+    # 社員情報一覧のリンクが存在していることを確認
     expect(page).to(
-      have_title("社員情報一覧")
+      have_link(href: employees_list_path)
     )
   end
 
@@ -52,7 +51,7 @@ module SystemCommonMacros
     # ログインを行う
     login_macro(employee: employee)
 
-    # 勤怠登録画面に遷移していることを確認
+    # 勤怠登録の各種リンクが存在していることを確認
     expect(page).to(
       have_link("出勤")
     )
@@ -73,7 +72,7 @@ module SystemCommonMacros
   # * emoloyee
   # 新規登録(個別)したい一般社員の社員モデルクラスのインスタンス
   #
-  def fill_in_employee(employee:)
+  def fill_in_employee_registration(employee:)
     # ----- 前提として、社員の新規登録画面であることを確認する
     expect(page).to(
       have_title("社員登録")

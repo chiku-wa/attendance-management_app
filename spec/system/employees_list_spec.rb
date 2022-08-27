@@ -35,6 +35,7 @@ RSpec.describe "社員情報に関連する画面のテスト", type: :system do
   scenario "ログインしているユーザ以外が一覧出力されること" do
     # ----- ログインし、社員情報一覧に遷移する
     login_macro_with_admin(employee: @employee_admin)
+    visit(employees_list_path)
 
     # ----- 登録されている社員数が30件を超えている場合は、一度に表示される社員数は30件であること
     expect(Employee.count).to be > @PER_PAGE
@@ -82,6 +83,7 @@ RSpec.describe "社員情報に関連する画面のテスト", type: :system do
   scenario "ヘッダをクリックすると、昇順・降順にソートされること" do
     # ログインし、社員情報一覧に遷移する
     login_macro_with_admin(employee: @employee_admin)
+    visit(employees_list_path)
 
     # ========== 前提の確認：30件表示されており、かつ初期表示時は社員コードの昇順になっていること
     # 画面に表示されるであろう状態と同じソート条件で社員を取得する

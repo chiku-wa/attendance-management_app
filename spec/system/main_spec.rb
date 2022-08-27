@@ -24,16 +24,16 @@ RSpec.describe "メイン画面のシステムテスト", type: :system do
 
     # その権限でしか利用できない機能のリンクが表示されていること
     expect(page).to(
-      have_link("社員一覧", href: employees_list_path)
+      have_link(href: employees_list_path)
     )
   end
 
   scenario "マネージャーの画面に遷移すること" do
-     # 権限を付与
-     @employee.roles << @role_manager
+    # 権限を付与
+    @employee.roles << @role_manager
 
-     # ログインする
-     login_macro(employee: @employee)
+    # ログインする
+    login_macro(employee: @employee)
 
     expect(page).to(
       have_title("メインメニュー")
