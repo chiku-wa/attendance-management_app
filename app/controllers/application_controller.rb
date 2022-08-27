@@ -66,8 +66,10 @@ class ApplicationController < ActionController::Base
         # 年齢
         :age,
 
+        # 権限
+        :role_ids,
+
         # 就業状況
-        # :employment_status,
         :employment_status_id,
       ],
     )

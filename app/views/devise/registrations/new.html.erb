@@ -80,6 +80,21 @@
         )
     %>
 
+    <%# ----- 権限 %>
+    <%= f.label Role.human_attribute_name(:role_name) %>
+    <%= f.collection_select(
+          :role_ids,
+          Role.all,
+          :id,
+          :role_name,
+          options={
+            # デフォルト値は「一般社員」とする
+            selected: 3,
+          },
+          {class: "form-control"},
+        )
+    %>
+
     <%# ----- 就業状況 %>
     <%= f.label :employment_status %>
     <%= f.collection_select(
@@ -87,7 +102,10 @@
           EmploymentStatus.all,
           :id,
           :status_name,
-          {prompt: false}, # ドロップダウンリストの初期値は「在職」とする(後述の`class`を反映させるためのおまじないも兼ねる)
+          options={
+            # デフォルト値は「在職」とする
+            selected: 1,
+          },
           {class: "form-control"},
         )
     %>
