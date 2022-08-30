@@ -32,7 +32,7 @@ class Employee < ApplicationRecord
   belongs_to :employment_status
 
   # 社員-権限(中間テーブル)、権限
-  has_many :employee_roles
+  has_many :employee_roles, dependent: :destroy # 社員が削除された場合は、権限も連動して削除する
   has_many :roles, through: :employee_roles
 
   # =============== バリデーション

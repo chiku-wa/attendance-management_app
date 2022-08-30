@@ -203,6 +203,7 @@ RSpec.describe "社員モデルのテスト", type: :model do
   # * reset_password_token
   # * reset_password_sent_at
   # * remember_created_at
+
   context "has_role?メソッドのテスト" do
     it "権限が付与されていない社員の場合はfalseが返ること" do
       # 前提として社員に権限が付与されていないこと
@@ -257,5 +258,31 @@ RSpec.describe "社員モデルのテスト", type: :model do
       expect(employee_work.add_role("not exist role name")).to be_falsey
       expect(employee_work.roles.size).to eq 0
     end
+  end
+
+  context "社員情報削除のテスト" do
+    it "[ActiveRecord経由]社員情報を削除した場合、エラーとならず権限も連動して削除されること" do
+      # 社員情報を登録する
+      employee_work.save
+      expect(Employee.find_by(id: employee_work.id)).not_to be_nil
+
+      # 社員情報を削除してもエラーが発生せず、権限情報も連動して削除されること
+      expect {
+        employee_work.destroy!
+      }.not_to raise_error
+      expect(EmployeeRole.find_by(employee_id: employee_work.id)).to be_nil
+    end
+  end
+
+  it "[DB直接]社員情報を削除した場合、エラーとならず権限も連動して削除されること" do
+    # 社員情報を登録する
+    employee_work.save
+    expect(Employee.find_by(id: employee_work.id)).not_to be_nil
+
+    # 社員情報を削除してもエラーが発生せず、権限情報も連動して削除されること
+    expect {
+      employee_work.delete
+    }.not_to raise_error
+    expect(EmployeeRole.find_by(employee_id: employee_work.id)).to be_nil
   end
 end
