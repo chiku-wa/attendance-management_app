@@ -65,6 +65,23 @@ module SystemCommonMacros
 
   # ----------------------------------------------------
   # # 概要
+  # 引数として渡した社員インスタンスが、画面上部に表示されている社員コード、氏名と一致することを確認する。
+  # deviseのcurrent_userメソッドが使用できないため、その代替として本メソッドを定義
+  #
+  # # 引数
+  # * emoloyee
+  # ログインしたい一般社員の社員モデルクラスのインスタンス
+  #
+  def expect_match_loggedin_user(employee:)
+    expect(
+      find(:xpath, "//div[@class='emp_info']")
+    ).to have_content(
+      "#{employee.employee_last_name}　#{employee.employee_first_name}(#{employee.employee_code})"
+    )
+  end
+
+  # ----------------------------------------------------
+  # # 概要
   # 引数として渡した一般社員の社員インスタンスをもとに社員新規登録画面(個別)にアクセスし、
   # 必要な情報を入力する。
   #

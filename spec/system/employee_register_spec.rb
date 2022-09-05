@@ -86,8 +86,6 @@ RSpec.describe "社員の新規登録に関する画面のテスト", type: :sys
     login_macro_with_admin(employee: @employee_admin)
     visit(new_employee_registration_path)
 
-    puts page.body
-
     # ----- ドロップダウンの値が想定どおりであること
     # 「権限」の初期値が「一般社員」であること
     expect(page).to have_select(
@@ -103,17 +101,28 @@ RSpec.describe "社員の新規登録に関する画面のテスト", type: :sys
     # ----- システム管理者でログインし、社員登録画面に遷移
     login_macro_with_admin(employee: @employee_admin)
     visit(new_employee_registration_path)
+    expect_match_loggedin_user(employee: @employee_admin)
 
     # ----- 社員登録情報を入力
     fill_in_employee_registration(employee: @employee_eligible_for_registration)
 
-    # ----- 社員情報を登録
-    click_button("社員登録")
+    # ----- 社員情報を登録し、期待値を確認
+    # 社員情報を登録すると、社員情報一覧にリダイレクトされること
+    expect {
+      click_button("社員登録")
+    }.to change {
+           current_path
+         }.to(
+           employees_list_path
+         )
 
-    # ----- 社員情報が想定通り登録できていること
+    # 社員情報が想定通り登録できていること
     matches_registered_employee(employee: @employee_eligible_for_registration)
 
-    # ----- システム管理者でログインされたままであること
-
+    # システム管理者でログインされたままであること
+    # TODO:画面操作ではシステム管理者でのログイン状態が保持されているが、なぜか下記の比較方法
+    # では登録した社員でログインされてしまう。原因を調査して対処すること。
+    # visit(employees_list_path)
+    # expect_match_loggedin_user(employee: @employee_admin)
   end
 end

@@ -10,6 +10,10 @@ class Employees::RegistrationsController < Devise::RegistrationsController
   # [cancancan]でアクセス制御を行うための定義
   authorize_resource(class: false)
 
+  # 新規登録した社員に自動的にログインされないように、未処理のメソッドをオーバーライドする
+  def sign_up(employee, resource)
+  end
+
   # GET /resource/sign_up
   # def new
   #   super
@@ -44,7 +48,8 @@ class Employees::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
-  # protected
+  # =============== プロテクテッドメソッド
+  protected
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_up_params
@@ -56,10 +61,11 @@ class Employees::RegistrationsController < Devise::RegistrationsController
   #   devise_parameter_sanitizer.permit(:account_update, keys: [:attribute])
   # end
 
-  # The path used after sign up.
-  # def after_sign_up_path_for(resource)
-  #   super(resource)
-  # end
+  # 社員の新規登録後に遷移するページを定義
+  def after_sign_up_path_for(resource)
+    # 社員情報一覧画面に遷移する
+    employees_list_path
+  end
 
   # The path used after sign up for inactive accounts.
   # def after_inactive_sign_up_path_for(resource)
