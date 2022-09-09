@@ -101,6 +101,14 @@ role_common = Role.create!(
   role_name: I18n.t("master_data.role.common"),
 )
 
+# ===== 所属種別登録
+AffiliationType.create!(
+  affiliation_type_name: I18n.t("master_data.affiliation_type.affiliation_type_name.regular"),
+)
+AffiliationType.create!(
+  affiliation_type_name: I18n.t("master_data.affiliation_type.affiliation_type_name.additional"),
+)
+
 # ===== 就業状況登録
 #
 employment_status_work = EmploymentStatus.create!(

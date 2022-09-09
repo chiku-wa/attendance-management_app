@@ -10,16 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_30_005152) do
+ActiveRecord::Schema.define(version: 2022_09_09_000942) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "affilitation_types", comment: "所属種別", force: :cascade do |t|
-    t.string "affilitation_type_name", limit: 10, null: false, comment: "所属種別名"
+  create_table "affiliation_types", comment: "所属種別", force: :cascade do |t|
+    t.string "affiliation_type_name", limit: 10, null: false, comment: "所属種別名"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["affilitation_type_name"], name: "unique_affilitation_types_on_affilitation_type_name", unique: true
+    t.index ["affiliation_type_name"], name: "unique_affiliation_types_on_affiliation_type_name", unique: true
   end
 
   create_table "department_hierarchies", comment: "部署階層", force: :cascade do |t|
@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 2022_08_30_005152) do
     t.bigint "employee_id", null: false, comment: "社員ID"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "affilitation_type_id", null: false, comment: "所属種別ID"
+    t.bigint "affiliation_type_id", null: false, comment: "所属種別ID"
     t.datetime "start_date", precision: 6, null: false, comment: "着任日"
     t.datetime "end_date", precision: 6, null: false, comment: "離任日"
   end
@@ -140,7 +140,7 @@ ActiveRecord::Schema.define(version: 2022_08_30_005152) do
 
   add_foreign_key "department_hierarchies", "departments", column: "child_department_id", name: "fk_child_department_id"
   add_foreign_key "department_hierarchies", "departments", column: "parent_department_id", name: "fk_parent_department_id"
-  add_foreign_key "employee_departments", "affilitation_types", name: "fk_affilitation_type_id"
+  add_foreign_key "employee_departments", "affiliation_types", name: "fk_affiliation_type_id"
   add_foreign_key "employee_departments", "departments", name: "fk_department_id"
   add_foreign_key "employee_departments", "employees", name: "fk_employee_id"
   add_foreign_key "employee_roles", "employees", name: "fk_employee_id", on_delete: :cascade

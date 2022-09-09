@@ -39,7 +39,7 @@ RSpec.describe "社員-部署のテスト", type: :model do
     it "所属種別がnilの場合はバリデーションエラーとなること" do
       valid_presence(
         model: employee_department_regular,
-        attribute: :affilitation_type,
+        attribute: :affiliation_type,
       )
     end
 

@@ -14,7 +14,7 @@ ja:
       hierarchy_department: 部署階層
       employee_department: 社員-部署
       project: プロジェクト
-      affilitation_type: 所属種別
+      affiliation_type: 所属種別
       employment_status: 就業状況
       rank: ランク
       work_table: 勤務表
@@ -72,7 +72,7 @@ ja:
       employee_department:
         department: 部署
         employee: 社員
-        affilitation_type: 所属種別
+        affiliation_type: 所属種別
         start_date: 着任日
         end_date: 離任日
       project:
@@ -81,8 +81,8 @@ ja:
         enabled: 有効フラグ
         start_date: プロジェクト開始日
         end_date: プロジェクト終了日
-      affilitation_type:
-        affilitation_type_name: 所属種別名
+      affiliation_type:
+        affiliation_type_name: 所属種別名
       employment_status:
         status_code: 就業状況コード
         status_name: 就業状況
@@ -107,6 +107,10 @@ ja:
       admin: システム管理者
       manager: マネージャ
       common: 一般社員
+    affiliation_type:
+      affiliation_type_name:
+        regular: 本務
+        additional: 兼務
     employment_status:
       status_code:
         work: "00001"

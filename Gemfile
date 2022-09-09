@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "2.7.1"
+ruby "2.7.6"
 
 gem "rails", "~> 6.1"
 
@@ -20,7 +20,7 @@ gem "pg"
 # --- 画面デザイン用
 gem "bootstrap", "~> 4.5", ">= 4.5.2"
 gem "bootsnap", ">= 1.4.2", require: false
-gem "font-awesome-sass", "~>5.15" # アイコン(アイコンと対応するHTMLタグは「https://fontawesome.com/icons?d=gallery」より検索できる)
+gem "font-awesome-sass", "5.13" # アイコン(アイコンと対応するHTMLタグは「https://fontawesome.com/icons?d=gallery」より検索できる)
 gem "kaminari", "~> 1.1" # ページネーション用
 
 # ----- メールデザイン用
@@ -55,10 +55,10 @@ group :development do
   gem "web-console", ">= 3.3.0"
   gem "listen", "~> 3.2"
   gem "spring"
-  gem "spring-watcher-listen", "~> 2.0.0"
+  gem "spring-watcher-listen"
 
   # RSpecのテスト実行時間を早くするためのgem
-  gem "spring-commands-rspec", "~> 1.0"
+  gem "spring-commands-rspec"
 end
 
 # ----- 開発・テスト環境

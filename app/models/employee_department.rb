@@ -5,7 +5,7 @@ class EmployeeDepartment < ApplicationRecord
   # 部署
   belongs_to :department
   # 所属種別
-  belongs_to :affilitation_type
+  belongs_to :affiliation_type
 
   # =============== バリデーション
   # 着任日
