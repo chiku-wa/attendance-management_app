@@ -7,6 +7,14 @@ RSpec.describe "社員モデルのテスト", type: :model do
   let(:role_manager) { FactoryBot.create(:role_manager) }
   let(:role_common) { FactoryBot.create(:role_common) }
 
+  # ----- 部署テーブル
+  let(:department_A) { FactoryBot.create(:department_A) }
+  let(:department_A_sales) { FactoryBot.create(:department_A_sales) }
+
+  # ----- 所属種別テーブル
+  let(:affiliation_type_regular) { FactoryBot.create(:affiliation_type_regular) }
+  let(:affiliation_type_additional) { FactoryBot.create(:affiliation_type_additional) }
+
   # ----- 社員テーブル
   let(:employee_work) { FactoryBot.build(:employee) }
 
@@ -205,6 +213,26 @@ RSpec.describe "社員モデルのテスト", type: :model do
   # * remember_created_at
 
   context "has_role?メソッドのテスト" do
+    it "権限が付与されている社員の場合はtrueが返ること" do
+      # ----- 単一の権限が付与されている場合のテスト
+      employee_work.roles << role_admin
+
+      # 権限がある場合はtrueが返ること
+      expect(employee_work.has_role?(role_admin.role_name)).to be_truthy
+
+      # 付与されていない権限の場合はfalseが返ること
+      expect(employee_work.has_role?(role_manager.role_name)).to be_falsey
+      expect(employee_work.has_role?(role_common.role_name)).to be_falsey
+
+      # ----- 複数の権限が付与されている場合のテスト
+      # 一致する権限が1つでもある場合はtrueが返ること
+      employee_work.roles << role_manager
+      expect(employee_work.has_role?(role_manager.role_name)).to be_truthy
+
+      employee_work.roles << role_common
+      expect(employee_work.has_role?(role_common.role_name)).to be_truthy
+    end
+
     it "権限が付与されていない社員の場合はfalseが返ること" do
       # 前提として社員に権限が付与されていないこと
       expect(employee_work.roles.size).to eq 0
@@ -219,24 +247,12 @@ RSpec.describe "社員モデルのテスト", type: :model do
       expect(employee_work.has_role?(role_admin.role_name)).to be_falsey
     end
 
-    it "権限が付与されている社員の場合はtrueが返ること" do
-      # ----- 単一の権限が付与されている場合のテスト
+    it "想定と異なる権限が付与されている場合はfalseが返ること" do
+      # システム管理者権限を付与
       employee_work.roles << role_admin
 
-      # 権限がある場合はtrueが返ること
-      expect(employee_work.has_role?(role_admin.role_name)).to be_truthy
-
-      # 付与されていない権限の場合はfalseが返ること
-      expect(employee_work.has_role?(role_manager.role_name)).to be_falsey
+      # システム管理者【以外】を期待値とした場合、falseとなること
       expect(employee_work.has_role?(role_common.role_name)).to be_falsey
-
-      # ----- 複数の権限が付与されている場合のテスト
-      # 権限がある場合はtrueが返ること
-      employee_work.roles << role_manager
-      expect(employee_work.has_role?(role_manager.role_name)).to be_truthy
-
-      employee_work.roles << role_common
-      expect(employee_work.has_role?(role_common.role_name)).to be_truthy
     end
   end
 
@@ -257,6 +273,182 @@ RSpec.describe "社員モデルのテスト", type: :model do
       # 権限テーブルに存在しない権限を付与しようとした場合はfalseが返り、権限が付与されないこと
       expect(employee_work.add_role("not exist role name")).to be_falsey
       expect(employee_work.roles.size).to eq 0
+    end
+  end
+
+  context "has_department?のテスト" do
+    it "部署が付与されている社員の場合はtrueが返ること" do
+      employee_work.save
+
+      # 対象社員に部署情報を付与する
+      EmployeeDepartment.create(
+        department: department_A,
+        employee: employee_work,
+        affiliation_type: affiliation_type_regular,
+        start_date: Time.zone.now,
+        end_date: Time.zone.now + 1,
+      )
+
+      # trueが返ること
+      expect(employee_work.has_department?(department_A)).to be_truthy
+    end
+
+    it "部署が付与されていない社員の場合はfalseが返ること" do
+      employee_work.save
+
+      # 前提として、部署が付与されていないこと
+      expect(EmployeeDepartment.find_by(employee: employee_work)).to be_nil
+
+      # falseが返ること
+      expect(employee_work.has_department?(department_A)).to be_falsey
+    end
+
+    it "社員インスタンスがnilの場合はfalseが返ること" do
+      employee_work = nil
+      expect(employee_work.has_department?(department_A)).to be_falsey
+    end
+
+    it "想定と異なる部署が付与されている場合はfalseが返ること" do
+      # A事業部を付与
+      EmployeeDepartment.create(
+        department: department_A,
+        employee: employee_work,
+        affiliation_type: affiliation_type_regular,
+        start_date: Time.zone.now,
+        end_date: Time.zone.now + 1,
+      )
+
+      # A事業部【以外】を期待値とした場合、falseとなること
+      expect(employee_work.has_department?(department_A_sales)).to be_falsey
+    end
+  end
+
+  context "add_departmentのテスト" do
+    it "部署テーブルに存在する部署を引数に指定した場合は、部署の付与に成功し、社員-部署インスタンスが返ること" do
+      employee_work.save
+
+      # ----- 前提として社員に部署が付与されていないこと
+      expect(EmployeeDepartment.where(employee: employee_work).size).to eq 0
+
+      # ----- 想定通りの社員-部署インスタンスが返り、部署が付与されること
+      # 期待値確認用の社員-部署インスタンス
+      start_date = Time.zone.now
+      end_date = start_date + 1.day
+      expected_employee_department_attributes = {
+        department: department_A,
+        affiliation_type_name: affiliation_type_regular.affiliation_type_name,
+        start_date: start_date,
+        end_date: end_date,
+      }
+
+      # テスト対象メソッドを実行
+      return_employee_department = employee_work.add_department(
+        department: expected_employee_department_attributes[:department],
+        affiliation_type_name: expected_employee_department_attributes[:affiliation_type_name],
+        start_date: expected_employee_department_attributes[:start_date],
+        end_date: expected_employee_department_attributes[:end_date],
+      )
+
+      # 戻り値が社員-部署インスタンスであること
+      expect(return_employee_department.class).to eq EmployeeDepartment
+
+      # 戻り値の属性値が一致すること(テスト対象メソッドに引数として渡した値のみが一致することを確認)
+      expect(
+        expected_employee_department_attributes.values_at(expected_employee_department_attributes.keys)
+      ).to eq return_employee_department.attributes.values_at(expected_employee_department_attributes.keys)
+
+      expect(EmployeeDepartment.where(employee: employee_work).size).to eq 1
+    end
+
+    it "部署の設立日 >= 着任日の場合はfalseが返り、部署の設立日 < 着任日の場合は社員-部署インスタンスが返ること(比較は日付単位で行われること)" do
+      employee_work.save
+
+      twz = Time.zone.parse("2022-09-13 00:00:00")
+
+      # 部署の設立日 = 着任日
+      start_date = twz
+      end_date = start_date
+      expect(
+        employee_work.add_department(
+          department: department_A,
+          affiliation_type_name: affiliation_type_regular.affiliation_type_name,
+          start_date: start_date,
+          end_date: end_date,
+        )
+      ).to be_nil
+
+      # 部署の設立日 > 着任日
+      start_date = twz
+      end_date = start_date - 1.day
+      expect(
+        employee_work.add_department(
+          department: department_A,
+          affiliation_type_name: affiliation_type_regular.affiliation_type_name,
+          start_date: start_date,
+          end_date: end_date,
+        )
+      ).to be_nil
+
+      # 部署の設立日 < 着任日 ※同日(日付をまたがない)の場合はfalse
+      start_date = twz
+      end_date = start_date + 1.second
+      expect(
+        employee_work.add_department(
+          department: department_A,
+          affiliation_type_name: affiliation_type_regular.affiliation_type_name,
+          start_date: start_date,
+          end_date: end_date,
+        )
+      ).to be_nil
+
+      # 部署の設立日 < 着任日 ※別日(日付をまたぐ)の場合は社員-部署インスタンスが返ってくること
+      start_date = twz
+      end_date = start_date + 1.day
+      expect(
+        employee_work.add_department(
+          department: department_A,
+          affiliation_type_name: affiliation_type_regular.affiliation_type_name,
+          start_date: start_date,
+          end_date: end_date,
+        ).class
+      ).to eq EmployeeDepartment
+    end
+
+    it "部署の設立日 >= 着任日の場合はfalseが返り、部署の設立日 < 着任日の場合は社員-部署インスタンスが返ること(比較は日付単位で行われること)" do
+      employee_work.save
+
+      start_date = Time.zone.parse("2022-09-13 00:00:00")
+      end_date = start_date + 1.day
+
+      # 1回目は問題なく設定できること
+      expect(
+        employee_work.add_department(
+          department: department_A,
+          affiliation_type_name: affiliation_type_regular.affiliation_type_name,
+          start_date: start_date,
+          end_date: end_date,
+        ).class
+      ).to eq EmployeeDepartment
+
+      # 同じ部署で2回目の設定を行おうとした際はnilが返ること
+      expect(
+        employee_work.add_department(
+          department: department_A,
+          affiliation_type_name: affiliation_type_regular.affiliation_type_name,
+          start_date: start_date,
+          end_date: end_date,
+        )
+      ).to be_nil
+
+      # 異なる部署であれば問題なく設定できること
+      expect(
+        employee_work.add_department(
+          department: department_A_sales,
+          affiliation_type_name: affiliation_type_regular.affiliation_type_name,
+          start_date: start_date,
+          end_date: end_date,
+        ).class
+      ).to eq EmployeeDepartment
     end
   end
 

@@ -35,6 +35,10 @@ class Employee < ApplicationRecord
   has_many :employee_roles, dependent: :destroy # 社員が削除された場合は、権限も連動して削除する
   has_many :roles, through: :employee_roles
 
+  # 社員-部署、部署
+  has_many :employee_departments, dependent: :destroy # 社員が削除された場合は、部署の所属情報も連動して削除する
+  has_many :departments, through: :employee_departments
+
   # =============== バリデーション
   # 社員コード
   include EmployeeCodeValidators
@@ -134,7 +138,10 @@ public
 # 権限無し : false
 #
 def has_role?(role_name)
+  # 社員インスタンスが空の場合はfalseを返す
   return false if self.blank?
+
+  # 権限名に一致する権限を有している場合はtrueを返す
   self.roles.map(&:role_name).include?(role_name)
 end
 
@@ -158,14 +165,74 @@ def add_role(role_name)
 
   # 権限を抽出し、存在する権限なら付与を行う
   role = Role.find_by(role_name: role_name)
-
-  # 権限が抽出できた場合は付与する
   if role
     self.roles << role
     return true
   else
     return false
   end
+end
+
+# ----------------------------------------------------
+# # 概要
+# 引数として渡した部署インスタンスを、社員が有しているかを判定するメソッド。
+#
+# # 引数
+# * department
+# 所属の有無を確認したい部署インスタンスを指定する
+#
+# # 戻り値
+# 所属有り : true
+# 所属無し : false
+#
+def has_department?(department)
+  # 社員インスタンスが空の場合はfalseを返す
+  return false if self.blank?
+
+  # 引数の部署インスタンスを保有している場合はtrueを返す
+  self.departments.include?(department)
+end
+
+# ----------------------------------------------------
+# # 概要
+# 引数として渡した組織、所属種別、着任日、離任日をもとに、社員に部署の所属情報を付与するメソッド。
+#
+# # 引数
+# * department
+# 付与したい部署インスタンスを指定する
+#
+# * affiliation_type_name
+# 所属種別名
+
+#
+# # 戻り値
+# 所属情報の付与に成功 : 社員-部署情報のインスタンス
+# 所属情報の付与に失敗 : nil
+#
+def add_department(department:, affiliation_type_name:, start_date:, end_date:)
+  # 引数に合致するの所属種別がない場合はnilを返す
+  affiliation_type = AffiliationType.find_by(
+    affiliation_type_name: affiliation_type_name,
+  )
+  return nil if affiliation_type.blank?
+
+  # 部署の設立日 >= 着任日(時分秒が異なっても同日であれば)の場合はnilを返す
+  return nil if (start_date.strftime("%Y%m%d").to_i >= end_date.strftime("%Y%m%d").to_i)
+
+  # すでに同一の部署が付与済みならnilを返す
+  return nil if EmployeeDepartment.find_by(
+    department: department,
+    employee: self,
+  )
+
+  # 部署を付与し、社員-部署インスタンスを返す
+  EmployeeDepartment.create(
+    employee: self,
+    department: department,
+    affiliation_type: affiliation_type,
+    start_date: start_date,
+    end_date: end_date,
+  )
 end
 
 # =============== プライベートメソッド
