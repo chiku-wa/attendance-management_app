@@ -286,7 +286,7 @@ RSpec.describe "社員モデルのテスト", type: :model do
         employee: employee_work,
         affiliation_type: affiliation_type_regular,
         start_date: Time.zone.now,
-        end_date: Time.zone.now + 1,
+        end_date: Time.zone.now + 1.day,
       )
 
       # trueが返ること
@@ -315,7 +315,7 @@ RSpec.describe "社員モデルのテスト", type: :model do
         employee: employee_work,
         affiliation_type: affiliation_type_regular,
         start_date: Time.zone.now,
-        end_date: Time.zone.now + 1,
+        end_date: Time.zone.now + 1.day,
       )
 
       # A事業部【以外】を期待値とした場合、falseとなること
@@ -453,16 +453,46 @@ RSpec.describe "社員モデルのテスト", type: :model do
   end
 
   context "社員情報削除のテスト" do
-    it "[ActiveRecord経由]社員情報を削除した場合、エラーとならず権限も連動して削除されること" do
-      # 社員情報を登録する
+    it "[ActiveRecord経由]社員情報を削除した場合、エラーとならず権限・部署も連動して削除されること" do
+      # ----- 権限、部署を付与した社員情報を登録する
+      # 社員を登録
       employee_work.save
-      expect(Employee.find_by(id: employee_work.id)).not_to be_nil
 
-      # 社員情報を削除してもエラーが発生せず、権限情報も連動して削除されること
+      # 権限を付与
+      employee_work.roles << role_admin
+
+      # 部署を設定
+      EmployeeDepartment.create(
+        department: department_A,
+        employee: employee_work,
+        affiliation_type: affiliation_type_regular,
+        start_date: Time.zone.now,
+        end_date: Time.zone.now + 1.day,
+      )
+
+      # 社員情報が存在し、権限と部署が設定されていること
+      expect(Employee.find_by(id: employee_work.id)).not_to be_nil
+      expect(
+        EmployeeRole.find_by(employee: employee_work)
+      ).not_to be_nil
+
+      expect(
+        EmployeeDepartment.find_by(employee: employee_work)
+      ).not_to be_nil
+
+      # ----- 社員情報を削除しても例外が発生せず、権限・部署情報も連動して削除されること
+      # 例外が発生しないこと
       expect {
         employee_work.destroy!
       }.not_to raise_error
-      expect(EmployeeRole.find_by(employee_id: employee_work.id)).to be_nil
+
+      # 権限が連動して削除されていること
+      expect(EmployeeRole.find_by(employee: employee_work)).to be_nil
+
+      # 部署情報も連動して削除されていること
+      expect(
+        EmployeeDepartment.find_by(employee: employee_work)
+      ).to be_nil
     end
   end
 
