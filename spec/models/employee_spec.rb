@@ -360,48 +360,48 @@ RSpec.describe "社員モデルのテスト", type: :model do
       expect(EmployeeDepartment.where(employee: employee_work).size).to eq 1
     end
 
-    it "部署の設立日 >= 着任日の場合はfalseが返り、部署の設立日 < 着任日の場合は社員-部署インスタンスが返ること(比較は日付単位で行われること)" do
+    it "部署の着任日 >= 着任日の場合は例外が発生し、部署の着任日 < 着任日の場合は社員-部署インスタンスが返ること(比較は日付単位で行われること)" do
       employee_work.save
 
       twz = Time.zone.parse("2022-09-13 00:00:00")
 
-      # 部署の設立日 = 着任日
+      # 部署の着任日 = 着任日
       start_date = twz
       end_date = start_date
-      expect(
+      expect {
         employee_work.add_department(
           department: department_A,
           affiliation_type_name: affiliation_type_regular.affiliation_type_name,
           start_date: start_date,
           end_date: end_date,
         )
-      ).to be_nil
+      }.to raise_error("離任日が着任日より未来日(着任日 < 離任日)となるようにしてください。")
 
-      # 部署の設立日 > 着任日
+      # 部署の着任日 > 離任日
       start_date = twz
       end_date = start_date - 1.day
-      expect(
+      expect {
         employee_work.add_department(
           department: department_A,
           affiliation_type_name: affiliation_type_regular.affiliation_type_name,
           start_date: start_date,
           end_date: end_date,
         )
-      ).to be_nil
+      }.to raise_error("離任日が着任日より未来日(着任日 < 離任日)となるようにしてください。")
 
-      # 部署の設立日 < 着任日 ※同日(日付をまたがない)の場合はfalse
+      # 部署の着任日 < 離任日 ※同日(日付をまたがない)の場合
       start_date = twz
       end_date = start_date + 1.second
-      expect(
+      expect {
         employee_work.add_department(
           department: department_A,
           affiliation_type_name: affiliation_type_regular.affiliation_type_name,
           start_date: start_date,
           end_date: end_date,
         )
-      ).to be_nil
+      }.to raise_error("離任日が着任日より未来日(着任日 < 離任日)となるようにしてください。")
 
-      # 部署の設立日 < 着任日 ※別日(日付をまたぐ)の場合は社員-部署インスタンスが返ってくること
+      # 部署の着任日 < 離任日 ※別日(日付をまたぐ)の場合は社員-部署インスタンスが返ってくること
       start_date = twz
       end_date = start_date + 1.day
       expect(
@@ -414,7 +414,7 @@ RSpec.describe "社員モデルのテスト", type: :model do
       ).to eq EmployeeDepartment
     end
 
-    it "部署の設立日 >= 着任日の場合はfalseが返り、部署の設立日 < 着任日の場合は社員-部署インスタンスが返ること(比較は日付単位で行われること)" do
+    it "同じ部署を2回以上付与しようとした場合はnilが返ること" do
       employee_work.save
 
       start_date = Time.zone.parse("2022-09-13 00:00:00")
@@ -449,6 +449,22 @@ RSpec.describe "社員モデルのテスト", type: :model do
           end_date: end_date,
         ).class
       ).to eq EmployeeDepartment
+    end
+
+    it "存在しない所属種別名を指定した場合は例外が返ること" do
+      employee_work.save
+
+      start_date = Time.zone.parse("2022-09-13 00:00:00")
+      end_date = start_date + 1.day
+
+      expect {
+        employee_work.add_department(
+          department: department_A,
+          affiliation_type_name: "hoge",
+          start_date: start_date,
+          end_date: end_date,
+        ).class
+      }.to raise_error("所属種別名に一致する所属種別が存在しません。")
     end
   end
 

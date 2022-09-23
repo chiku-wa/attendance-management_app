@@ -207,17 +207,29 @@ end
 #
 # # 戻り値
 # 所属情報の付与に成功 : 社員-部署情報のインスタンス
-# 所属情報の付与に失敗 : nil
+# 所属情報の付与に失敗 : 例外を発生させる。
+# すでに所属情報が付与済み：nil
 #
 def add_department(department:, affiliation_type_name:, start_date:, end_date:)
-  # 引数に合致するの所属種別がない場合はnilを返す
+  # 引数に合致するの所属種別がない場合は例外を発生させる
   affiliation_type = AffiliationType.find_by(
     affiliation_type_name: affiliation_type_name,
   )
-  return nil if affiliation_type.blank?
+
+  if affiliation_type.blank?
+    raise(
+      RuntimeError,
+      "#{I18n.t("activerecord.attributes.affiliation_type.affiliation_type_name")}に一致する#{I18n.t("activerecord.models.affiliation_type")}が存在しません。",
+    )
+  end
 
   # 部署の設立日 >= 着任日(時分秒が異なっても同日であれば)の場合はnilを返す
-  return nil if (start_date.strftime("%Y%m%d").to_i >= end_date.strftime("%Y%m%d").to_i)
+  if (start_date.strftime("%Y%m%d").to_i >= end_date.strftime("%Y%m%d").to_i)
+    raise(
+      RuntimeError,
+      "#{I18n.t("activerecord.errors.models.employee_department.attributes.start_date.cannot_be_after_end_date")}"
+    )
+  end
 
   # すでに同一の部署が付与済みならnilを返す
   return nil if EmployeeDepartment.find_by(

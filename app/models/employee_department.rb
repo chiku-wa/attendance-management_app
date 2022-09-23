@@ -23,4 +23,22 @@ class EmployeeDepartment < ApplicationRecord
       presence: true,
     }
   )
+
+  # =============== カスタムバリデーション
+  validate :end_date_is_after_start_date
+
+  private
+
+  # 着任日 >= 離任日の場合はバリデーションエラーとする
+  def end_date_is_after_start_date
+    # 判定時にエラーとなるため、着任日、離任日のいずれかがnil値ならreutrnとする
+    # ※presenceのValidationに一任するため
+    return if start_date.blank? || end_date.blank?
+
+    if (start_date.strftime("%Y%m%d").to_i >= end_date.strftime("%Y%m%d").to_i)
+      errors.add(
+        I18n.t("activerecord.errors.models.employee_department.attributes.start_date.cannot_be_after_end_date")
+      )
+    end
+  end
 end
