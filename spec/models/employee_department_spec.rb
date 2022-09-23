@@ -61,4 +61,35 @@ RSpec.describe "社員-部署のテスト", type: :model do
       )
     end
   end
+
+  context "カスタムバリデーションのテスト" do
+    it "着任日>離任日の場合はバリデーションエラーとなり、想定通りのエラーメッセージが設定されること" do
+      twz = Time.zone.parse("2022-09-13 00:00:00")
+
+      # ----- バリデーションエラーになるパターンのテスト
+      [
+        # 部署の着任日 = 離任日 ※同日(日付をまたがない)の場合
+        0,
+
+        # 部署の着任日 > 離任日 ※同日(日付をまたがない)の場合
+        -1.second,
+
+        # 部署の着任日 > 離任日 ※同日(日付をまたぐ)の場合
+        -1.day,
+      ].each do |diff|
+        employee_department_regular.start_date = twz
+        employee_department_regular.end_date = employee_department_regular.start_date + diff
+        expect(employee_department_regular).not_to be_valid
+        expect(employee_department_regular.errors.messages[:start_date]).to eq(
+          ["離任日が着任日より未来日(着任日 < 離任日)となるようにしてください。"]
+        )
+      end
+
+      # ----- バリデーションエラーにならないパターンのテスト
+      # 部署の着任日 < 離任日 ※同日(日付をまたぐ)の場合はバリデーションエラーにならないこと
+      employee_department_regular.start_date = twz
+      employee_department_regular.end_date = employee_department_regular.start_date + 1.day
+      expect(employee_department_regular).to be_valid
+    end
+  end
 end

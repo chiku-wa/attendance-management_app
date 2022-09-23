@@ -100,6 +100,14 @@ ja:
         status_code: 就業状況コード
         rank_code: ランクコード
         closed: 締めフラグ
+    errors:
+      models:
+        employee_department:
+          attributes:
+            start_date:
+              cannot_be_after_end_date: 離任日が着任日より未来日(着任日 < 離任日)となるようにしてください。
+            end_date:
+              cannot_be_after_start_date: 離任日が着任日より未来日(着任日 < 離任日)となるようにしてください。
   # =============== DBに登録するマスタデータ
   #                 ※文字列が固有の意味を持ち、複数の処理で使用することがあるものはここで一元的に定義する
   master_data:
