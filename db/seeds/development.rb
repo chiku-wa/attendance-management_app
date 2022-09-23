@@ -16,7 +16,6 @@ role_manager = Role.find_by(role_name: I18n.t("master_data.role.manager"))
 role_common = Role.find_by(role_name: I18n.t("master_data.role.common"))
 
 # ----- 社員情報を登録
-# 一般社員、マネージャー
 employees = []
 (1..100).each do |i|
   # gimeiのgemを使ってランダムな名前を生成
@@ -106,9 +105,32 @@ end
 
 Employee.import!(employees)
 
-# 社員に権限を付与
+# ----- 社員に部署と権限を付与
+# 部署の付与に使用する変数を定義
+departments = Department.all
+start_date = Time.zone.parse("2022-04-01 23:00:00")
+end_date = Time.zone.parse("9999-12-31 23:59:59")
+
 # ※社員の作成と同時だと、Employeeモデルクラス生成時にrolesプロパティが消失するため、ここで処理。
 employees.each_with_index do |employee, i|
-  # 10人に1人をマネージャーに割り当てる
+  # [部署を付与]
+  # 本務を付与
+  department_of_regular = employee.add_department(
+    department: departments[i % departments.size],
+    affiliation_type_name: I18n.t("master_data.affiliation_type.affiliation_type_name.regular"),
+    start_date: start_date,
+    end_date: end_date,
+  )
+
+  # 本務部署と異なる部署の兼務を付与する(偏りをなくすためにshuffleする)
+  employee.add_department(
+    department: departments.where.not(id: department_of_regular.id).shuffle[0],
+    affiliation_type_name: I18n.t("master_data.affiliation_type.affiliation_type_name.additional"),
+    start_date: start_date,
+    end_date: end_date,
+  )
+
+  # [権限付与]
+  # 10人に1人を「マネージャー」を割り当て、それ以外は「一般社員」を割り当てる
   employee.roles = i % 10 == 0 ? [role_manager] : [role_common]
 end
