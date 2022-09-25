@@ -7,13 +7,31 @@
 
 <%= render "devise/shared/error_messages", resource: resource %>
 
+<%# Bootstrapのcol幅を調整するための変数 %>
+<%
+  # ----- ヘッダ
+  col_width_header = 2
+
+  # ----- 入力欄
+  # 入力欄:1つ
+  col_width_input_one = (12 - col_width_header) / 1
+
+  # 入力欄:2つ
+  col_width_input_two = (12 - col_width_header) / 2
+
+  # 入力欄:3つ
+  col_width_input_three = (12 - col_width_header) / 3
+%>
+
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
 
 <div class="form-row text-left">
-  <div class="form-group col-md-12">
 
-    <%# ----- メールアドレス %>
+  <%# ----- メールアドレス %>
+  <div class="form-group col-md-<%=col_width_header%>">
     <%= f.label :email %>
+  </div>
+  <div class="form-group col-<%=col_width_input_one%>">
     <%= f.email_field(
           :email,
           placeholder: Employee.human_attribute_name(:email),
@@ -22,9 +40,13 @@
           class: "form-control",
         )
       %>
+  </div>
 
-    <%# ----- 社員コード %>
+  <%# ----- 社員コード %>
+  <div class="form-group col-<%=col_width_header%>">
     <%= f.label :employee_code %>
+  </div>
+  <div class="form-group col-<%=col_width_input_one%>">
     <%= f.text_field(
           :employee_code,
           placeholder: Employee.human_attribute_name(:employee_code),
@@ -32,56 +54,105 @@
           class: "form-control",
         )
     %>
+  </div>
 
-    <%# ----- 社員名(姓・名) %>
+  <%# ----- 社員名(姓・名) %>
+  <div class="form-group col-<%=col_width_header%>">
     <%= f.label :employee_full_name %>
+  </div>
 
-    <%# 社員名(姓) %>
+  <%# 社員名(姓) %>
+  <div class="form-group col-<%=col_width_input_two%>">
     <%= f.text_field(
           :employee_last_name,
           placeholder: Employee.human_attribute_name(:employee_last_name),
           class: "form-control",
         )
     %>
+  </div>
 
-    <%# 社員名(名) %>
+  <%# 社員名(名) %>
+  <div class="form-group col-<%=col_width_input_two%>">
     <%= f.text_field(
           :employee_first_name,
           placeholder: Employee.human_attribute_name(:employee_first_name),
           class: "form-control",
         )
     %>
+  </div>
 
-    <%# ----- 社員名カナ(姓・名) %>
+  <%# ----- 社員名カナ(姓・名) %>
+  <div class="form-group col-<%=col_width_header%>">
     <%= f.label :employee_full_name_kana %>
+  </div>
 
-    <%# 社員名カナ(姓) %>
+  <%# 社員名カナ(姓) %>
+  <div class="form-group col-<%=col_width_input_two%>">
     <%= f.text_field(
           :employee_last_name_kana,
           placeholder: Employee.human_attribute_name(:employee_last_name_kana),
           class: "form-control",
         )
     %>
+  </div>
 
+  <div class="form-group col-<%=col_width_input_two%>">
     <%# 社員名カナ(名) %>
     <%= f.text_field(
-          :employee_first_name_kana,
+    :employee_first_name_kana,
           placeholder: Employee.human_attribute_name(:employee_first_name_kana),
           class: "form-control",
         )
     %>
+  </div>
 
-    <%# ----- 年齢 %>
+  <%# ----- 年齢 %>
+  <div class="form-group col-<%=col_width_header%>">
     <%= f.label :age %>
+  </div>
+  <div class="form-group col-<%=col_width_input_one%>">
     <%= f.text_field(
           :age,
           placeholder: Employee.human_attribute_name(:age),
           class: "form-control",
         )
     %>
+  </div>
 
-    <%# ----- 権限 %>
+  <%# ----- 部署 %>
+  <div class="form-group col-<%=col_width_header%>">
+    <%= f.label I18n.t("master_data.affiliation_type.affiliation_type_name.regular") %>
+  </div>
+  <div class="form-group col-<%=col_width_input_one%>">
+    <%= f.collection_select(
+          :department_ids,
+          # 社員がすでに所属している部署(本務・兼務)以外を除外してドロップダウンに表示する
+          Department.where.not(id: current_employee.departments.ids),
+          :id,
+          :department_name,
+          # 1行目をデフォルト値とする
+          {prompt: false},
+          {class: "form-control"},
+        )
+    %>
+    <%= f.collection_select(
+          :department_ids,
+          # 社員がすでに所属している部署(本務・兼務)以外を除外してドロップダウンに表示する
+          Department.where.not(id: current_employee.departments.ids),
+          :id,
+          :department_name,
+          # 1行目をデフォルト値とする
+          {prompt: false},
+          {class: "form-control"},
+        )
+    %>
+  </div>
+
+  <%# ----- 権限 %>
+  <div class="form-group col-<%=col_width_header%>">
     <%= f.label Role.human_attribute_name(:role_name) %>
+  </div>
+  <div class="form-group col-<%=col_width_input_one%>">
     <%= f.collection_select(
           :role_ids,
           Role.all,
@@ -94,9 +165,13 @@
           {class: "form-control"},
         )
     %>
+  </div>
 
-    <%# ----- 就業状況 %>
+  <%# ----- 就業状況 %>
+  <div class="form-group col-<%=col_width_header%>">
     <%= f.label :employment_status %>
+  </div>
+  <div class="form-group col-<%=col_width_input_one%>">
     <%= f.collection_select(
           :employment_status_id,
           EmploymentStatus.all,
@@ -109,10 +184,14 @@
           {class: "form-control"},
         )
     %>
+  </div>
 
-    <%# ----- パスワード設定 %>
+  <%# ----- パスワード設定 %>
+  <div class="form-group col-<%=col_width_header%>">
     <%= f.label :password %>
+  </div>
 
+  <div class="form-group col-<%=col_width_input_one%>">
     <%# パスワード %>
     <%= f.password_field(
           :password,
