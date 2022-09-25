@@ -110,4 +110,38 @@ RSpec.describe "部署モデルのテスト", type: :model do
       )
     end
   end
+
+  context "enable_departmentsのテスト" do
+    it "有効な部署(廃止日が「9999/12/31 23:59:59」)の部署のみが取得できること" do
+      # ----- 事前準備
+      # テストデータを登録する
+      load(Rails.root.join("db", "seeds.rb"))
+
+      # 廃止部署を含めたすべての部署の件数を取得する
+      all_departments_size = Department.all.size
+
+      # 期待値となる、有効な部署の件数を取得する
+      enable_department_abolished_date = Time.zone.parse("9999-12-31 23:59:59")
+      expected_enalble_departments_size = Department.where(
+        abolished_date: enable_department_abolished_date,
+      ).size
+
+      # ----- 前提として、「部署の全体件数 ≠ 有効な部署件数」であること
+      expect(all_departments_size).not_to eq expected_enalble_departments_size
+
+      # ----- 想定通りの部署件数が取得できること
+      expect(Department.enable_departments.size).to eq expected_enalble_departments_size
+
+      # ----- 廃止日が「9999/12/31 23:59:59」-1秒となっている部署は廃止<%=col_width_input_twoｖ%>として扱われること(境界値)
+      # 任意の有効部署を抽出し、廃止日に-1秒を設定する
+      expected_enalble_department = Department.where(
+        abolished_date: enable_department_abolished_date,
+      ).first
+      expected_enalble_department.abolished_date = (enable_department_abolished_date - 1.second)
+      expected_enalble_department.save
+
+      # 有効な部署の件数が-1となっていること
+      expect(Department.enable_departments.size).to eq expected_enalble_departments_size - 1
+    end
+  end
 end

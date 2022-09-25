@@ -67,4 +67,21 @@ class Department < ApplicationRecord
       message: "、#{Department.human_attribute_name(:establishment_date)}、#{Department.human_attribute_name(:abolished_date)}の組み合わせが同じ#{Department.model_name.human}がすでに存在します。",
     },
   )
+
+  # =============== パブリックメソッド
+  public
+
+  # ----------------------------------------------------
+  # # 概要
+  # 現在、有効な組織を抽出するメソッド。廃止日が「9999/12/31 23:59:59」であるレコードのみを抽出する。
+  #
+  # # 引数
+  # * なし
+  #
+  # # 戻り値
+  # 有効な部署の配列。
+  #
+  def self.enable_departments
+    Department.where(abolished_date: Time.zone.parse("9999-12-31 23:59:59"))
+  end
 end
