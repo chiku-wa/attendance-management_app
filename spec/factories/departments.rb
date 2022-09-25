@@ -6,22 +6,22 @@ FactoryBot.define do
 
   # ----- 共通変数
   # 部署の設立日、廃止日
-  establishment_date = DateTime.new(2021, 4, 1, 0, 0, 0)
-  abolished_date = DateTime.new(9999, 12, 31, 23, 59, 59)
+  establishment_date = Time.zone.parse("2021-04-01 00:00:00")
+  abolished_date = Time.zone.parse("9999-12-31 23:59:59")
 
   # =======================================================
   # テスト用
-  # 以下の階層構造の部署情報を想定する
-  # 以下の組織構造を持つ部署のテストデータ
+  # 以下の組織構造を持つ部署のテストデータ。
+  # なお、「【廃止】」となっている部署は、現在日付-1を明示的に登録して廃止扱いとする。
   #
   # A事業部　A01000000000
   # 　┗営業部　A01B01000000
   # 　　┗第一営業部　A01B01C01000
   # 　　　┗第一営業部　一課　　A01B01C01001
-  # 　　　┗第一営業部　二課　　A01B01C01002
+  # 　　　┗【廃止】第一営業部　二課　　A01B01C01002
   # 　　┗第二営業部　A01B01C02000
   # 　　　┗第ニ営業部　　一課　　A01B01C02001
-  # 　　　┗第ニ営業部　　ニ課　　A01B01C02002
+  # 　　　┗【廃止】第ニ営業部　　ニ課　　A01B01C02002
   # B事業部　B01000000000
   # 　┗製造部　B01C01000000
   #
@@ -72,7 +72,7 @@ FactoryBot.define do
     department_name { "第一営業部　ニ課" }
     department_kana_name { "ダイイチエイギョウブ　ニカ" }
     establishment_date { establishment_date }
-    abolished_date { abolished_date }
+    abolished_date { Time.zone.now - 1.day }
   end
 
   # 第二営業部
@@ -99,7 +99,7 @@ FactoryBot.define do
     department_name { "第ニ営業部　ニ課" }
     department_kana_name { "ダイニエイギョウブ　ニカ" }
     establishment_date { establishment_date }
-    abolished_date { abolished_date }
+    abolished_date { Time.zone.now - 1.day }
   end
 
   # B事業部
