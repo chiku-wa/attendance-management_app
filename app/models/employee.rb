@@ -35,9 +35,11 @@ class Employee < ApplicationRecord
   has_many :employee_roles, dependent: :destroy # 社員が削除された場合は、権限も連動して削除する
   has_many :roles, through: :employee_roles
 
-  # 社員-部署、部署
+  # 社員-部署、部署、所属種別
   has_many :employee_departments, dependent: :destroy # 社員が削除された場合は、部署の所属情報も連動して削除する
+  accepts_nested_attributes_for :employee_departments # 社員の登録時に、社員-部署の同時登録も許可する
   has_many :departments, through: :employee_departments
+  has_many :affiliation_types, through: :employee_departments
 
   # =============== バリデーション
   # 社員コード

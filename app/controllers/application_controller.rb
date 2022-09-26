@@ -71,6 +71,21 @@ class ApplicationController < ActionController::Base
 
         # 就業状況
         :employment_status_id,
+
+        # 社員-部署
+        employee_departments_attributes: [
+          # 所属種別
+          :affiliation_type_id,
+
+          # 部署
+          :department_id,
+
+          # 着任日
+          :start_date,
+
+          # 離任日
+          :end_date,
+        ],
       ],
     )
   end
