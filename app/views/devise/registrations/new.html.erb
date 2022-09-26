@@ -127,8 +127,8 @@
     ※fields_forの第一引数に`:employee_departments`を指定するとフォームが表示されないため、
      第二引数にインスタンスを明示する。
    %>
-  <%= f.fields_for :employee_departments ,resource.employee_departments.build do |ed|  %>
-  <% (1..1).each do |i|  %>
+  <% (1..3).each do |i|  %>
+  <%= f.fields_for "employee_departments" ,resource.employee_departments.build do |ed|  %>
   <div class="form-group col-md-<%=col_width_header%>">
     <%# ヘッダは1行目のみ表示 %>
     <% if i == 1  %>
