@@ -37,6 +37,7 @@ ja:
         status_name: 就業状況
         project_code: プロジェクトコード
         rank_code: ランクコード
+        employee_departments: 社員の部署情報 # 社員登録画面で、部署情報が不正な場合に表示されるメッセージを日本語にするためのロケール設定
         # ↓deviseで利用する日本語
         confirmation_sent_at: パスワード確認送信時刻
         confirmation_token: パスワード確認用トークン
