@@ -12,13 +12,12 @@
  *
  *= require_tree .
  *= require_self
-
  // メールの本文デザインで利用しているSCSSは、通常のWebページに反映されないように除外する。
  *= stub ./mailer
  */
 // =====
 // Bootstrapを使用するために必要な宣言
-@import "bootstrap";
+@import "bootstrap/dist/css/bootstrap";
 
 // =====
 // リッチなアイコンを利用するために必要な宣言

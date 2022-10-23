@@ -1,0 +1,77 @@
+<%#
+==================================================
+社員情報登録画面の入力チェックを行う処理
+==================================================
+
+【前提】
+EmployeeモデルクラスのValidationをもとに入力チェックを行う。
+本スクリプトで特定のController/Actionに対して入力値を送信し、Validateの結果を受信して
+エラーメッセージを出力する。
+
+%>
+// ------------------------------
+// ページが読み込まれたときの処理
+$(document).ready( function(){
+
+  // ------------------------------
+  // ----- 関数群
+
+  //  # 概要
+  //  第1引数として渡した入力欄が未入力な場合はBootstrapの`is-invalid`クラスを適用し、
+  //  赤色に着色する。
+  //  なお、エラーメッセージは予めHTMLに組み込んである`invalid-feedback`を使用し、
+  //  Bootstrapの仕組みを用いて、`is-invalid`を適用した際に自動的に表示されるようにする。
+  //
+  //  # 引数
+  //  * valid_obj
+  //    入力チェックをしたい要素のオブジェクト。
+  //
+  //  # 戻り値
+  //    なし。
+  function valid_presence(valid_obj) {
+    if(valid_obj.val() == "") {
+      valid_obj.addClass("is-invalid");
+    } else {
+      <%# メールアドレスなど、必須入力かどうかだけを判断軸にできないため、`is-valid`クラスは用いないこと %>
+      valid_obj.removeClass("is-invalid");
+    }
+  }
+
+  <%
+    # JavaScriptで入力チェックを行う入力項目の名前を配列で定義。
+    employee_attributes = [
+      # メールアドレス
+      "employee_email",
+      # 社員コード
+      "employee_employee_code",
+      # 社員名(姓)
+      "employee_employee_last_name",
+      # 社員名(名)
+      "employee_employee_first_name",
+      # 社員名カナ(姓)
+      "employee_employee_last_name_kana",
+      # 社員名カナ(名)
+      "employee_employee_first_name_kana",
+      # 年齢
+      "employee_age",
+      # パスワード
+      "employee_password",
+      # パスワード(確認用)
+      "employee_password_confirmation",
+    ]
+  %>
+
+  // ----- 各要素のIDを変数として定義
+  <% employee_attributes.each do |attr| %>
+    var <%=attr%> = $("#<%=attr%>");
+  <% end %>
+
+  // ----- 入力値を変更した際に未入力チェックを発火する
+  <% employee_attributes.each do |attr| %>
+    <%=attr%>.on('input', function(){
+      valid_presence(<%=attr%>);
+    });
+  <% end %>
+
+});
+

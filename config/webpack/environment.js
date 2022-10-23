@@ -1,17 +1,16 @@
-const {
-  environment
-} = require('@rails/webpacker')
-const erb = require('./loaders/erb')
+const { environment } = require("@rails/webpacker");
+const erb = require("./loaders/erb");
+const webpack = require("webpack");
 
-// jQueryを利用するための設定
-const webpack = require("webpack")
 environment.plugins.prepend(
   "Provide",
+  // jQuery,popper.jsを使用するための設定
   new webpack.ProvidePlugin({
     $: "jquery/src/jquery",
-    jQuery: "jquery/src/jquery"
+    jQuery: "jquery/src/jquery",
+    Popper: "popper.js",
   })
-)
+);
 
-environment.loaders.prepend('erb', erb)
-module.exports = environment
+environment.loaders.prepend("erb", erb);
+module.exports = environment;

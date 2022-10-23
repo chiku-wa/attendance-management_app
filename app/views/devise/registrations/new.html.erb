@@ -2,6 +2,9 @@
 社員情報の登録画面
 %>
 
+<%# 入力された社員情報をチェックするJavaScript %>
+<%= javascript_pack_tag 'registrations_validate' %>
+
 <%# HTMLのtitle定義部 %>
 <% provide(:title, I18n.t("devise.registrations.new.sign_up")) %>
 
@@ -27,116 +30,150 @@
 
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
 
-<div class="form-row text-left">
-
-  <%# ----- メールアドレス %>
-  <div class="form-group col-xs-12 col-md-<%=col_width_header%>">
-    <%= f.label :email %>
-  </div>
-  <div class="form-group col-md-<%=col_width_input_one%>">
+<%# ----- メールアドレス %>
+<div class="mb-3 row">
+  <%= f.label :email, {class: "col-form-label col-xs-12 col-md-#{col_width_header}"} %>
+  <div class="col-md-<%=col_width_input_one%>">
     <%= f.email_field(
           :email,
           placeholder: Employee.human_attribute_name(:email),
           autofocus: true,
           autocomplete: "email",
           class: "form-control",
+          required: true,
         )
-      %>
+    %>
+    <%# 未入力時のエラーメッセージ %>
+    <div class="invalid-feedback">
+      <%=Employee.human_attribute_name(:email) %><%=I18n.t('errors.messages.blank') %>
+    </div>
   </div>
+</div>
 
-  <%# ----- 社員コード %>
-  <div class="form-group col-md-<%=col_width_header%>">
-    <%= f.label :employee_code %>
-  </div>
-  <div class="form-group col-md-<%=col_width_input_one%>">
+<%# ----- 社員コード %>
+<div class="mb-3 row">
+  <%= f.label :employee_code, {class: "col-form-label col-xs-12 col-md-#{col_width_header}"} %>
+  <div class="col-md-<%=col_width_input_one%>">
     <%= f.text_field(
           :employee_code,
           placeholder: Employee.human_attribute_name(:employee_code),
           autocomplete: "employee_code",
           class: "form-control",
+          required: true,
         )
     %>
+    <%# 未入力時のエラーメッセージ %>
+    <div class="invalid-feedback">
+      <%=Employee.human_attribute_name(:employee_code) %><%=I18n.t('errors.messages.blank') %>
+    </div>
   </div>
+</div>
 
-  <%# ----- 社員名(姓・名) %>
-  <div class="form-group col-md-<%=col_width_header%>">
-    <%= f.label :employee_full_name %>
-  </div>
+<%# ----- 社員名(姓・名) %>
+<div class="mb-3 row">
+  <%= f.label :employee_full_name, {class: "col-form-label col-xs-12 col-md-#{col_width_header}"} %>
 
   <%# 社員名(姓) %>
-  <div class="form-group col-md-<%=col_width_input_two%>">
+  <div class="col-md-<%=col_width_input_two%>">
     <%= f.text_field(
           :employee_last_name,
           placeholder: Employee.human_attribute_name(:employee_last_name),
           class: "form-control",
+          required: true,
         )
     %>
+    <%# 未入力時のエラーメッセージ %>
+    <div class="invalid-feedback">
+      <%=Employee.human_attribute_name(:employee_last_name) %><%=I18n.t('errors.messages.blank') %>
+    </div>
   </div>
 
   <%# 社員名(名) %>
-  <div class="form-group col-md-<%=col_width_input_two%>">
+  <div class="col-md-<%=col_width_input_two%>">
     <%= f.text_field(
           :employee_first_name,
           placeholder: Employee.human_attribute_name(:employee_first_name),
           class: "form-control",
+          required: true,
         )
     %>
+    <%# 未入力時のエラーメッセージ %>
+    <div class="invalid-feedback">
+      <%=Employee.human_attribute_name(:employee_first_name) %><%=I18n.t('errors.messages.blank') %>
+    </div>
   </div>
+</div>
 
-  <%# ----- 社員名カナ(姓・名) %>
-  <div class="form-group col-md-<%=col_width_header%>">
-    <%= f.label :employee_full_name_kana %>
-  </div>
+<%# ----- 社員名カナ(姓・名) %>
+<div class="mb-3 row">
+  <%= f.label :employee_full_name_kana, {class: "col-form-label col-xs-12 col-md-#{col_width_header}"} %>
 
   <%# 社員名カナ(姓) %>
-  <div class="form-group col-md-<%=col_width_input_two%>">
+  <div class="col-md-<%=col_width_input_two%>">
     <%= f.text_field(
           :employee_last_name_kana,
           placeholder: Employee.human_attribute_name(:employee_last_name_kana),
           class: "form-control",
+          required: true,
         )
     %>
+    <%# 未入力時のエラーメッセージ %>
+    <div class="invalid-feedback">
+      <%=Employee.human_attribute_name(:employee_last_name_kana) %><%=I18n.t('errors.messages.blank') %>
+    </div>
   </div>
 
-  <div class="form-group col-md-<%=col_width_input_two%>">
+  <div class="col-md-<%=col_width_input_two%>">
     <%# 社員名カナ(名) %>
     <%= f.text_field(
     :employee_first_name_kana,
           placeholder: Employee.human_attribute_name(:employee_first_name_kana),
           class: "form-control",
+          required: true,
         )
     %>
+    <%# 未入力時のエラーメッセージ %>
+    <div class="invalid-feedback">
+      <%=Employee.human_attribute_name(:employee_first_name_kana) %><%=I18n.t('errors.messages.blank') %>
+    </div>
   </div>
+</div>
 
-  <%# ----- 年齢 %>
-  <div class="form-group col-md-<%=col_width_header%>">
-    <%= f.label :age %>
-  </div>
-  <div class="form-group col-md-<%=col_width_input_one%>">
+<%# ----- 年齢 %>
+<div class="mb-3 row">
+  <%= f.label :age, {class: "col-form-label col-xs-12 col-md-#{col_width_header}"} %>
+  <div class="col-md-<%=col_width_input_one%>">
     <%= f.text_field(
           :age,
           placeholder: Employee.human_attribute_name(:age),
           class: "form-control",
+          required: true,
         )
     %>
+    <%# 未入力時のエラーメッセージ %>
+    <div class="invalid-feedback">
+      <%=Employee.human_attribute_name(:age) %><%=I18n.t('errors.messages.blank') %>
+    </div>
   </div>
+</div>
 
-  <%# ----- 部署・所属種別・着任日・離任日 %>
-  <%#
+<%# ----- 部署・所属種別・着任日・離任日 %>
+<%#
     `社員`の子モデルである、`社員-部署`登録用フォーム
     ※fields_forの第一引数に`:employee_departments`を指定するとフォームが表示されないため、
      第二引数にインスタンスを明示する。
    %>
-  <% (1..3).each do |i|  %>
+<% (1..3).each do |i|  %>
+<div class="mb-3 row">
   <%= f.fields_for "employee_departments" ,resource.employee_departments.build do |ed|  %>
-  <div class="form-group col-md-<%=col_width_header%>">
+  <div class="col-form-label col-md-<%=col_width_header%>">
     <%# ヘッダは1行目のみ表示 %>
     <% if i == 1  %>
     <%= f.label Department.model_name.human %>
     <% end  %>
   </div>
   <%# 所属種別 %>
-  <div class="form-group col-md-<%=col_width_input_four%>">
+  <div class="col-md-<%=col_width_input_four%>">
     <%= ed.collection_select(
             :affiliation_type_id,
             AffiliationType.all,
@@ -149,7 +186,7 @@
       %>
   </div>
   <%# 部署 %>
-  <div class="form-group col-md-<%=col_width_input_four%>">
+  <div class="col-md-<%=col_width_input_four%>">
     <%= ed.collection_select(
             :department_id,
             # 現在有効な組織のみを表示
@@ -163,7 +200,7 @@
       %>
   </div>
   <%# 着任日 %>
-  <div class="form-group col-md-<%=col_width_input_four%>">
+  <div class="col-md-<%=col_width_input_four%>">
     <%= ed.date_field(
             :start_date,
             # デフォルトは現在年月1日とする
@@ -172,7 +209,7 @@
       %>
   </div>
   <%# 離任日 %>
-  <div class="form-group col-md-<%=col_width_input_four%>">
+  <div class="col-md-<%=col_width_input_four%>">
     <%= ed.date_field(
             :end_date,
             # デフォルトは9999/12/31(有効な所属情報)とする
@@ -181,13 +218,13 @@
       %>
   </div>
   <% end %>
-  <% end %>
+</div>
+<% end %>
 
-  <%# ----- 権限 %>
-  <div class="form-group col-md-<%=col_width_header%>">
-    <%= f.label Role.human_attribute_name(:role_name) %>
-  </div>
-  <div class="form-group col-md-<%=col_width_input_one%>">
+<%# ----- 権限 %>
+<div class="mb-3 row">
+  <%= f.label Role.human_attribute_name(:role_name), {class: "col-form-label col-xs-12 col-md-#{col_width_header}"} %>
+  <div class="col-md-<%=col_width_input_one%>">
     <%= f.collection_select(
           :role_ids,
           Role.all,
@@ -201,12 +238,12 @@
         )
     %>
   </div>
+</div>
 
-  <%# ----- 就業状況 %>
-  <div class="form-group col-md-<%=col_width_header%>">
-    <%= f.label :employment_status %>
-  </div>
-  <div class="form-group col-md-<%=col_width_input_one%>">
+<%# ----- 就業状況 %>
+<div class="mb-3 row">
+  <%= f.label :employment_status, {class: "col-form-label col-xs-12 col-md-#{col_width_header}"} %>
+  <div class="col-md-<%=col_width_input_one%>">
     <%= f.collection_select(
           :employment_status_id,
           EmploymentStatus.all,
@@ -220,37 +257,54 @@
         )
     %>
   </div>
+</div>
 
-  <%# ----- パスワード設定 %>
-  <div class="form-group col-md-<%=col_width_header%>">
-    <%= f.label :password %>
-  </div>
+<%# ----- パスワード設定 %>
+<div class="mb-3 row">
+  <%= f.label :password, {class: "col-form-label col-xs-12 col-md-#{col_width_header}"} %>
 
-  <div class="form-group col-md-<%=col_width_input_one%>">
+  <div class="col-md-<%=col_width_input_one%>">
     <%# パスワード %>
     <%= f.password_field(
           :password,
           autocomplete: "new-password",
           placeholder: I18n.t("devise.passwords.edit.new_password"),
           class: "form-control",
+          required: true,
         )
     %>
+    <%# 未入力時のエラーメッセージ %>
+    <div class="invalid-feedback">
+      <%=Employee.human_attribute_name(:password) %><%=I18n.t('errors.messages.blank') %>
+    </div>
+    <div class="form-text text-start">
+      ※パスワードは<%= @minimum_password_length %>文字以上で入力してください
+    </div>
+  </div>
+</div>
 
-    <%# パスワード(確認用) %>
+<%# パスワード(確認用) %>
+<div class="mb-3 row">
+  <%= f.label :password_confirmation, {class: "col-form-label col-xs-12 col-md-#{col_width_header}"} %>
+  <div class="col-md-<%=col_width_input_one%>">
     <%= f.password_field(
           :password_confirmation,
           autocomplete: "new-password",
           placeholder: I18n.t("devise.passwords.edit.confirm_new_password"),
           class: "form-control",
+          required: true,
         )
     %>
-
+    <%# 未入力時のエラーメッセージ %>
+    <div class="invalid-feedback">
+      <%=Employee.human_attribute_name(:password_confirmation) %><%=I18n.t('errors.messages.blank') %>
+    </div>
   </div>
 </div>
 
 
 <div class="actions">
-  <%= f.submit I18n.t("devise.registrations.new.sign_up"), {class: "btn btn-primary devise-form"} %>
+  <%= f.submit I18n.t("devise.registrations.new.sign_up"), {id: "",class: "btn btn-primary devise-form"} %>
 </div>
 <% end %>
 
