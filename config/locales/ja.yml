@@ -105,6 +105,8 @@ ja:
       models:
         employee_department:
           attributes:
+            affiliation_type:
+              regular_is_only_one: "1人の社員には設定できる本務数は%{max_regular}個までです。"
             start_date:
               cannot_be_after_end_date: 離任日が着任日より未来日(着任日 < 離任日)となるようにしてください。
             end_date:
